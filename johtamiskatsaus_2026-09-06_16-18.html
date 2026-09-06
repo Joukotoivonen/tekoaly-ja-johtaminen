@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoäly johtamisessa: kehystämiskilpailu ja strategiavaje Suomessa 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="top-nav-brand">🔬 Tekoäly &amp; Johtaminen</span>
+  <div class="top-nav-links">
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Tekoäly johtamisessa: kehystämiskilpailu ja strategiavaje Suomessa 2026</h1>
+  <div class="cover-date">6.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Suomessa 38 % yli 10 hengen yrityksistä on ottanut tekoälyn käyttöön, mutta vain 17 %:lla on kirjallinen AI-strategia. Tämä rakenteellinen ristiriita luo johtamisvajeen, jota SuomiAreena 2026 -paneeli kiteytti paradoksiksi: tekoäly ei korvaa johtamista, vaan nostaa sen vaatimustasoa. Haaga-Helian Kone johtajana -tutkimushanke osoitti, että yhdeksän johtajaa kymmenestä on jo arjessaan kohdannut niin sanotun tekoälyjohtajan — järjestelmän, joka jakaa töitä, seuraa suorituskykyä ja ehdottaa kehityskeskusteluja. Esihenkilöt toimivat toimeenpanon ja merkityksellistämisen rajapinnassa ilman riittävää strategista selkänojaa, ja organisaatioilla puuttuu rakenteet tähän vastaamiseksi.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Julkishallinto on käynnistänyt 10 miljoonan euron toimenpideohjelman agenttiautomaatioon. HR:n rooli tekoälyn käyttöönotossa on toistaiseksi reaktiivinen: ilman HR:n aktiivista ohjausta esihenkilöt toimivat kukin omalla tavallaan, mikä johtaa epätasaiseen muutokseen. Tukiäly-käsitteen systematisoiminen viestintäkäytäntöihin on emergoiva strateginen vaihtoehto, jossa ihminen säilyttää vastuun ja kone tuo nopeuden. Kirjallisen AI-strategian puuttuminen on kehystämistyhjiö, jonka epäviralliset kehykset tällä hetkellä täyttävät.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Tuottavuusloikka-kehys dominoi julkista keskustelua ja ylintä johtoa: tekoäly on Suomelle välttämätön kilpailukykyinstrumentti ja viivyttely kansallinen riski. Sen resonanssi kuitenkin heikkenee organisaatiohierarkiassa alaspäin. Inhimillinen kestävyys -kehys (TTL, Barona, Veritas) korostaa, että käyttöönotto on ensisijaisesti ihmisten johtamisen haaste: esihenkilön vaikutus sitoutumiseen on Gallupin mukaan jopa 70 %. Strategiavaje-kehys (TTL, LUT, HR-ammattilaiset) nimeää rakenteellisen johtamisvajeen: ilman strategiaa tekoäly tuottaa kokeiluja mutta ei tuloksia. Vastuullisuus ja läpinäkyvyys -kehys nousi konkreettiseksi Kanta-Hämeen hyvinvointialue-tapauksen myötä tammikuussa 2026, jossa tekoälyä käytettiin vanhuspalveluiden arvioinnissa. Emergoiva tukiäly-kehys tarjoaa vastavetoa korvaamisdiskurssille pitämällä ihmisen vastuullisena toimijana.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Veritas-eläkevakuutusyhtiön analyysi nuorten osaajien kokemuksista osoittaa, että monet pelkäävät tekoälyn tekevän ihmisistä laiskempia, heikentävän ajattelukykyä ja vähentävän mahdollisuuksia oppia mentoreilta. Barona täydentää, että tekoälyn haltuunotto ei ole ikäkysymys: uuden oppiminen vaatii henkistä kapasiteettia ja resilienssiä kaikenikäisiltä. Näitä huolia on liian helppo leimata muutosvastarinnaksi, vaikka kyse on rakenteellisesta riskistä. EU AI Act asettaa organisaatioille vaatimuksia läpinäkyvyydestä tilanteissa, joissa algoritmit osallistuvat ihmisiä koskeviin arviointeihin.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Strategia-aukko kasvaa käyttöä nopeammin: kirjallisen AI-strategian puuttuminen on kehystämistyhjiö, jonka epäviralliset kehykset täyttävät. Tekoälyjohtaja-ilmiö muuttaa toimeenpanon ja merkityksellistämisen dynamiikan ilman, että organisaatioilla on rakenteita vastaamiseksi — esihenkilön perusteluvelvollisuus kiristyy samalla kun päätösvaihtoehdot rajautuvat koneen toimesta. Niin sanottu yksin yhdessä -polarisaatio uhkaa osaamisen siirtymistä: informaali työssä oppiminen kahvipöytäkeskusteluissa, pari- ja tiimityössä sekä mentoroinnissa on sekä merkityksen välittämisen areena että oppimisinfrastruktuuria, jonka katoamisesta ei puhuta riittävästi strategisissa kehyksissä.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">tekoälyjohtaja</span><span class="concept-chip">strategiavaje</span><span class="concept-chip">kehystäminen</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">tukiäly</span><span class="concept-chip">merkityksen välittäminen</span><span class="concept-chip">synteesin kokoaminen</span><span class="concept-chip">diagnostinen kehys</span><span class="concept-chip">inhimillinen kestävyys</span><span class="concept-chip">yksin yhdessä -ilmiö</span><span class="concept-chip">EU AI Act</span><span class="concept-chip">HR</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: HR käynnistää organisaatiokohtaisen AI-strategiaprosessin välittömästi — kirjallisen strategian puuttuminen on johtamisvaje, ei tekninen puute. Strategia laaditaan yhdessä esihenkilöiden kanssa, ei heidän puolestaan.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Esihenkilöiden tueksi rakennetaan selkeä kehystämisohjeistus, joka tarjoaa yhtenäisen kielen tekoälyn roolille organisaatiossa — tukiäly-käsitteen systemaattinen käyttöönotto viestintäkäytännöissä vähentää kilpailevien kehysten aiheuttamaa epävarmuutta.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Epämuodolliset oppimistilanteet — mentorointi, tiimityö, kahvipöytävuorovaikutus — tunnistetaan strategisesti kriittisinä oppimisinfrastruktuurina ja niiden säilyminen varmistetaan tekoälyn käyttöönottoa suunniteltaessa, erityisesti EU AI Act:n läpinäkyvyysvaatimusten näkökulmasta.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">38 % yli 10 hengen yrityksistä käyttää tekoälyä, mutta vain 17 %:lla on kirjallinen AI-strategia</div>
+      <div class="source-ref">📌 AI Finland -selvitykset / Strategiavaje-kehys, tutkijat (Ruokonen), LUT</div>
+      <div class="source-quote">Ristiriita on rakenteellinen: yli puolet yrityksistä käyttää tekoälyä, mutta vain 17 %:lla on kirjallinen strategia.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Yhdeksän johtajaa kymmenestä on kohdannut tekoälyjohtajan arjessaan</div>
+      <div class="source-ref">📌 Haaga-Helia, Kone johtajana -tutkimushanke</div>
+      <div class="source-quote">Yhdeksän johtajaa kymmenestä on jo kohdannut ns. tekoälyjohtajan arjessaan — järjestelmän, joka jakaa töitä, seuraa suorituskykyä ja ehdottaa kehityskeskusteluja.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Esihenkilöt toimivat ilman riittävää strategista selkänojaa</div>
+      <div class="source-ref">📌 Työterveyslaitos, TEIJO-hanke; Töölön Vireen HR-analyysi</div>
+      <div class="source-quote">Ilman HR:n aktiivista roolia esihenkilöt saattavat toimia kukin omalla tavallaan, mikä johtaa epätasaiseen muutokseen.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Julkishallinnossa on käynnissä 10 miljoonan euron toimenpideohjelma agenttiautomaatioon</div>
+      <div class="source-ref">📌 Tuottavuusloikka-kehys, Business Finland, AI Finland</div>
+      <div class="source-quote">Prognostinen kehys: toimenpideohjelma on julkishallinnossa jo käynnissä 10 M€ panostuksella agenttiautomaatioon.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tukiäly-käsitteen ottaminen viestintäkäytäntöihin muuttaa kehyksen resonanssia</div>
+      <div class="source-ref">📌 SuomiAreena 2026 -panelistit Niemi ja Lahtinen; esihenkilövalmentajat</div>
+      <div class="source-quote">Ihminen säilyttää vastuun, kone tuo nopeuden. Kehyksen uudelleenasemointi tapahtuu käytännön viestintätilanteissa — aamupalavereissa, koulutuksissa, esittelytilanteissa.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Tuottavuusloikka-kehys dominoi julkista diskurssia, mutta sen resonanssi heikkenee alaspäin mentäessä</div>
+      <div class="source-ref">📌 Business Finland, AI Finland -selvitykset, johto</div>
+      <div class="source-quote">Suomi ymmärtää tekoälyä varsin hyvin, pilotoi suhteellisen hyvin, säätelee jokseenkin harkitusti — mutta ei teollista.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Esihenkilön vaikutus henkilöstön sitoutumiseen on jopa 70 %</div>
+      <div class="source-ref">📌 Gallup; Inhimillinen kestävyys -kehys (TTL, Barona, Veritas)</div>
+      <div class="source-quote">Gallupin mukaan esihenkilön vaikutus sitoutumiseen on jopa 70 %.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Ilman strategiaa tekoäly tuottaa kokeiluja mutta ei tuloksia</div>
+      <div class="source-ref">📌 Työterveyslaitos, LUT, tutkijat (Ruokonen), HR-ammattilaiset</div>
+      <div class="source-quote">Ilman strategiaa 'tekoäly tuottaa kokeiluja mutta ei tuloksia'.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Kanta-Hämeen hyvinvointialue-tapaus nosti läpinäkyvyyshuolen konkreettiseksi</div>
+      <div class="source-ref">📌 Sytyke ry, tietosuojaviranomaiset; tammikuu 2026</div>
+      <div class="source-quote">Ihmisillä on oikeus tietää, milloin algoritmi osallistuu heidän elämäänsä koskeviin arvioihin.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Nuoret pelkäävät tekoälyn heikentävän ajattelukykyä ja mentorointisuhteita</div>
+      <div class="source-ref">📌 Veritas-eläkevakuutusyhtiö, analyysi nuorten osaajien kokemuksista</div>
+      <div class="source-quote">Monet nuoret kokevat, että tekoäly tekee ihmisistä laiskempia, heikentää ajattelukykyä ja vähentää mahdollisuuksia työssä oppimiseen mentoreilta.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tekoälyn haltuunotto ei ole ikäkysymys — uuden oppiminen vaatii resilienssiä kaikenikäisiltä</div>
+      <div class="source-ref">📌 Barona</div>
+      <div class="source-quote">Uuden oppiminen vaatii henkistä kapasiteettia ja resilienssiä, ja tässä kaikenikäiset työntekijät kaipaavat tukea.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Kirjallisen AI-strategian puuttuminen on kehystämistyhjiö</div>
+      <div class="source-ref">📌 AI Finland -selvitykset; Kaplan (2008)</div>
+      <div class="source-quote">Kirjallisen strategian puuttuminen on kehystämistyhjiö, jonka epäviralliset kehykset täyttävät.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tekoälyjohtaja-ilmiö voi syrjäyttää keskijohdon sen omimmilta alueilta</div>
+      <div class="source-ref">📌 Haaga-Helia, Kone johtajana -tutkimushanke</div>
+      <div class="source-quote">Päätökset tehdään yhä ihmisten kesken, mutta vaihtoehdot ovat yhä useammin koneen rajaamia.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Epämuodolliset viestintätilanteet ovat sekä oppimisinfrastruktuuria että merkityksen välittämisen areenoita</div>
+      <div class="source-ref">📌 Barona; Floyd & Lane; TTL, TEIJO-hanke</div>
+      <div class="source-quote">Epämuodolliset viestintätilanteet — kahvipöytäkeskustelut, pari- ja tiimityö, mentorointi — ovat sekä Floyd & Lanen merkityksen välittämisen areenoita että oppimisinfrastruktuuria, jonka katoamisesta ei puhuta riittävästi strategisissa kehyksissä.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 36/2026 — Epävarmuuden vastuullinen ääni AI-johtamisen keskiössä</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">synteesin kokoaminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksen välittäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diagnostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">kehystämiskilpailu</span></div>
+        <p>Kesän 2026 keskusteluissa nousi vahvasti esiin paradoksi, jota SuomiAreena 2026 -paneeli 'Tekoäly johtajana' kiteytti: tekoäly ei korvaa johtamista, vaan nostaa sen vaatimustasoa. Haaga-Helian Kone johtajana -tutkimushankkeen havainnot osoittivat, että yhdeksän johtajaa kymmenestä on jo kohdannut ns. tekoälyjohtajan arjessaan — järjestelmän, joka jakaa töitä, seuraa suorituskykyä ja ehdottaa kehityskeskusteluja. Tämä 'tekoälyjohtaja'-kehys on Kaplanin (2008) tarkoittama diagnostinen kehys, joka konkretisoi murroksen johdettaviksi kysymyksiksi. Samanaikaisesti Liftedin Suuri johtoryhmätutkimus 2026 paljastaa rakenteellisen aukon: yli puolet johtoryhmien jäsenistä ei pidä tekoälyä osana yhteistä työskentelyä, ja 39 % organisaatioista ei saavuta yhtäkään keskeistä liiketoimintatavoitettaan. Tässä jännitteessä — operatiivinen AI-arki ilman johtoryhmätason strategista synteesiä — Floyd & Lanen synteesin kokoamisen rooli on akuutti. Viestintäkäytäntöjen kannalta SuomiAreena toimi merkityksen välittämisen areenana: paneeli julkisine lausuntoineen rakensi jaettua kehystä sille, mitä 'vastuullinen AI-johtajuus' tarkoittaa. Deloitte–DIF-tutkimus täydentää kuvaa: kaksi kolmesta hallituksen jäsenestä raportoi merkittävistä tehokkuushyödyistä, mutta liiketoiminnan kasvuun tekoäly ei ole vielä johtanut — ristiriita, joka ruokkii kilpailevia kehyksiä organisaatioiden sisällä.</p>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Keskijohdon kehystämistoimet</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <p>Konkreettisin esimerkki keskijohdon kehystämistoimista löytyy Työterveyslaitoksen TEIJO-hankkeen kentältä sekä HR-viestinnästä: esihenkilöt toimivat parhaillaan toimeenpanon ja merkityksellistämisen rajapinnassa ilman riittävää strategista selkänojaa. Töölön Vireen HR-analyysi tiivistää tilanteen: vuonna 2026 organisaatiot ovat monilla aloilla tekoälyn käyttöönoton aktiivisessa vaiheessa, mutta ilman HR:n aktiivista roolia esihenkilöt saattavat toimia kukin omalla tavallaan, mikä johtaa epätasaiseen muutokseen. Tämä on Floyd & Lanen sopeutumiskyvyn fasilitoinnin epäonnistuminen: kokeilutila ei ole suojattu eikä jaettu. TTL:n AI-askelia-hanke pyrkii vastaamaan tähän: syksyllä 2026 käynnistyvässä toisessa kehittämisvaiheessa haetaan pk-yrityksiä testaamaan mallia, jossa johdon ja henkilöstön yhteistyö ohjaa käyttöönottoa. Esihenkilötyön konkreettinen viestintäkäytäntö nousee myös sanavalintatasolla: SuomiAreenan panelistit nostivat esiin 'tukiäly' vs. 'tekoäly' -kehystämistaktiikan. Kun esihenkilö puhuu 'tukiälystä', viestintätilanne muuttuu: ihminen säilyttää arvostelukyvyn ja vastuun, ja teknologia tuo nopeutta. Pieni sanavalinta viikkopalavereissa ja tiedotteissa voi muuttaa sitä, miten tiimi käyttäytyy käyttöönottoprojektin aikana — tämä on juuri sitä diskursiivista kompetenssia, jota Floyd & Lane pitävät keskijohdon ydinosaamisena. Strategia-aukko on dokumentoitu: vain 17 % tekoälyä käyttävistä yrityksistä on laatinut kirjallisen tekoälystrategian, ja strategia syntyy yleensä vasta kun käyttö laajenee ja monimutkaistuu, ei ennakoivasti.</p>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <p>Kehystämiskilpailun raaka-aineena toimii Suomessa poikkeuksellinen tilanne: korkea käyttöönottoprosentti (38 % yli 10 hengen yrityksistä) yhdistettynä matalaan strategiakattavuuteen (17 %) luo runsaasti epävarmuutta, jota kilpailevat kehykset pyrkivät täyttämään. Kaplanin (2008) mukaan tämä epävarmuus on juuri kehystämiskilpailujen hedelmällisin maaperä. Tuottavuusloikka-kehys dominoi julkista diskurssia ja ylintä johtoa, mutta sen resonanssi heikkenee organisaatiohierarkiassa alaspäin mentäessä. Inhimillinen kestävyys -kehys ja strategiavaje-kehys kilpailevat esihenkilöiden ja HR:n huomiosta. Vastuullisuus-kehys saa voimansa konkreettisista tapauksista (Kanta-Häme) eikä jää teoreettiseksi. Tukiäly-kehys on vasta emergoiva, mutta sillä on potentiaalia toimia siltana tuottavuus- ja inhimillisyys-kehysten välillä, jos se institutionalisoidaan organisaation viestintäkäytäntöihin.</p>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <p>Veritas-eläkevakuutusyhtiön analyysi nuorten osaajien kokemuksista nostaa esiin huolen, jota on liian helppo leimata muutosvastarinnaksi: monet nuoret kokevat, että tekoäly tekee ihmisistä laiskempia, heikentää ajattelukykyä ja vähentää mahdollisuuksia työssä oppimiseen mentoreilta. Moni kuvaa pelkäävänsä työelämää, jossa tehtävät hoituvat tehokkaasti, mutta oppiminen, keskustelu ja epämuodollinen vuorovaikutus katoavat. Barona täydentää: tekoäly ei ole ikäkysymys — myös monille nuoremmille tekoälyn haltuunotto aiheuttaa haastetta, ja uuden oppiminen vaatii henkistä kapasiteettia ja resilienssiä. TTL:n TEIJO-hankkeen kontekstissa sama ilmiö näkyy organisaatiotasolla: esihenkilöt herättävät epävarmuutta ja jopa pelkoa tulevaisuudesta tiimeissään, mikä tekee viestintä- ja luottamuksenrakennustaidoista entistä tärkeämpiä. Myös Töölön Vire varoittaa: ilman HR:n tukea osa tiimeistä jää muutoksesta jälkeen, osa esihenkilöistä uupuu ja 'muutosvastarinta kasvaa' — mutta tämä muotoilu on analyyttisesti ongelmallinen. Se niputtaa yhteen kaksi erillistä ilmiötä: 1) vastuullinen epävarmuus (mikä on minun roolini, miten oppiminen tapahtuu, kuka vastaa algoritmipäätöksistä?) ja 2) varsinainen muutosvastarinta (tahallinen hidastaminen, sabotointi). Ensimmäinen on organisatorisesti arvokasta tietoa, jota johtamisessa tarvitaan. Kanta-Hämeen tapaus osoittaa, että kansalaisten huoli tekoälypäätösten läpinäkyvyydestä ei ole torjuttavaa vastarintaa, vaan perusoikeuteen (tietää, milloin algoritmi osallistuu omaan arviointiin) pohjaavaa vastuullista huolenpitoa. Tämä huoli, jos se tulkitaan muutosvastarinnaksi, menettää organisaation kannalta kriittistä signaalia siitä, missä kehystämistyö on vielä kesken.</p>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <p></p>
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• [object Object]</div><div class="signal-item">• [object Object]</div><div class="signal-item">• [object Object]</div></div>
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">06</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <p></p>
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 6.9.2026 klo 19.18.03</span>
+</div>
+
+</body>
+</html>
