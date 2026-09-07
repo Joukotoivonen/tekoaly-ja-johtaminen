@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arkisto — Tekoäly &amp; Johtaminen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0F172A; --bg:#F8FAFC; --card:#fff; --border:#E2E8F0; --accent:#4F46E5; --muted:#64748B; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; }
+  nav { background:var(--ink); padding:14px 40px; display:flex; justify-content:space-between; align-items:center; }
+  nav a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:600; }
+  nav a:hover { color:#fff; }
+  nav .brand { color:#fff; font-weight:800; font-size:15px; }
+  .hero { background:linear-gradient(135deg,#1e1b4b,#312e81); color:#fff; padding:48px 40px; }
+  .hero h1 { font-size:28px; font-weight:900; margin-bottom:6px; }
+  .hero p { color:rgba(255,255,255,0.55); font-size:14px; }
+  .container { max-width:820px; margin:40px auto; padding:0 20px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .card-header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .card-header span { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+  .badge { background:var(--accent); color:#fff; border-radius:20px; padding:3px 12px; font-size:11px; font-weight:700; letter-spacing:0; text-transform:none; }
+  table { width:100%; border-collapse:collapse; }
+  tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
+  tr:last-child { border-bottom:none; }
+  tr:hover { background:#F8FAFF; }
+  td { padding:16px 24px; font-size:14px; vertical-align:middle; }
+  td.num { color:var(--muted); font-size:12px; font-weight:700; width:40px; }
+  td.links { width:130px; }
+  td.links a { color:var(--muted); text-decoration:none; font-size:13px; margin-right:14px; }
+  td.links a:hover { color:var(--ink); }
+  a.katsaus-link { color:var(--accent); text-decoration:none; font-weight:600; }
+  a.katsaus-link:hover { text-decoration:underline; }
+  .empty { padding:48px 24px; text-align:center; color:var(--muted); font-size:14px; }
+  footer { text-align:center; color:var(--muted); font-size:11px; padding:32px 20px; }
+</style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="index.html">🔬 Tekoäly &amp; Johtaminen</a>
+  <a href="index.html">← Etusivu</a>
+</nav>
+<div class="hero">
+  <h1>📚 Katsausarkisto</h1>
+  <p>Kaikki julkaistut ajankohtaiskatsaukset aikajärjestyksessä</p>
+</div>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <span>Julkaistut katsaukset</span>
+      <span class="badge">3 kpl</span>
+    </div>
+    <table>
+      
+      <tr>
+        <td class="num">3</td>
+        <td>
+          <a href="johtamiskatsaus_2026-09-07_11-04.html" class="katsaus-link">Suomen tekoälykehitys syksyllä 2026: Pilotoinnista teollistamiseen</a>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">07.09.2026 klo 11:04</div>
+        </td>
+        <td class="links">
+          <a href="johtamiskatsaus_2026-09-07_11-04.html" title="HTML-sivu">🌐 HTML</a>
+          <a href="johtamiskatsaus_2026-09-07_11-04.md" title="Markdown">📝 MD</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="num">2</td>
+        <td>
+          <a href="johtamiskatsaus_2026-09-06_16-18.html" class="katsaus-link">06.09.2026 klo 16:18</a>
+          
+        </td>
+        <td class="links">
+          <a href="johtamiskatsaus_2026-09-06_16-18.html" title="HTML-sivu">🌐 HTML</a>
+          <a href="johtamiskatsaus_2026-09-06_16-18.md" title="Markdown">📝 MD</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="num">1</td>
+        <td>
+          <a href="johtamiskatsaus_2026-09-06_12-23.html" class="katsaus-link">06.09.2026 klo 12:23</a>
+          
+        </td>
+        <td class="links">
+          <a href="johtamiskatsaus_2026-09-06_12-23.html" title="HTML-sivu">🌐 HTML</a>
+          <a href="johtamiskatsaus_2026-09-06_12-23.md" title="Markdown">📝 MD</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<footer>Päivitetty 7.9.2026 klo 14.04.32 · Tekoäly &amp; Johtaminen</footer>
+</body>
+</html>
