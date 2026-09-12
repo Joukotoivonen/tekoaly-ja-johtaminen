@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tekoäly &amp; Johtaminen — Ajankohtaiskatsaukset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #0F172A;
+    --ink-mid:   #1E2A3A;
+    --bg:        #F8FAFC;
+    --card:      #ffffff;
+    --border:    #E2E8F0;
+    --muted:     #64748B;
+    --subtle:    #94A3B8;
+    --accent:    #4F46E5;
+    --accent2:   #7C3AED;
+    --gold:      #D97706;
+    --gold-lt:   #FEF3C7;
+    --teal:      #0F766E;
+    --teal-lt:   #CCFBF1;
+    --rose:      #BE185D;
+    --rose-lt:   #FCE7F3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    background: var(--ink);
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .nav-brand {
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+    letter-spacing: -0.2px;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--ink);
+    color: #fff;
+    padding: 80px 40px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 560px; height: 560px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,70,229,0.14) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 760px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5vw, 54px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: #A5B4FC;
+  }
+  .hero-lead {
+    font-size: 17px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.75;
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    color: #fff;
+    padding: 13px 26px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    transition: opacity 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { opacity: 0.86; }
+  .btn-outline {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.75);
+    padding: 13px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.12); }
+
+  /* ─── STAT STRIP ─── */
+  .stats {
+    background: #1a2744;
+    padding: 20px 40px;
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .stat-val { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+  .stat-lbl { font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+  /* ─── MAIN CONTENT ─── */
+  .content { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  /* ─── SECTION LABEL ─── */
+  .sec-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ─── NARRATIVE SECTION ─── */
+  .narrative h2 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    line-height: 1.25;
+  }
+  .narrative p {
+    color: #334155;
+    line-height: 1.85;
+    margin-bottom: 18px;
+    max-width: 680px;
+  }
+  .narrative p:last-child { margin-bottom: 0; }
+
+  /* Lainausnosto */
+  .pull-quote {
+    border-left: 3px solid var(--accent);
+    padding: 18px 24px;
+    margin: 36px 0;
+    background: #EEF2FF;
+    border-radius: 0 8px 8px 0;
+  }
+  .pull-quote p {
+    font-size: 17px;
+    font-weight: 600;
+    color: #312E81;
+    line-height: 1.65;
+    margin: 0;
+    max-width: none;
+  }
+
+  /* Lähdelinkki */
+  .ref-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #C7D2FE;
+    border-radius: 5px;
+    background: #EEF2FF;
+    margin-top: 6px;
+    transition: background 0.15s;
+  }
+  .ref-link:hover { background: #E0E7FF; }
+
+  /* ─── DIMENSIONS + TACTICS GRID ─── */
+  .framework-section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+  .framework-section > p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 28px;
+    max-width: 580px;
+  }
+
+  .framework-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .fw-group-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fw-group-label span {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .fw-cards { display: flex; flex-direction: column; gap: 8px; }
+
+  .fw-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .fw-card-icon {
+    width: 32px; height: 32px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .fw-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    letter-spacing: -0.1px;
+  }
+  .fw-card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* Dimensioiden värit */
+  .dim-card .fw-card-icon { background: #FEF3C7; }
+  .dim-card .fw-card-title { color: #92400E; }
+
+  /* Taktiikoiden värit */
+  .tac-card .fw-card-icon { background: #EDE9FE; }
+  .tac-card .fw-card-title { color: #5B21B6; }
+
+  /* ─── LENSES ─── */
+  .lenses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+  }
+  .lens-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lens-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .lens-1::before { background: #3B7DD8; }
+  .lens-2::before { background: #0F9D8A; }
+  .lens-3::before { background: #D97706; }
+  .lens-4::before { background: #9B44A8; }
+  .lens-icon { font-size: 22px; margin-bottom: 12px; }
+  .lens-name { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .lens-desc { font-size: 12px; color: var(--muted); line-height: 1.65; }
+  .lens-ref-inline { font-size: 11px; color: var(--subtle); }
+
+  /* ─── LATEST KATSAUS ─── */
+  .latest-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+  .latest-top {
+    background: linear-gradient(135deg, #312E81, #4F46E5);
+    padding: 26px 30px;
+    color: #fff;
+  }
+  .latest-tag { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .latest-top h2 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+  .latest-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .latest-body {
+    padding: 22px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .latest-body p { font-size: 13px; color: var(--muted); max-width: 460px; line-height: 1.6; }
+  .btn-read {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-read:hover { background: #4338CA; }
+
+  /* ─── ARCHIVE TABLE ─── */
+  .archive-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .archive-header {
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .archive-header span { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .archive-link { font-size: 12px; font-weight: 700; color: var(--accent); text-decoration: none; }
+  .archive-link:hover { text-decoration: underline; }
+  table.archive { width: 100%; border-collapse: collapse; }
+  table.archive tr { border-bottom: 1px solid var(--border); }
+  table.archive tr:last-child { border-bottom: none; }
+  table.archive tr:hover { background: #F8FAFF; }
+  table.archive td { padding: 13px 22px; font-size: 13px; vertical-align: middle; }
+  .td-num { color: var(--subtle); font-size: 11px; font-weight: 700; width: 36px; }
+  .td-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .td-link a:hover { text-decoration: underline; }
+  .td-date { font-size: 11px; color: var(--subtle); margin-top: 3px; }
+  .td-action { width: 90px; }
+  .td-action a { color: var(--muted); text-decoration: none; font-size: 12px; }
+  .td-action a:hover { color: var(--ink); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    color: var(--subtle);
+    font-size: 11px;
+    padding: 36px 20px 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 680px) {
+    .hero { padding: 56px 20px 52px; }
+    .stats { padding: 16px 20px; gap: 28px; }
+    nav { padding: 0 20px; }
+    .content { padding: 0 16px; }
+    .framework-columns { grid-template-columns: 1fr; }
+    .lenses-grid { grid-template-columns: 1fr 1fr; }
+    .pull-quote p { font-size: 15px; }
+  }
+  @media (max-width: 420px) {
+    .lenses-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="nav-links">
+    <a href="#katsaukset">Katsaukset</a>
+    <a href="arkisto.html">Arkisto</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Tutkimusblogi · Kehystäminen &amp; Strategia</div>
+    <h1>Miksi jotkut ideat<br><em>voittavat</em> —<br>vaikka tulevaisuus<br>on epävarma?</h1>
+    <p class="hero-lead">
+      Vastaus löytyy usein siitä, miten tulevaisuutta tulkitaan ja miten siitä puhutaan.
+      Nämä analyysit tutkivat strategisen kehystämisen näkymättömiä vaikutusmekanismeja.
+    </p>
+    <div class="hero-cta">
+      <a href="johtamiskatsaus_2026-09-11_09-50.html" class="btn-primary">📖 Uusin katsaus</a>
+      <a href="arkisto.html" class="btn-outline">📚 Kaikki katsaukset</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats">
+  <div><div class="stat-val">6</div><div class="stat-lbl">Katsausta julkaistu</div></div>
+  <div><div class="stat-val">4</div><div class="stat-lbl">Teorialinssiä</div></div>
+  <div><div class="stat-val">AI</div><div class="stat-lbl">Analyysimenetelmä</div></div>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content">
+
+  <!-- NARRATIIVI -->
+  <section class="narrative">
+    <div class="sec-label">Miksi kehystäminen ratkaisee</div>
+
+    <h2>Tulevaisuus ei rakennu vain faktoista —<br>vaan siitä, kuka saa oman tulkintansa läpi</h2>
+
+    <p>
+      Epävarmoissa tilanteissa ihmiset eivät päätä vain faktojen perusteella.
+      He rakentavat käsityksiä siitä, mitä markkinoilla tapahtuu, mikä on uhka,
+      mikä mahdollisuus ja mitä pitäisi tehdä seuraavaksi.
+      Organisaatioissa käydään jatkuvaa kamppailua siitä, mikä tulkinta saa eniten kannatusta.
+    </p>
+
+    <div class="pull-quote">
+      <p>
+        Framing eli strateginen kehystäminen on paljon enemmän kuin viestintää.
+        Se on tapa rakentaa yhteistä ymmärrystä, mobilisoida tukea, vaikuttaa päätöksiin
+        ja luoda suuntaa epävarmuuden keskellä.
+      </p>
+    </div>
+
+    <p>
+      Se, joka onnistuu tekemään omasta näkemyksestään uskottavan, ymmärrettävän ja
+      toimintaan kannustavan, vaikuttaa usein myös siihen, mihin suuntaan organisaatio
+      lopulta liikkuu. Parhaimmillaan kehystäminen auttaa ihmisiä näkemään mahdollisuuksia
+      siellä, missä muut näkevät vain riskejä.
+    </p>
+
+    <p>
+      Uudet teknologiat eivät menesty pelkästään teknisen ylivoimansa ansiosta.
+      Ne tarvitsevat uskottavan tarinan, joka herättää odotuksia, sitouttaa sidosryhmiä
+      ja luo uskoa tulevaan. Nämä analyysit tarkastelevat, miten strategiset narratiivit
+      syntyvät, miten ne muokkaavat päätöksentekoa ja miksi niillä on keskeinen rooli
+      innovaatioiden ja markkinoiden kehityksessä.
+    </p>
+
+    <p>
+      Tulevaisuus ei rakennu pelkästään teknologioista, tuotteista tai pääomasta —
+      se rakentuu myös <strong>odotuksista</strong>.
+      Ne, jotka osaavat muotoilla uskottavan näkemyksen, pystyvät vaikuttamaan siihen,
+      miten ihmiset arvioivat mahdollisuuksia, mihin resurssit kohdistuvat ja mitä
+      innovaatioita kehitetään eteenpäin.
+    </p>
+  </section>
+
+  <!-- DIMENSIOT + TAKTIIKAT -->
+  <section class="framework-section">
+    <div class="sec-label">Analyyttinen viitekehys</div>
+
+    <h2>Miten tulevaisuutta kehystetään?</h2>
+    <p>
+      Tutkimus osoittaa, että vaikuttavat strategiset tarinat rakentuvat neljän näkökulman
+      ja kolmen taktiikan yhdistelmästä. Menestyneet toimijat eivät nojaa vain yhteen
+      — he rakentavat vakuuttavan kokonaisuuden.
+    </p>
+
+    <div class="framework-columns">
+
+      <!-- DIMENSIOT -->
+      <div>
+        <div class="fw-group-label" style="color:#92400E;">
+          <span style="background:#D97706;"></span>
+          Neljä näkökulmaa tulevaisuuteen
+        </div>
+        <div class="fw-cards">
+          <div class="fw-card dim-card">
+            <div class="fw-card-icon">🔭</div>
+            <div>
+              <div class="fw-card-title">Potentiaali</div>
+              <div class="fw-card-desc">Mitä voisi olla mahdollista saavuttaa? Hypoteettinen suorituskyky tulevaisuudessa.</div>
+            </div>
+          </div>
+          <div class="fw-card dim-card">
+            <div class="fw-card-icon">🗺️</div>
+            <div>
+              <div class="fw-card-title">Näkymä eteenpäin</div>
+              <div class="fw-card-desc">Miltä tulevaisuus voi näyttää muutaman vuoden päästä? Ennustettu kehitys tietyssä aikaikkunassa.</div>
+            </div>
+          </div>
+          <div class="fw-card dim-card">
+            <div class="fw-card-icon">📊</div>
+            <div>
+              <div class="fw-card-title">Nykyinen suorituskyky</div>
+              <div class="fw-card-desc">Mitä tuloksia nähdään jo nyt? Mitattavissa oleva todellisuus tänään.</div>
+            </div>
+          </div>
+          <div class="fw-card dim-card">
+            <div class="fw-card-icon">📈</div>
+            <div>
+              <div class="fw-card-title">Edistyminen</div>
+              <div class="fw-card-desc">Minkälaista kehitystä on tapahtunut tähän mennessä? Kehityskaari suhteessa lähtötilanteeseen.</div>
+            </div>
+          </div>
+        </div>
+        <a href="https://toivotonai-my.sharepoint.com/personal/joukotoivonen_toivotonai_onmicrosoft_com/Documents/Microsoft%20Copilot%20Chat%20-tiedostot/Why%20matter%20matters%20How%20technology%20characteristics%20shape%20the%20strategic.pdf"
+           target="_blank" rel="noopener" class="ref-link" style="margin-top:14px; display:inline-flex;">
+          📄 Why matter matters — PDF
+        </a>
+      </div>
+
+      <!-- TAKTIIKAT -->
+      <div>
+        <div class="fw-group-label" style="color:#5B21B6;">
+          <span style="background:#7C3AED;"></span>
+          Kolme vaikuttamisen taktiikkaa
+        </div>
+        <div class="fw-cards">
+          <div class="fw-card tac-card">
+            <div class="fw-card-icon">⛓️</div>
+            <div>
+              <div class="fw-card-title">Johtopäätös</div>
+              <div class="fw-card-desc">
+                <em>"Jos kehitys jatkuu näin, tästä seuraa merkittävä mahdollisuus."</em>
+                Kausaalinen päättely dimensiosta toiseen — esim. potentiaalista nykysuorituskykyyn.
+              </div>
+            </div>
+          </div>
+          <div class="fw-card tac-card">
+            <div class="fw-card-icon">🔀</div>
+            <div>
+              <div class="fw-card-title">Ehdollistaminen</div>
+              <div class="fw-card-desc">
+                <em>"Jos tietyt asiat toteutuvat, odotettavissa on merkittävä läpimurto."</em>
+                Epävarmuus tunnistetaan avoimesti, mutta suunnataan kohti positiivista skenaariota.
+              </div>
+            </div>
+          </div>
+          <div class="fw-card tac-card">
+            <div class="fw-card-icon">⚖️</div>
+            <div>
+              <div class="fw-card-title">Myöntäminen</div>
+              <div class="fw-card-desc">
+                <em>"Vaikka ratkaisulla on heikkouksia, sen vahvuudet tekevät siitä houkuttelevan vaihtoehdon."</em>
+                Rehellisyys rajoituksista rakentaa luottamusta ja korostaa vahvuuksia.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px; padding:14px 16px; background:#F5F3FF; border-radius:9px; border:1px solid #DDD6FE;">
+          <div style="font-size:11px; font-weight:700; color:#5B21B6; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;">Miksi näitä kannattaa tunnistaa</div>
+          <p style="font-size:12px; color:#4C1D95; line-height:1.6; margin:0;">
+            Nämä elementit esiintyvät yritysstrategioissa, teknologiakeskusteluissa,
+            investointipäätöksissä ja yhteiskunnallisessa vaikuttamisessa. Tunnistamalla
+            ne voit arvioida, kenen kehys on kulloinkin voitolla — ja miksi.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- UUSIN KATSAUS -->
+  <section id="katsaukset">
+    <div class="sec-label">Uusin julkaisu</div>
+    <div class="latest-card">
+      <div class="latest-top">
+        <div class="latest-tag">Ajankohtaiskatsaus · 11.9.2026</div>
+        <h2>Suomalainen tekoälyjohtaminen 2026: polarisoituminen, kehystäminen ja strategiavaje</h2>
+      </div>
+      <div class="latest-body">
+        <p>Viimeisin tekoäly- ja johtamisanalyysi, joka tarkastelee ajankohtaisia aiheita
+        neljän teorialinssin kautta: organisatorinen oppiminen, keskijohdon rooli,
+        kilpailevat kehykset ja teknologian strateginen kehystäminen.</p>
+        <a href="johtamiskatsaus_2026-09-11_09-50.html" class="btn-read">Lue katsaus →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEORIALINSSIT -->
+  <section>
+    <div class="sec-label">Analyyttinen pohja</div>
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:22px;font-weight:800;letter-spacing:-0.3px;margin-bottom:8px;">Neljä teorialinssiä</h2>
+      <p style="color:var(--muted);font-size:14px;max-width:560px;">
+        Jokainen katsaus tarkastelee ajankohtaista aihetta näiden akateemisten viitekehysten kautta.
+        Yhdessä ne muodostavat kokonaiskuvan siitä, miten tekoälyä johdetaan ja kehystetään.
+      </p>
+    </div>
+    <div class="lenses-grid">
+      <div class="lens-card lens-1">
+        <div class="lens-icon">🧠</div>
+        <div class="lens-name">Organisatorinen oppiminen</div>
+        <div class="lens-desc">Miten AI-kyvykkyydet kehittyvät organisaatioissa ja mitkä käytännöt edistävät tai estävät oppimista. <span class="lens-ref-inline">(esim. Ritala ym. 2024)</span></div>
+      </div>
+      <div class="lens-card lens-2">
+        <div class="lens-icon">🏢</div>
+        <div class="lens-name">Keskijohdon rooli</div>
+        <div class="lens-desc">Miten keskijohto toimii strategisena välittäjänä — puolestapuhujana, synteesin kokoajana ja toimeenpanijana. <span class="lens-ref-inline">(esim. Floyd &amp; Lane 2000)</span></div>
+      </div>
+      <div class="lens-card lens-3">
+        <div class="lens-icon">⚖️</div>
+        <div class="lens-name">Kilpailevat kehykset</div>
+        <div class="lens-desc">Miten eri tulkinnat kilpailevat vallasta — kenen kehys voittaa ja millä legitimiteettiperusteilla. <span class="lens-ref-inline">(esim. Kaplan 2008)</span></div>
+      </div>
+      <div class="lens-card lens-4">
+        <div class="lens-icon">⚙️</div>
+        <div class="lens-name">Teknologian kehystäminen</div>
+        <div class="lens-desc">Miten teknologiaa asemoidaan strategisesti — mitä dimensioita ja taktiikoita käytetään. <span class="lens-ref-inline">(esim. Hoppmann ym. 2020)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARKISTO -->
+  <section>
+    <div class="sec-label">Kaikki julkaisut</div>
+    <div class="archive-wrap">
+      <div class="archive-header">
+        <span>Viimeisimmät katsaukset</span>
+        <a href="arkisto.html" class="archive-link">Koko arkisto →</a>
+      </div>
+      <table class="archive">
+        <tr>
+          <td class="td-num">6</td>
+          <td class="td-link">
+            <a href="johtamiskatsaus_2026-09-11_09-50.html">Suomalainen tekoälyjohtaminen 2026: polarisoituminen, kehystäminen ja strategiavaje</a>
+            <div class="td-date">11.9.2026</div>
+          </td>
+          <td class="td-action"><a href="johtamiskatsaus_2026-09-11_09-50.html">Avaa →</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">5</td>
+          <td class="td-link">
+            <a href="johtamiskatsaus_2026-09-10_08-36.html">Tekoälyn kahtiajako syvenee: edelläkävijät karkaavat, huolet kasvavat</a>
+            <div class="td-date">10.9.2026</div>
+          </td>
+          <td class="td-action"><a href="johtamiskatsaus_2026-09-10_08-36.html">Avaa →</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">4</td>
+          <td class="td-link">
+            <a href="johtamiskatsaus_2026-09-09_13-09.html">Suomen tekoälykentän polarisaatio ja kilpailevat kehykset 2026</a>
+            <div class="td-date">9.9.2026</div>
+          </td>
+          <td class="td-action"><a href="johtamiskatsaus_2026-09-09_13-09.html">Avaa →</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">3</td>
+          <td class="td-link">
+            <a href="johtamiskatsaus_2026-09-07_11-04.html">Suomen tekoälykehitys syksyllä 2026: Pilotoinnista teollistamiseen</a>
+            <div class="td-date">7.9.2026</div>
+          </td>
+          <td class="td-action"><a href="johtamiskatsaus_2026-09-07_11-04.html">Avaa →</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">2</td>
+          <td class="td-link">
+            <a href="johtamiskatsaus_2026-09-06_16-18.html">Tekoäly johtamisessa: kehystämiskilpailu ja strategiavaje Suomessa 2026</a>
+            <div class="td-date">6.9.2026</div>
+          </td>
+          <td class="td-action"><a href="johtamiskatsaus_2026-09-06_16-18.html">Avaa →</a></td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Tekoäly &amp; Johtaminen — Jouko Toivonen, Turku ·
+  Päivitetty 9.9.2026 · AI-katsausagentti
+</footer>
+
+</body>
+</html>
