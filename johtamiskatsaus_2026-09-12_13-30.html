@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälyn kehystämiskilpailu suomalaisessa johtamiskeskustelussa – syyskuu 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="top-nav-brand">🔬 Tekoäly &amp; Johtaminen</span>
+  <div class="top-nav-links">
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Tekoälyn kehystämiskilpailu suomalaisessa johtamiskeskustelussa – syyskuu 2026</h1>
+  <div class="cover-date">12.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Suomalaisessa tekoälyjohtamisen keskustelussa on syys-elokuussa 2026 käynnissä neljän kilpailevan kehyksen välinen kamppailu. Tilastokeskuksen 2026 data paljastaa rakenteellisen jännitteen: 38 prosenttia suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 prosentilla on dokumentoidut ohjeet käytännön hyödyntämiselle. Sitra on sitoutunut 50 miljoonan euron erityispanostukseen vuosille 2026–2028 tekoälymurroksen johtamisen edistämiseksi julkisella sektorilla. EU AI Actin Digital Omnibus -lykkäys kesäkuussa 2026 siirsi korkean riskin järjestelmien velvoitteet joulukuuhun 2027, mikä on avannut strategista tilaa tulkintakilpailulle siitä, kuinka kiireellisesti organisaatioiden tulee toimia. Läpinäkyvyysvelvoitteet tulivat kuitenkin voimaan jo 2.8.2026.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Keskijohto on asemoitunut ristiriitaiseen välittäjärooliin: ylhäältä tulevat AI-strategiaodotukset törmäävät operatiiviseen todellisuuteen, jossa 'pilottikyllästyminen' ja hajanainen toimeenpano ovat arkipäivää. Kokoomusraportti 'Tekoälyn aika' (kesäkuu 2026) nimeää kolme keskeistä skaalaamisestettä: investointien puute, johdon osaaminen ja muutosjohtaminen sekä epäselvä strategia. Sitra pyrkii 'Tuottava johtajuus 2030' -käsikirjallaan toimimaan merkityksen välittämisen areenana julkisen sektorin johdolle. Suomen korkea tekoälyn käyttöaste eurooppalaisessa vertailussa – 66 prosenttia vastaan EU:n 37 prosenttia – antaa tehokkuusloikka-kehykselle legitimiteettiä, mutta käyttöasteen ja hyödynnetyn potentiaalin välinen kuilu on silti merkittävä.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Neljä kehystä kamppailevat tulkintavallasta eri areenoilla ja eri omistajien ajamana. Tehokkuusloikka-kehys (hallitukset, EK, Deloitte, Kokoomusraportti) korostaa tekoälyä tuottavuuden välineenä ja nojaa johtopäätöstaktiikkaan: '2/3 vastaajista on saavuttanut merkittäviä tehokkuushyötyjä.' Johtamismurros-kehys (Sitra, TTL TEIJO-hanke, HENRY ry, Lifted) myöntää teknologian arvon mutta ehdollistaa sen organisaatiomuutokseen: 'Tuottavuuden parantaminen ei ole vain teknologinen kysymys – siinä on ennen kaikkea kysymys johtamisesta' (Hanhisalo/Sitra). Sääntely-compliance-kehys (lakitoimistot, Traficom, Tietosuojavaltuutettu) rakentaa kiireellisyyttä EU AI Actin vastuuvelvoitteilla: 'Vastuu ei siirry tekoälylle, vaan säilyy aina yrityksellä, viime kädessä sen johdolla ja hallituksella' (Lecklé). Työelämän huolikehys (SAK, ammattijärjestöt, nuoret tietotyöntekijät) tuo esiin oppimismahdollisuuksien kaventumisen, työn merkityksellisyyden ja yhdenvertaisuuden kysymykset – ja haastaa teknologiaoptimismin legitimiteetin arjen kokemusten valossa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>SD Worxin tutkimus osoittaa rakenteellisen epäsymmetrian: organisaatiot suhtautuvat tekoälyyn optimistisemmin kuin niiden työntekijät. Solitan pohjoismaisessa tutkimuksessa 80 prosenttia tietotyöntekijöistä odottaa tekoälyn muuttavan työtään merkittävästi, mutta vain 10 prosenttia pitää tekoälytaitoja uralleen ratkaisevan tärkeinä – 70 prosenttiyksikön kuilu havaittavan muutoksen ja oman toimijuuden välillä. Nuorten työntekijöiden huolet (Veritas 2026) ovat erityisen artikuloidut: pelko oppimismahdollisuuksien kaventumisesta, mentorisuhteiden ohenemisesta ja työn merkityksellisyyden katoamisesta. SAK vaatii valtakunnallista digi- ja tekoälystrategiaa demokraattisen ohjauksen varmistamiseksi. Nämä huolet jäävät helposti tehokkuusloikka- ja johtamismurros-kehysten katveeseen.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsevat erityishuomion. Ensinnäkin EU AI Actin Digital Omnibus -lykkäys voi antaa organisaatioille harhaanjohtavan viestin lisäajasta – vaikka läpinäkyvyysvelvoitteet ovat jo voimassa ja AI-inventaario sekä vastuunjako tulisi rakentaa nyt. Toiseksi Suomen kansallinen AI-sandbox (avattu 2.8.2026) ja Finnish AI Region (FAIR) luovat institutionaalisen kokeilutilan, joka ei automaattisesti kytkeydy keskijohdon käytännön toimeenpanoon – jos kytkös puuttuu, tutkimuksen ja yrityskäytön välinen rakenteellinen kuilu syvenee. Kolmanneksi Sam Altman ja Dario Amodei perääntyivät keväällä 2026 dramaattisimmista työpaikkaennusteistaan – tämä on merkittävä teknologiatoimittajien oman prognostisen kehyksen maltillistuminen, joka antaa suomalaisille johtajille strategisen mahdollisuuden siirtyä 'pöhinäkehyksestä' realistiseen nykysuorituskyky-kehykseen.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">synteesin kokoaminen</span><span class="concept-chip">merkityksen välittäminen</span><span class="concept-chip">diagnostinen kehys</span><span class="concept-chip">prognostinen kehys</span><span class="concept-chip">merkityksellistäminen</span><span class="concept-chip">kehystäminen</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">ehdollistamistaktiikka</span><span class="concept-chip">johtopäätöstaktiikka</span><span class="concept-chip">AI-inventaario</span><span class="concept-chip">pilottikyllästyminen</span><span class="concept-chip">compliance</span><span class="concept-chip">diskursiivinen kompetenssi</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Rakenna organisaatiolle AI-inventaario ja vastuunjako nyt – EU AI Actin läpinäkyvyysvelvoitteet ovat voimassa 2.8.2026 alkaen, vaikka korkean riskin järjestelmien muut velvoitteet siirtyvät joulukuuhun 2027.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Tunnista, mikä neljästä kilpailevasta kehyksestä hallitsee oman organisaatiosi sisäistä AI-puhetta, ja arvioi tietoisesti, palveleeko se sekä strategisia tavoitteita että henkilöstön koettuja huolia – erityisesti nuorten tietotyöntekijöiden oppimismahdollisuuksien näkökulmasta.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Hyödynnä teknologiatoimittajien ennusteiden maltillistuminen (Altman, Amodei, kevät 2026) strategisena hetkenä viestiä johdettaville realistinen nykysuorituskyky-kehys – tämä edellyttää johdolta diskursiivista kompetenssia, jotta viesti ei tulkita epäluottamuksena tekoälyä kohtaan.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">38 prosenttia suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 prosentilla on dokumentoidut ohjeet</div>
+      <div class="source-ref">📌 Tilastokeskus 2026</div>
+      <div class="source-quote">Tilastokeskuksen 2026 data paljastaa keskijohdon kannalta kriittisen synteesin kokoamisen haasteen: 38 prosenttia suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 prosentilla on dokumentoidut ohjeet ja käytännöt hyödyntämiselle.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Sitra on sitoutunut 50 miljoonan euron erityispanostukseen vuosille 2026–2028</div>
+      <div class="source-ref">📌 Sitra, 'Tuottava johtajuus 2030' -käsikirja ja webinaari 14.4.2026</div>
+      <div class="source-quote">Sitra on suunnannut tähän kokonaisuuteen 50 miljoonan euron erityispanostuksen vuosille 2026–2028.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">EU AI Actin Digital Omnibus -lykkäys siirsi korkean riskin järjestelmien velvoitteet joulukuuhun 2027</div>
+      <div class="source-ref">📌 EU AI Act, Digital Omnibus -paketti, kesäkuu 2026</div>
+      <div class="source-quote">EU AI Actin Digital Omnibus -lykkäys kesäkuussa 2026 tuotti uutta epävarmuutta: korkean riskin järjestelmien (rekrytointi, luottopisteytys) velvoitteet siirtyivät joulukuuhun 2027.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Kolme keskeistä tekoälyn skaalaamisestettä: investointien puute, johdon osaaminen ja epäselvä strategia</div>
+      <div class="source-ref">📌 Kokoomusraportti 'Tekoälyn aika', kesäkuu 2026</div>
+      <div class="source-quote">Kokoomusraportti 'Tekoälyn aika' (kesäkuu 2026) nimeää tekoälyn skaalaamisen kolme keskeistä estettä: investointien puute, johdon osaaminen ja muutosjohtaminen sekä epäselvä strategia.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Suomen tekoälyn käyttöaste 66 prosenttia vastaan EU:n 37 prosenttia</div>
+      <div class="source-ref">📌 Deloitte/DIF-tutkimus, viitattu Kokoomusraportissa 2026</div>
+      <div class="source-quote">Legitimiteettiä rakentaa Suomen korkea käyttöaste eurooppalaisessa vertailussa (66% vs. EU 37%).</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Tehokkuusloikka-kehys: 2/3 vastaajista on saavuttanut merkittäviä tehokkuushyötyjä</div>
+      <div class="source-ref">📌 Deloitte/DIF-tutkimus, viitattu Kokoomusraportissa 2026</div>
+      <div class="source-quote">'2/3 vastaajista on saavuttanut merkittäviä tehokkuushyötyjä' (Deloitte/DIF-tutkimus).</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Johtamismurros-kehys: tuottavuus on ennen kaikkea johtamiskysymys</div>
+      <div class="source-ref">📌 Kirsi Hanhisalo, Sitra, webinaari 14.4.2026</div>
+      <div class="source-quote">'Tuottavuuden parantaminen ei ole vain teknologinen kysymys. Siinä on ennen kaikkea kysymys johtamisesta, osaamisen kehittämisestä ja rohkeasta uudistamisesta.'</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Sääntely-compliance-kehys: vastuu säilyy aina yrityksellä ja sen johdolla</div>
+      <div class="source-ref">📌 Lecklé, juridiset oppaat 2026</div>
+      <div class="source-quote">'Vastuu ei siirry tekoälylle, vaan säilyy aina yrityksellä, viime kädessä sen johdolla ja hallituksella.'</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Organisaatiot suhtautuvat tekoälyyn optimistisemmin kuin työntekijät</div>
+      <div class="source-ref">📌 SD Worx -tutkimus 2026</div>
+      <div class="source-quote">'Organisaatiot suhtautuvat tekoälyyn yleensä optimistisemmin, kun taas työntekijät ovat monin paikoin varautuneempia tai skeptisempiä.'</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">80 prosenttia pohjoismaisista tietotyöntekijöistä odottaa merkittävää muutosta, mutta vain 10 prosenttia pitää tekoälytaitoja uralleen ratkaisevan tärkeinä</div>
+      <div class="source-ref">📌 Solita, pohjoismainen tietotyöntekijätutkimus 2026</div>
+      <div class="source-quote">Pohjoismaisessa Solitan tutkimuksessa 80 prosenttia pohjoismaisista tietotyöntekijöistä odottaa tekoälyn muuttavan työtään merkittävästi, mutta vain 10 prosenttia näkee tekoälytaidot uralleen ratkaisevan tärkeinä — 70 prosenttiyksikön kuilu.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Nuoret kokevat tekoälyn heikentävän ajattelukykyä ja oppimismahdollisuuksia</div>
+      <div class="source-ref">📌 Veritas 2026</div>
+      <div class="source-quote">'Moni nuori kokee, että tekoäly tekee ihmisistä laiskempia ja heikentää ajattelukykyä.'</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Suomen kansallinen AI-sandbox avattiin 2.8.2026 ja Finnish AI Region jatkaa toiselle kaudelle</div>
+      <div class="source-ref">📌 Suomen kansallinen AI-sandbox, avattu 2.8.2026; Finnish AI Region (FAIR)</div>
+      <div class="source-quote">Suomen kansallinen AI-sandbox avattiin 2.8.2026, ja Finnish AI Region (FAIR) jatkaa toiselle kaudelle.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Sam Altman ja Dario Amodei perääntyivät dramaattisimmista työpaikkaennusteistaan keväällä 2026</div>
+      <div class="source-ref">📌 Kokoomusraportti 'Tekoälyn aika', kesäkuu 2026</div>
+      <div class="source-quote">Kokoomusraportti (kesäkuu 2026) mainitsee, että Sam Altman ja Dario Amodei perääntyivät keväällä 2026 'dramaattisimmista työpaikkaennusteistaan'.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 37/2026 — Kehystämisanalyysi: Piloteista tuotantoon vai strategiseen umpikujaan?</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">synteesin kokoaminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksen välittäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diagnostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">prognostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksellistäminen</span></div>
+        
+        <p>Sitran 'Tuottava johtajuus 2030' -käsikirja ja siihen liittyvä webinaari (14.4.2026) nostavat tekoälymurroksen johtamisen julkisen sektorin johtajien ydintehtäväksi. Sitran johtava asiantuntija Kirsi Hanhisalo tiivistää: 'Tuottavuuden parantaminen ei ole vain teknologinen kysymys. Siinä on ennen kaikkea kysymys johtamisesta, osaamisen kehittämisestä ja rohkeasta uudistamisesta.' Sitra on suunnannut tähän kokonaisuuteen 50 miljoonan euron erityispanostuksen vuosille 2026–2028. Floyd & Lanen (2000) viitekehyksessä Sitran käsikirja toimii konkreettisena merkityksen välittämisen areenana: se kokoaa hajanaista AI-tietoa yhteen (synteesin kokoaminen) ja tarjoaa julkisen sektorin johdolle kehyksen, jolla tekoälyinvestointien lupaukset voidaan lunastaa operatiivisena toimeenpanona. Kaplanin (2008) kehystämiskilpailujen näkökulmasta Sitra rakentaa voimakkaasti 'johtamismurros ennen teknologiamurrosta' -kehystä. Tämä diagnostinen kehys haastaa teknologiatoimittajien hallitsevan 'ota käyttöön ja hyödyt syntyvät' -prognostisen kehyksen. Viestintäkäytäntöjen tasolla (Ritala) kehykset kilpailevat webinaarien, julkaisujen ja Tamminiemen johtajakeskustelujen kaltaisissa formaaleissa viestintätilanteissa, joissa julkisen sektorin ylimmälle johdolle tarjotaan merkityksellistämisen välineitä.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Keskijohdon kehystämistoimet</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"><span class="a-meta-badge" style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;">Rooli: synteesin kokoaminen|toimeenpano</span><span class="a-meta-badge" style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;">Taktiikka: myönnytys</span><span class="a-meta-badge" style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;">Dimensiot: potentiaali, nykysuorituskyky, kehityskaari</span><span class="a-meta-badge" style="background:#DC262622;color:#DC2626;border:1px solid #DC262644;">✗ Epäonnistui</span></div>
+        
+        
+        <p>Tilastokeskuksen 2026 data paljastaa keskijohdon kannalta kriittisen synteesin kokoamisen haasteen: 38 prosenttia suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 prosentilla on dokumentoidut ohjeet ja käytännöt hyödyntämiselle. Kokoomusraportti 'Tekoälyn aika' (kesäkuu 2026) nimeää tekoälyn skaalaamisen kolme keskeistä estettä: investointien puute, johdon osaaminen ja muutosjohtaminen sekä epäselvä strategia. Tässä asetelmassa keskijohdon rooli on jännitteinen: heidän täytyy toteuttaa ylhäältä annettuja AI-strategia-odotuksia samalla, kun operatiivinen todellisuus — 'pilot fatigue', hajanainen käyttöönotto ilman koherenttia tiekarttaa — on hyvin erilainen. Hoppmannin (2020) kehystämisdimensioiden kautta tarkasteltuna suomalainen yritysjohto käyttää pääosin myönnytystaktiikkaa: potentiaali myönnetään suureksi (Kokoomusraportti: suomalaisyritysten käyttöaste 66% vs. EU:n 37%), mutta nykysuorituskyky tunnustetaan vaatimattomaksi ('liiketoimintahyötyjen skaalaaminen on hidasta'). Kehityskaari-dimensiota kehystetään puolestaan ehdollistaen: skaalaus onnistuu, jos strategia, osaaminen ja muutosjohtaminen ovat kunnossa. Floyd & Lanen toimeenpanorooli konkretisoituu CGI:n asiantuntijan viestintäkäytäntönä: blogikirjoituksessa rakennetaan 'kurinalaisesta etenemisestä' normia — 'pöhinä ei ole strategia' — ja tämä kehys leviää julkisen hallinnon asiantuntijoiden viestintäareenoilla. Keskijohdon viestintätilanteet (sisäiset koulutukset, tiedotteet, epäformaalit tiimikeskustelut) ovat ne arjen areenat, joissa 'pilot fatigue' joko tunnustetaan ja käsitellään tai peitetään optimistisella kehystämisellä.</p>
+        
+        
+        
+        <div class="a-success-reason">Keskijohdon synteesin kokoaminen epäonnistuu rakenteellisesti: 85% tekoälyä käyttävistä yrityksistä puuttuvat dokumentoidut käytännöt tarkoittavat, että merkityksen välittämistä ei tapahdu systemaattisesti. Toimeenpanon puutteet johtavat 'pilot fatigue' -ilmiöön, jossa kokeilut jäävät tuotannon kynnyksen alapuolelle. Kehystämistaktiikaksi jää reaktiivinen myönnytys eikä proaktiivinen johtopäätös.</div>
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Tehokkuusloikka-kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Hallitukset, Deloitte, EK, Kokoomusraportti</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on ensisijaisesti tuottavuuden ja tehokkuuden väline. Kehyksessä käytetään johtopäätöstaktiikkaa: '2/3 vastaajista on saavuttanut merkittäviä tehokkuushyötyjä' (Deloitte/DIF-tutkimus). Potentiaali- ja kehityskaari-dimensiot hallitsevat. Resonoi erityisesti hallitusjäsenten ja johdon viestintätilanteissa (hallituskokoukset, julkiset lausunnot). Legitimiteettiä rakentaa Suomen korkea käyttöaste eurooppalaisessa vertailussa (66% vs. EU 37%).</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Johtamismurros-kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Sitra, TTL TEIJO-hanke, HENRY ry, Lifted</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on ennen kaikkea johtamis- ja kulttuurimuutos, ei teknologinen kysymys. Kehys rakentuu myönnytystaktiikalle: teknologian arvo myönnetään, mutta ehdollistetaan organisaatiomuutokseen. 'Tuottavuuden parantaminen ei ole vain teknologinen kysymys — siinä on ennen kaikkea kysymys johtamisesta' (Sitra/Hanhisalo). Resonoi HR-ammattilaisille ja julkisen sektorin johdolle. Viestintäareenoina webinaarit, käsikirjat, HENRY-koulutukset.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Sääntely-compliance-kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Lakitoimistot, Traficom, Tietosuojavaltuutettu, tietoturvatoimijat</div>
+          <div style="font-size:13px;color:#374151;">EU AI Actin täysimääräinen soveltaminen (2.8.2026, osittain Digital Omnibus -paketilla lykättynä 2027-2028) tekee tekoälystä compliance-kysymyksen. Kehys käyttää ehdollistamistaktiikkaa: mahdollisuudet ovat reaalisia, jos vastuut ja dokumentaatio ovat kunnossa. 'Vastuu ei siirry tekoälylle, vaan säilyy aina yrityksellä, viime kädessä sen johdolla ja hallituksella' (Lecklé). Suomen kansallinen AI-sandbox (avattu 2.8.2026) on konkreettinen kokeilutilan fasilitointiväline. Viestintäareena: juridiset oppaat, tarkistuslistat, compliance-koulutukset.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Työelämän huolikehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: SAK, nuoret tietotyöntekijät, Veritas, ammattijärjestöt</div>
+          <div style="font-size:13px;color:#374151;">Tekoälymuutokseen liittyy todellisia epävarmuuksia: oppimismahdollisuuksien kaventuminen, työn merkityksellisyys, yhdenvertaisuus. 'Moni nuori kokee, että tekoäly tekee ihmisistä laiskempia ja heikentää ajattelukykyä.' SAK vaatii valtakunnallista digi- ja tekoälystrategiaa demokraattisen ohjauksen varmistamiseksi. Kehys tunnistaa teknologiaoptimismin ja arjen kokemusten välisen legitimiteettiristiriidan. Resonoi ammattiliittojen viestinnässä ja henkilöstökokouksissa.</div>
+        </div>
+      </div>
+        <p>Syys-elokuun 2026 suomalaisessa AI-johtamiskeskustelussa kilpailevat neljä kehystä, joilla on eri omistajat ja eri viestintäareenat. Kaplanin (2008) ydinlöydös — epävarmuus on kehystämiskilpailujen raaka-aine — toteutuu erityisesti siinä, että EU AI Actin Digital Omnibus -lykkäys kesäkuussa 2026 tuotti uutta epävarmuutta: korkean riskin järjestelmien (rekrytointi, luottopisteytys) velvoitteet siirtyivät joulukuuhun 2027. Tämä on avannut strategista tilaa kehystämiskilpailulle siitä, kuinka kiireellisesti yritysten tulee toimia. Hoppmannin (2020) näkökulmasta hallitseva tehokkuusloikka-kehys käyttää johtopäätöstaktiikkaa kehityskaari-dimensiossa ('skaalausvaihe on nyt'), mutta sen legitimiteettiä heikentää pilot fatigue -ilmiö: käytännön nykysuorituskyky ei vastaa potentiaalin kehystystä. Siten kehyksen resonanssi on heikkenemässä niissä viestintätilanteissa (johtoryhmät, tiimikokoontumiset), joissa arjen realiteetit ovat läsnä. Merkittävä kehyksen uudelleenasemointi on Sitran ja TTL:n johtamismurros-kehyksen vahvistuminen: se tarjoaa diagnostisen kehyksen, joka selittää miksi tehokkuusloikka-kehys ei ole realisoitunut — johtaminen ja kulttuuri puuttuvat. Teknologian kypsyyttä (Hoppmann) tarkastellen suomalainen AI-maturiteetti on nyt skaalausvaiheen kynnyksellä (AI Finland 2026), mutta kehykset eivät ole synkronissa kypsyyden kanssa: potentiaali- ja kehityskaari-retoriikka on edellä nykysuorituskykyä.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>SD Worxin tutkimus osoittaa rakenteellisen epäsymmetrian: 'organisaatiot suhtautuvat tekoälyyn yleensä optimistisemmin, kun taas työntekijät ovat monin paikoin varautuneempia tai skeptisempiä.' Pohjoismaisessa Solitan tutkimuksessa 80 prosenttia pohjoismaisista tietotyöntekijöistä odottaa tekoälyn muuttavan työtään merkittävästi, mutta vain 10 prosenttia näkee tekoälytaidot uralleen ratkaisevan tärkeinä — 70 prosenttiyksikön kuilu. Nuorten työntekijöiden huolet (Veritas 2026) ovat erityisen artikuloidut: pelko oppimismahdollisuuksien kaventumisesta, mentorisuhteiden ohenemisesta ja merkityksellisen vuorovaikutuksen katoamisesta. SAK:n vaatimus demokraattisesta tekoälystrategiasta nimeää epävarmuuden taustalla olevat rakenteelliset tekijät: 'yhteiskunnassa vallitseva epävarmuus, huoli ja jopa pelko työttömyydestä estävät uuden teknologian potentiaalin hyödyntämistä.' Monet organisaatiot — ja osa johtamislitteraturasta — tulkitsevat tämän epävarmuuden muutosvastarinnaksi, joka tulee 'viestinnällä voittaa'. Tämä on virheellinen tulkinta.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Kriittisen tulkintaperiaatteen mukaan nämä huolet eivät ole muutosvastarintaa vaan vastuullista huolenpitoa: ne nimeävät reaalisia riskejä (osaamiskuilu, oppimismahdollisuuksien kaventuminen, yhdenvertaisuus), jotka edellyttävät johdolta vastauksia, eivät viestinnällistä vakuuttamista. Floyd & Lanen (2000) merkityksellistämisen käsitteen kautta: johtajan tehtävä ei ole eliminoida epävarmuutta vaan auttaa ihmisiä rakentamaan jaettu ymmärrys myös muutoksen kustannuksista. HENRY ry:n 'Tekoäly asiantuntijatyöpaikoilla' -tutkimus ja TTL:n AI-askelia-hanke (toinen kehittämisvaihe syksyllä 2026) tarjoavat metodologisesti kunnollisen viitekehyksen: ne keräävät systemaattista aineistoa siitä, miten tekoäly muuttaa asiantuntijatyötä — sen sijaan että alkuoletuksena olisi muutoksen positiivisuus.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• EU AI Actin Digital Omnibus -lykkäys (kesäkuu 2026) siirsi korkean riskin järjestelmien velvoitteita joulukuuhun 2027. Tämä saattaa heikentää compliance-kehyksen kiireellisyyttä ja antaa organisaatioille harhaanjohtavan signaalin, että aikaa on enemmän — vaikka läpinäkyvyysvelvoitteet tulivat voimaan jo 2.8.2026. Keskijohdolle tämä luo sopeutumiskyvyn fasilitoinnin mahdollisuuden: kokeilutilaa on, mutta sen hyödyntäminen vaatii aktiivista AI-inventaarion ja vastuunjaon rakentamista nyt.</div><div class="signal-item">• Suomen kansallinen AI-sandbox avattiin 2.8.2026, ja Finnish AI Region (FAIR) jatkaa toiselle kaudelle. Nämä luovat institutionaalisen kokeilutilan, joka ei kuitenkaan automaattisesti muutu organisatoriseksi oppimiseksi. Heikko signaali: jos sandbox jää vain teknologiatoimijoiden välineeksi eikä kytkeydy keskijohdon synteesin kokoamiseen ja toimeenpanoon, rakenteellinen kuilu tutkimuksen ja yrityskäytön välillä (Tilastokeskus 2026) syvenee edelleen.</div><div class="signal-item">• Kokoomusraportti (kesäkuu 2026) mainitsee, että Sam Altman ja Dario Amodei perääntyivät keväällä 2026 'dramaattisimmista työpaikkaennusteistaan'. Tämä on merkittävä kehyksen uudelleenasemointi teknologiatoimittajien omasta prognostisesta kehyksestä (Hoppmann 2020): potentiaali- ja kehityskaari-kehystys on maltillistumassa jopa alan johtajien viestinnässä. Suomalaisille yrityksille tämä antaa strategisen hetken siirtyä 'pöhinäkehyksestä' realistiseen nykysuorituskyky-kehykseen — mutta tämä vaatii johdolta diskursiivista kompetenssia tunnistaa muutos ja viestiä siitä organisaatiolle ilman, että se tulkitaan epäluottamuksena teknologiaa kohtaan.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">06</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://www.sitra.fi/uutiset/miten-tekoalymurrosta-johdetaan-uusi-kasikirja-tukee-julkisen-sektorin-johdon-tyota/" target="_blank" rel="noopener" class="a-source-link">Sitra: Tuottava johtajuus 2030 — Miten tekoälymurrosta johdetaan</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/fi/fi/issues/ai-and-tech/tekoaly-hallitustyossa-2026.html" target="_blank" rel="noopener" class="a-source-link">Deloitte & DIF: Tekoäly hallitustyössä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.aisanomat.fi/p/deloitte-state-of-ai-2026-suomalaisyritysten-peilikuva-globaaliin-teko-lymurrokseen" target="_blank" rel="noopener" class="a-source-link">AI Sanomat: Deloitte State of AI 2026 — suomalaisyritysten peilikuva</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2026/04/Nain-Suomi-hyodyntaa-tekoalya-2026.pdf" target="_blank" rel="noopener" class="a-source-link">AI Finland: Näin Suomi hyödyntää tekoälyä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://leckle.fi/leckle-media/artikkelit/ai-act-yrityksille/" target="_blank" rel="noopener" class="a-source-link">Lecklé: AI Act uuteen vaiheeseen — mitä EU:n tekoälyasetus tarkoittaa suomalaisille yrityksille</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aimiten.fi/oppaat/eu-ai-act" target="_blank" rel="noopener" class="a-source-link">AImiten: EU AI Act -opas 2026 (päivitetty 3.8.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://tech-insider.org/fi/generatiivinen-tekoaly-pohjoismaat-2026/" target="_blank" rel="noopener" class="a-source-link">Tech-insider: Generatiivinen tekoäly Pohjoismaissa 2026 — Solitan tutkimus</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://www.ttl.fi/ajankohtaista/uutinen/tekoaly-herattaa-tyopaikoilla-odotuksia-ja-epavarmuutta-uusi-hanke-tarjoaa-tukea-kayttoonottoon" target="_blank" rel="noopener" class="a-source-link">TTL: Tekoäly herättää työpaikoilla odotuksia ja epävarmuutta — AI-askelia-hanke</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://www.ttl.fi/ajankohtaista/blogi/inspiroidu-tekoalyn-ja-johtamisen-yhdistamisesta" target="_blank" rel="noopener" class="a-source-link">TTL: TEIJO — Tekoäly ja algoritmit johtajuuden tukena</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.henry.fi/ajankohtaista/blogit/2025/10/hr-avainasemassa-tekoalyn-reilussa-ja-yhdenvertaisessa-kaytossa-tyopaikalla.html" target="_blank" rel="noopener" class="a-source-link">HENRY ry: HR avainasemassa tekoälyn reilussa ja yhdenvertaisessa käytössä</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.henry.fi/ajankohtaista/blogit/2026/03/osaamisen-johtaminen-ei-enaa-riita-yritysjohdon-seuraava-haaste-on-oppimisen-johtaminen.html" target="_blank" rel="noopener" class="a-source-link">HENRY ry: Osaamisen johtaminen ei enää riitä — oppimisen johtaminen</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.sdworx.fi/fi-fi/inspiroidu/hr-teknologia-tekoaly/tekoaly-tyoelamassa-vuonna-2026" target="_blank" rel="noopener" class="a-source-link">SD Worx: Tekoäly työelämässä vuonna 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://veritas.fi/uutiishuone/blogi/epavarmuus-varjostaa-tyoelaman-tulevaisuutta-miten-tyopaikoilla-voidaan-tukea-nuoria-osaajia/" target="_blank" rel="noopener" class="a-source-link">Veritas: Epävarmuus varjostaa työelämän tulevaisuutta — nuoret osaajat</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Poliittinen</span>
+            <a href="https://www.kokoomus.fi/wp-content/uploads/2026/06/Tekoalyraportti-2026.pdf" target="_blank" rel="noopener" class="a-source-link">Kokoomus: Tekoälyn aika — kymmenen päätöstä, sadan päivän ohjelma</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://yle.fi/a/74-20202205" target="_blank" rel="noopener" class="a-source-link">Sitra: Megatrendit 2026 — tekoälyn kehitys mullistaa yhteiskunnan perustaa</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.cgi.com/fi/fi/blogi/tekoaly/pohinasta-tuotantoon-tekoaly-julkishallinnossa-vuonna-2026" target="_blank" rel="noopener" class="a-source-link">CGI: Pöhinästä tuotantoon — tekoäly julkishallinnossa vuonna 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://lmsomeco.fi/blogi/tekoalyn-kaytto-suomessa-2026/" target="_blank" rel="noopener" class="a-source-link">lmsomeco.fi: Tekoälyn käyttö Suomessa 2026 (Tilastokeskus-data)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Institutionaalinen</span>
+            <a href="https://yrittaja.io/blogi/2026/3/25/eun-ai-asetus-astuu-voimaan-suomi-avaa-testiympristn-yrityksille-elokuussa" target="_blank" rel="noopener" class="a-source-link">Yrittäjä.io: EU:n AI-asetus astuu voimaan — Suomi avaa testiympäristön yrityksille</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 12.9.2026 klo 16.30.26</span>
+</div>
+
+</body>
+</html>
