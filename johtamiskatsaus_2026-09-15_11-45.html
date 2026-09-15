@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenttinen tekoäly ja integraatiokehystäminen: Solitan asemoituminen Pohjois-Euroopassa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Agenttinen tekoäly ja integraatiokehystäminen: Solitan asemoituminen Pohjois-Euroopassa</h1>
+  <div class="cover-date">15.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Solita on noussut syksyllä 2026 Pohjois-Euroopan näkyvimmäksi agenttisen tekoälyn kehystäjäksi kahdella toisiaan tukevalla tapahtumalla: 'Integration: The Missing Link in Your Agentic AI Strategy' (kevät 2026) sekä 'Crash Course on Agentic Enterprise and Structural AI' (10.6.2026). Tapahtumat muodostavat yhtenäisen kampanjan, jossa Solita asemoi integraation agenttisen tekoälyn strategiseksi edellytykseksi. Taustalla vaikuttaa laajempi toimialan haaste: 79 % yrityksistä on ottanut AI-agentit käyttöön jossakin muodossa, mutta vain 11 % ajaa niitä tuotannossa. Pohjoismaisessa kontekstissa tilanne on erityisen haastava: strateginen valmius on laskenut 61 %:sta 43 %:iin ja talenttikypsyys 33 %:sta 14 %:iin vuodessa, samalla kun investointiaikomukset ovat korkeimmillaan.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Solitan tapahtumakokonaisuus rakentuu kolmen johtamisroolin varaan: puolestapuhuminen, synteesin kokoaminen ja merkityksen välittäminen. Mattias Wuori ja Joel Vanhalakka toimivat puolestapuhujina, jotka vievät integraatioajattelua ylöspäin asiakasorganisaatioissaan kehystäen integraation liiketoiminnan arvon edellytykseksi eikä IT-projektiksi. Marika Piispanen täydentää tätä rakenteellisen AI:n kehyksellä, jossa tekoäly esitetään organisaation pysyvänä rakenteena eikä yksittäisenä hankkeena. IBM-kumppanuus vahvistaa asemointia: live-demo webMethods- ja watsonx Orchestrate -yhdistelmästä konkretisoi väitteet. Kohdeyleisönä on eksplisiittisesti keskijohto ja ylempi johto, mikä osoittaa, että Solita on siirtymässä teknologiakonsultoinnista johtamiskonsultoinnin suuntaan.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Kentällä on tunnistettavissa viisi kilpailevaa kehystä. (1) Solitan hallitseva kehys 'integraatio strategisena perustana' esittää agenttisen tekoälyn epäonnistuvan ilman integraatiota käyttäen kategorisia väitteitä ilman merkittävää ehdollistamista. (2) Rakenteellisen AI:n kehys täydentää tätä esittäen tekoälyn toimintamallimuutoksena — linjassa sen kanssa, että alle 20 % tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia. (3) Pilotista tuotantoon -kriisin kehys, jota ajavat Gartner, McKinsey ja Deloitte Nordic, haastaa optimismin: yli 40 % agenttiprojekteista ennustetaan peruutettavan vuoteen 2027 mennessä. (4) IBM:n alustakehys asemoi itsensä voittajaksi post-mallisota-ajassa korostaen hallintaa ja orkestrointia. (5) Pohjoismaisen strategiavajeen kehys luo perustelun Solitan pikakoulutuksille osoittamalla valmiuden romahduksen tutkimusdata pohjalta.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Solitan viestinnässä on havaittavissa kehystämisdynamiikka, joka voi tahattomasti leimata epävarmuuden vastarinnaksi. Ensinnäkin niin sanottu shelfware-retoriikka — 'without robust integration, you've built an expensive chatbot that can talk about work but never actually do work' — luo implisiittisen dikotomian: joko ostat integraatioratkaisun tai investointisi on turhaa. Tämä saattaa hiljentää varovaisempia ääniä, jotka haluavat ensin ymmärtää integraation kustannus-hyötysuhdetta omassa kontekstissaan. Toiseksi 'leaders ready to move' -kehystys voi sulkea pois ne, jotka kokevat tarvitsevansa enemmän aikaa tai ymmärrystä ennen päätöksentekoa. Kolmanneksi integraation ylikorostaminen voi peittää alleen muut keskeiset haasteet kuten hallinnon, datan laadun ja organisaatiokulttuurin. EU AI Act -vaatimukset eivät myöskään saa riittävää huomiota kehystämiskampanjassa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee erityistä huomiota. Ensimmäinen: Model Context Protocol (MCP) kehystetään Solitan viestinnässä jo vakiintuneeksi standardiksi, vaikka se on vasta vakiintumassa — tämä kertoo konsulttiorganisaatioiden kilpailusta standardimäärittelyvallasta ennen kuin standardi on todellisuudessa syntynyt. Toinen: Solitan laaja johtajakoulutustarjonta (Crash Course, Databricks-webinaari, supply chain -webinaari, Summit) muodostaa monikanavaisen kampanjan, jonka kohteena on eksplisiittisesti ylin ja keskijohto — merkki siitä, että teknologiakonsultit ottavat yhä enemmän johtamiskonsulttien roolia. Kolmas ja kenties tärkein: jos johtajat eivät ymmärrä tekoälyä strategisesti, 'integraatio puuttuvana lenkkeinä' -kehys voi johtaa taktisiin integraatioinvestointeihin ilman strategista arkkitehtuuria. Seuraava konsultointitarve saattaakin olla tekninen sijaan strateginen — ja siinä kilpailukenttä on erilainen.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">agenttinen tekoäly</span><span class="concept-chip">integraatiostrategia</span><span class="concept-chip">rakenteellinen AI</span><span class="concept-chip">kehystäminen</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">Agent Mesh -arkkitehtuuri</span><span class="concept-chip">Model Context Protocol (MCP)</span><span class="concept-chip">pilotista tuotantoon -kuilu</span><span class="concept-chip">diskursiivinen kompetenssi</span><span class="concept-chip">merkityksen välittäminen</span><span class="concept-chip">puolestapuhuminen</span><span class="concept-chip">pohjoismainen strategiavaje</span><span class="concept-chip">EU AI Act</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Arvioi oman organisaation asemoituminen suhteessa hallitsevaan integraatiokehykseen — onko integraatio todella strateginen este vai onko ensisijainen haaste hallinto, data tai organisaatiokulttuuri? Tee tämä arvio ennen investointipäätöksiä.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Seuraa MCP:n standardoitumiskehitystä kriittisesti; älä sitoudu yhteen integrointistandardiin ennen kuin markkinakonsensus on selvästi muodostunut — vendor lock-in -riski on aito erityisesti IBM-ekosysteemissä.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Käynnistä johtoryhmätasoinen strateginen AI-kyvykkyysarvio, joka huomioi EU AI Act -vaatimukset — Deloitte Nordic 2026 -data osoittaa strategisen valmiuden romahtaneen pohjoismaisissa organisaatioissa juuri silloin, kun investointiaikomukset ovat korkeimmillaan, mikä on kestämätön yhdistelmä.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">79 % yrityksistä on ottanut AI-agentit käyttöön jossakin muodossa, mutta vain 11 % ajaa niitä tuotannossa.</div>
+      <div class="source-ref">📌 Gartner / McKinsey / Deloitte Nordic 2026 (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">79 % yrityksistä on ottanut AI-agentit käyttöön jossakin muodossa, mutta vain 11 % ajaa niitä tuotannossa. Tämä 68 prosenttiyksikön kuilu on vuoden 2026 määrittävä haaste.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Pohjoismainen strateginen valmius on laskenut 61 %:sta 43 %:iin ja talenttikypsyys 33 %:sta 14 %:iin vuodessa.</div>
+      <div class="source-ref">📌 Deloitte Nordic 2026 (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">76 % pohjoismaisista organisaatioista suunnittelee merkittäviä AI-investointeja, mutta strateginen valmius on pudonnut 61 %:sta 43 %:iin ja talenttikypsyys 33 %:sta 14 %:iin vuodessa.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Alle 20 % tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia.</div>
+      <div class="source-ref">📌 Finnish AI Region / Deloitte Nordic 2026 (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">Tämä kehys on linjassa suomalaisten yritysten todellisen tilanteen kanssa: vain alle 20 % tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Solita järjesti kaksi toisiaan tukevaa agenttisen tekoälyn tapahtumaa keväällä ja kesällä 2026.</div>
+      <div class="source-ref">📌 Solita-tapahtumat 2026 (analyysiaineisto, osio spotlight)</div>
+      <div class="source-quote">'Integration: The Missing Link in Your Agentic AI Strategy' (kevät 2026, puhujana Mattias Wuori) sekä 'Crash Course on Agentic Enterprise and Structural AI' (10.6.2026, puhujina Marika Piispanen Strategic Digital Designer ja Joel Vanhalakka AI Advisory Studio Lead).</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">IBM kehystää itsensä voittajaksi post-mallisota-ajassa korostamalla hallintaa ja orkestrointia.</div>
+      <div class="source-ref">📌 IBM / Jukka Juselius, IBM Principal Technical Sales Leader (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">As foundation models converge on parity, the real competition has shifted to the layer that governs, orchestrates, and secures agents.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Yli 40 % agenttiprojekteista ennustetaan peruutettavan vuoteen 2027 mennessä.</div>
+      <div class="source-ref">📌 Gartner 2026 (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">Gartner ennustaa yli 40 % agenttiprojekteista peruutettavan vuoteen 2027 mennessä.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Solitan hallitseva kehys esittää integraation puuttumisen johtavan pelkkään kalliiseen chattibottiin.</div>
+      <div class="source-ref">📌 Solita / Mattias Wuori / Joel Vanhalakka (analyysiaineisto, osio framing_radar)</div>
+      <div class="source-quote">Without robust integration, you've built an expensive chatbot that can talk about work but never actually do work.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Integraatiokeskeinen kehystäminen voi hiljentää varovaisempia ääniä kustannus-hyötyanalyysin vaatimisesta.</div>
+      <div class="source-ref">📌 Analyysiaineisto, osio concern</div>
+      <div class="source-quote">Väite 'without robust integration, you've built an expensive chatbot that can talk about work but never actually do work' on tehokas markkinointiviesti, mutta se asettaa implisiittisen dikotomian: joko ostat integraatioratkaisun tai investointisi on turhaa.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">MCP kehystetään jo vakiintuneeksi standardiksi, vaikka se on vasta vakiintumassa.</div>
+      <div class="source-ref">📌 Analyysiaineisto, osio signals</div>
+      <div class="source-quote">Model Context Protocol esiintyy Solitan viestinnässä jo 'standardoituna' ratkaisuna, vaikka se on vasta vakiintumassa. Tämä kehystäminen voi olla ennenaikainen, mutta kertoo siitä, että konsulttiorganisaatiot kilpailevat standardimäärittelyvallasta.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Teknologiakonsultit ottavat yhä enemmän johtamiskonsulttien roolia johtajakoulutuksen kautta.</div>
+      <div class="source-ref">📌 Analyysiaineisto, osio signals</div>
+      <div class="source-quote">Heikko signaali: teknologiakonsultit ottavat yhä enemmän johtamiskonsulttien roolia.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Seuraava konsultointitarve saattaa olla strateginen eikä tekninen.</div>
+      <div class="source-ref">📌 Analyysiaineisto, osio signals</div>
+      <div class="source-quote">Heikko signaali: seuraava konsultointitarve ei ole tekninen vaan strateginen — ja siinä kilpailu on erilaista.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 38/2026 — Solita: Agenttinen tekoäly integraatiostrategiana</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">puolestapuhuminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">synteesin kokoaminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksen välittäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">teknologian strateginen kehystäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diskursiivinen kompetenssi</span></div>
+        
+        <p>Solita on syksyllä 2026 noussut Pohjois-Euroopan näkyvimmäksi agenttisen tekoälyn kehystäjäksi kahdella toisiaan tukevalla tapahtumalla: 'Integration: The Missing Link in Your Agentic AI Strategy' (kevät 2026, puhujana Mattias Wuori) sekä 'Crash Course on Agentic Enterprise and Structural AI' (10.6.2026, puhujina Marika Piispanen Strategic Digital Designer ja Joel Vanhalakka AI Advisory Studio Lead). Tapahtumat eivät ole irrallisia webinaareja — ne muodostavat yhtenäisen kehystämiskampanjan, jossa Solita sijoittaa integraation agenttisen tekoälyn strategiseksi edellytykseksi, ei teknisenä lisäominaisuutena.<br><br>Floyd & Lanen (2000) viitekehyksessä Solitan asiantuntijat — erityisesti Vanhalakka ja Piispanen — toimivat selkeästi puolestapuhumisen (advocacy) ja synteesin kokoamisen (synthesizing information) rooleissa. He kokoavat hajanaisen kentän — IBM:n webMethods, watsonx Orchestrate, MCP-protokolla, Agent Mesh -arkkitehtuurit — ymmärrettäväksi kokonaisuudeksi johtajille, joille nämä käsitteet ovat uusia. Tämä on tyypillistä Floyd & Lanen kuvaamaa merkityksen välittämistä (meaning making): asiantuntijat tiivistävät teknisen informaation strategisiksi merkityksiksi ylöspäin organisaatioissa.<br><br>Viestintäkäytäntöjen näkökulmasta webinaarit toimivat merkityksen välittämisen areenoina (Ritala): ne ovat strukturoituja, toistettavia tilanteita, joissa kehystystä voidaan testata ja vahvistaa yleisön reaktioiden perusteella. Solita Summit 2026 (7.10., yli 5 000 osallistujaa) laajentaa tätä areenaa entisestään.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Keskijohdon kehystämistoimet</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"><span class="a-meta-badge" style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;">Rooli: puolestapuhuminen|synteesin kokoaminen|toimeenpano</span><span class="a-meta-badge" style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;">Taktiikka: johtopäätös</span><span class="a-meta-badge" style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;">Dimensiot: potentiaali, nykysuorituskyky, kehityskaari</span><span class="a-meta-badge" style="background:#16A34A22;color:#16A34A;border:1px solid #16A34A44;">✓ Onnistui</span></div>
+        
+        
+        <p>Solitan tapahtumakokonaisuus rakentuu kolmen Floyd & Lane -roolin varaan, jotka toteutuvat eri viestintäkäytännöissä:<br><br>1) PUOLESTAPUHUMINEN (advocating): Mattias Wuori 'Integration: The Missing Link' -webinaarissa ja Joel Vanhalakka Crash Coursessa ajavat integraatioajattelua ylöspäin asiakasorganisaatioissaan. He käyttävät aloitteen markkinoinnin taktiikkaa: integraatio ei ole IT-projekti, vaan liiketoiminnan arvon edellytys. Konkreettinen viestintäkäytäntö on live-demo IBM webMethods + watsonx Orchestrate -yhdistelmästä, joka näyttää agenttien toiminnan reaaliaikaisesti. Demo on erityisen tehokas kehystämisväline, koska se tekee abstraktin potentiaalin näkyväksi.<br><br>2) SYNTEESIN KOKOAMINEN (synthesizing): Marika Piispanen (Strategic Digital Designer) ja Vanhalakka kokoavat hajanaisen kentän — malliprotokollat (MCP), Agent Mesh, A2A-kehykset, hallinnon vaatimukset — johtajille ymmärrettäväksi kokonaisuudeksi. Crash Course on nimensä mukaisesti tiivistetty koulutusmuoto, joka on räätälöity johtajille. Tämä on Floyd & Lanen kuvaamaa informaation jalostamista strategisiksi merkityksiksi.<br><br>3) TOIMEENPANO (implementing): Solitan Fingrid-case (elokuu 2026) osoittaa, miten strateginen kehystys muuttuu arjen käytännöiksi: AI on läsnä jokaisessa integrointiprojektin vaiheessa — spesifikaatiosta dokumentaatioon. Agentic Harness -konsepti (versionhallittu AI-työkalupakki tiimin kesken) on konkreettinen sopeutumiskyvyn fasilitointirakenne.<br><br>Viestintäkäytäntöjen linkitys: Webinaariformaatti mahdollistaa toimeenpanon fasilitoinnin myös asiakkaiden suuntaan — Solita tarjoaa ilmaisen 'AI Integration Think Tank' -session osallistujille, mikä on eksplisiittinen sopeutumiskyvyn fasilitointirakenne: se luo suojatun kokeilutilan asiakkaan organisaatioon.</p>
+        
+        
+        
+        <div class="a-success-reason">Solitan kehystämiskampanja onnistuu yhdistämään kolme Floyd & Lane -roolia johdonmukaiseksi viestintäketjuksi: blogi luo käsitteet, webinaari demonstroi käytännön, Crash Course jalostaa strategiseksi ymmärrykseksi ja Summit skaalaa viestin 5000+ johtajalle. Kampanjan vahvuus on konkretisoinnissa: live-demo, Fingrid-case ja IBM-partneruus tekevät abstraktin potentiaalin kosketeltavaksi. Heikkous on, että johtopäätöstaktiikka (ks. Hoppmann) ohittaa epävarmuuden kysymykset liian nopeasti.</div>
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Integraatio strategisena perustana</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Solita / Mattias Wuori / Joel Vanhalakka</div>
+          <div style="font-size:13px;color:#374151;">Hallitseva kehys: agenttinen tekoäly epäonnistuu ilman integraatiota. 'Without robust integration, you've built an expensive chatbot that can talk about work but never actually do work.' Dimensiot: nykysuorituskyky (chatbot vs. agentti), potentiaali (enterprise-arvo) ja kehityskaari (MCP → Agent Mesh → A2A). Taktiikka: johtopäätös — kategoriset väitteet esitetään ilman merkittävää ehdollistamista. Vaarana on, että tämä kehys ylikorostaa integraatiota muiden haasteiden (hallinto, datan laatu, organisaatiokulttuuri) kustannuksella.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Rakenteellinen AI / Structural AI</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Solita / Marika Piispanen — Crash Course 10.6.2026</div>
+          <div style="font-size:13px;color:#374151;">Täydentävä kehys: tekoäly ei ole projekti vaan organisaation rakenne. 'Agentic enterprise and structural AI' -otsikko viittaa siihen, että kyse on toimintamallin, ei yksittäisen teknologian muutoksesta. Tämä kehys on linjassa suomalaisten yritysten todellisen tilanteen kanssa: vain alle 20 % tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia. Dimensiot: potentiaali (organisaatiotason muutos) ja kehityskaari (pilotista tuotantoon). Taktiikka: ehdollistaminen — muutos edellyttää rakenteellisia valmiuksia.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Pilotista tuotantoon -kriisi</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Alan analyytikot / Gartner / McKinsey / Deloitte Nordic 2026</div>
+          <div style="font-size:13px;color:#374151;">Haastava kehys: 79 % yrityksistä on ottanut AI-agentit käyttöön jossakin muodossa, mutta vain 11 % ajaa niitä tuotannossa. Tämä 68 prosenttiyksikön kuilu on vuoden 2026 määrittävä haaste. Gartner ennustaa yli 40 % agenttiprojekteista peruutettavan vuoteen 2027 mennessä. Dimensio: nykysuorituskyky (negatiivinen). Taktiikka: myönnytys — tunnustetaan teknologian kypsyys, mutta korostetaan organisatorisia esteitä. Tämä kehys asettaa Solitan tarjoomat relevantiksi, koska ne vastaavat juuri tähän kuiluun.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">IBM:n alustakehystys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: IBM / Jukka Juselius (IBM Principal Technical Sales Leader, Agentic AI)</div>
+          <div style="font-size:13px;color:#374151;">Kumppanuuskehys: 'As foundation models converge on parity, the real competition has shifted to the layer that governs, orchestrates, and secures agents.' IBM kehystää itsensä voittajaksi post-mallisota-ajassa. webMethods Hybrid Integration + watsonx Orchestrate esitetään yhtenäisenä ekosysteeminä, joka 'dramatically shortens time to market'. Taktiikka: johtopäätös. Riski: vendor lock-in -argumentti, jota kilpailevat kehykset voivat hyödyntää.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Pohjoismainen strategiavaje</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Deloitte Nordic 2026 / Finnish AI Region</div>
+          <div style="font-size:13px;color:#374151;">Kontekstuaalinen kehys: 76 % pohjoismaisista organisaatioista suunnittelee merkittäviä AI-investointeja, mutta strateginen valmius on pudonnut 61 %:sta 43 %:iin ja talenttikypsyys 33 %:sta 14 %:iin vuodessa. Tämä kehys luo perustelun Solitan Crash Course -tarjoomalle: johtajat tarvitsevat pikakoulutusta juuri siksi, että valmius on heikentynyt. Dimensio: kehityskaari (negatiivinen). Viestintäkäytäntö: tämä kehys välittyy tutkimusraporttien kautta, ei suorissa markkinointiviestintöissä.</div>
+        </div>
+      </div>
+        <p>Hoppmannin (2020) kehystämisdimensioiden analyysi osoittaa, että Solitan kampanja nojaa voimakkaasti potentiaali- ja kehityskaari-dimensioihin: agenttinen tekoäly on jo käyttökelpoinen (nykysuorituskyky), mutta arvo realisoituu vasta integraation kautta (potentiaali) ja kehittyy kohti Agent Mesh -arkkitehtuuria (kehityskaari). Käytetty pääasiallinen taktiikka on johtopäätös: integraatio ON puuttuva lenkki, ei 'saattaa olla'. Tämä on tehokas kehystys, mutta jättää vähän tilaa epävarmuuden tunnustamiselle.<br><br>Teknologian kypsyyden ja kehystyksen vastaavuus on osittainen: integraatiotyökalut (webMethods, MCP) ovat tuotantokypsyyden tasolla, mutta Agent Mesh ja A2A-protokollat ovat vielä kehittyvässä vaiheessa. Solita tunnustaa tämän osittain blogeissaan ('Orchestration will certainly evolve, and new protocols and standards will emerge'), mutta tapahtumaviestinnässä tämä nuanssi häipyy.<br><br>Kilpailevista kehyksistä merkittävin uhka Solitan positioinnille on 'pilotista tuotantoon -kriisi' -kehys: jos 86–89 % projekteista epäonnistuu tuotantovaiheessa, voidaan kysyä, onko integraatio todella ratkaiseva tekijä vai yksi monista organisatorisista pullonkauloista. Deloitte Nordicin data strategiavalmiuden heikkenemisestä on terävä muistutus siitä, että tekninen integraatio ei ratkaise johtamis- tai kulttuurihaasteita.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Solitan tapahtumakokonaisuudessa on havaittavissa kehystämisdynamiikka, joka voi tahattomasti leimata epävarmuuden vastarinnaksi:<br><br>1) 'Shelfware'-retoriikka: Väite 'without robust integration, you've built an expensive chatbot that can talk about work but never actually do work' on tehokas markkinointiviesti, mutta se asettaa implisiittisen dikotomian: joko ostat integraatioratkaisun tai investointisi on turhaa. Tämä saattaa hiljentää varovaisempia äänessä, jotka haluavat ensin ymmärtää integraation kustannus-hyötysuhdetta omassa kontekstissaan.<br><br>2) 'Leaders ready to move' -kehystys Crash Coursessa: Ilmaisu 'tailored for leaders ready...' luo implisiittisen erottelun 'valmiiden' ja 'ei-valmiiden' johtajien välille. Johtaja, joka kysyy kriittisiä kysymyksiä integraation monimutkaisuudesta, hallintoriskistä tai datan laadusta, ei ole 'muutosvastarintainen' — hän harjoittaa vastuullista huolenpitoa.<br><br>3) Strategiavajeen tulkinta: Deloitte Nordic 2026 -data osoittaa, että pohjoismainen strategiavalmius on heikentynyt merkittävästi. Tämä ei välttämättä tarkoita, että johtajat ovat haluttomia — he saattavat olla huolissaan siitä, ettei heillä ole riittävästi tietoa tehdäkseen vastuullisia päätöksiä. Solitan Crash Course -formaatti vastaa tähän tarpeeseen oikein, mutta johtopäätös-taktiikka voi korostaa toimintakiirettä epävarmuuden kustannuksella.<br><br>4) Globaali varoitusmerkki: Gartner ennustaa yli 40 % agenttiprojekteista peruutettavan vuoteen 2027 mennessä ensisijaisesti heikon hallinnon, epäselvän liiketoiminta-arvon ja riittämättömän riskienhallinnan — ei teknologisen kypsyyden puutteen — takia. Johtaja, joka esittää nämä kysymykset ennen päätöstä, on vastuullinen, ei vastarintainen.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Korjattu tulkinta: Epävarmuus integraatiopäätösten monimutkaisuudesta, hallintoriskistä ja datan laadusta on asiantuntevaa johtamista. Solitan kehystys on arvokas sikäli kuin se tekee integraatiohaasteen näkyväksi, mutta tapahtumien suunnittelussa tulisi varata eksplisiittinen tila 'vastuullisen epäilyn' äänille — esimerkiksi nostamalla esiin tapauksia, joissa integraatioinvestointi ei tuottanut odotettua arvoa ja miksi. Tämä vahvistaisi, ei heikentäisi, Solitan uskottavuutta asiantuntijana.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• MCP:stä kehystymässä uusi integraatiostandardi: Model Context Protocol esiintyy Solitan viestinnässä jo 'standardoituna' ratkaisuna, vaikka se on vasta vakiintumassa. Tämä kehystäminen voi olla ennenaikainen, mutta kertoo siitä, että konsulttiorganisaatiot kilpailevat standardimäärittelyvallasta — klassinen Hoppmann-ilmiö, jossa teknologian kehystäjä yrittää asemoida itsensä emerging standard setteriksi ennen kuin standardi on todellisuudessa vakiintunut.</div><div class="signal-item">• Johtajakoulutuksen intensifioituminen integraatioteemalla: Solitan Crash Course -sarja (nyt Agentic Enterprise -teemalla), Databricks-webinaari, supply chain -webinaari ja Summit muodostavat yhdessä monikanavaisen koulutuskampanjan, jonka kohdeyleisönä on eksplisiittisesti keskijohto ja ylempi johto ('C-Level & Mid-Level Management'). Tämä viittaa siihen, että Solita tunnistaa, että tekninen osaaminen ei riitä — tarvitaan Floyd & Lanen mukaista merkityksen välittämistä johtotasolle. Heikko signaali: teknologiakonsultit ottavat yhä enemmän johtamiskonsulttien roolia.</div><div class="signal-item">• Suomalaisen AI-strategiavajeen ja agenttisen tekoälyn kehystämisen jännite: Deloitte Nordic 2026 osoittaa, että strateginen valmius on romahtanut pohjoismaisissa organisaatioissa samaan aikaan, kun investointiaikomukset ovat korkeimmillaan. Tämä luo paradoksin, johon Solitan kehystys ei täysin vastaa: jos johtajat eivät ymmärrä tekoälyä strategisesti, 'integraatio puuttuvana lenkkeinä' -kehys voi johtaa taktisiin integraatioinvestointeihin ilman strategista arkkitehtuuria. Heikko signaali: seuraava konsultointitarve ei ole tekninen vaan strateginen — ja siinä kilpailu on erilaista.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">06</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.jstor.org/stable/259210" target="_blank" rel="noopener" class="a-source-link">Floyd & Lane (2000) — Strategizing Throughout the Organization: Managing Role Conflict in Strategic Renewal</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.1016/j.respol.2020.103947" target="_blank" rel="noopener" class="a-source-link">Hoppmann ym. (2020) — The strategic framing of technology commercialization, Research Policy</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.solita.fi/blogs/integration-the-missing-link-in-your-agentic-ai-strategy/" target="_blank" rel="noopener" class="a-source-link">Solita — Integration: The Missing Link in Your Agentic AI Strategy (blogi 25.3.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.solita.fi/events/crash-course-on-agentic-enterprise-and-structural-ai/" target="_blank" rel="noopener" class="a-source-link">Solita — Crash Course on Agentic Enterprise and Structural AI (tapahtuma 10.6.2026, Marika Piispanen & Joel Vanhalakka)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.solita.fi/blogs/agentic-development-in-integration-delivery-case-fingrid/" target="_blank" rel="noopener" class="a-source-link">Solita — Agentic Development in Integration Delivery: Case Fingrid (17.8.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.solita.fi/events/solita-summit-2026/" target="_blank" rel="noopener" class="a-source-link">Solita Summit 2026 — Pohjois-Euroopan suurin virtuaalinen AI-, data- ja teknologiatapahtuma (7.10.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/fi/fi/services/consulting/perspectives/tech-trends-2026-from-ai-strategy-to-production-impact.html" target="_blank" rel="noopener" class="a-source-link">Deloitte Finland — Tech Trends 2026: From AI Strategy to Production Impact</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.fairedih.fi/en/2026/04/15/the-problem-is-the-ai-strategy-specifically-the-lack-of-one/" target="_blank" rel="noopener" class="a-source-link">Finnish AI Region / Martti Asikainen — The Problem Is the AI Strategy — Specifically, the Lack of One (15.4.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.ibm.com/new/announcements/introducing-webmethods-hybrid-integration" target="_blank" rel="noopener" class="a-source-link">IBM webMethods Hybrid Integration — Integration for the Agentic AI Era</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.solita.fi/blogs/why-integration-is-essential-to-the-future-of-agentic-ai/" target="_blank" rel="noopener" class="a-source-link">Solita — Why Integration Is Essential to the Future of Agentic AI (14.5.2025)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 15.9.2026 klo 14.45.26</span>
+</div>
+
+</body>
+</html>
