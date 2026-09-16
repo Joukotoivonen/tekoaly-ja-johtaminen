@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälytransformaatio 2026: Goforen kaksoisasemoituminen ja kilpailevat kehykset</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Tekoälytransformaatio 2026: Goforen kaksoisasemoituminen ja kilpailevat kehykset</h1>
+  <div class="cover-date">16.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Gofore on viikolla 38/2026 julkaissut kaksi strategisesti merkittävää sisältökokonaisuutta: ihmiskeskeisen tekoälytransformaation konsultoinnin ('Pidä ihminen tekoälytransformaation keskiössä') sekä tekoälyn normatiiviset ehdot julkisissa hankinnoissa ('Tekoäly julkisissa hankinnoissa etenee, kun pelisäännöt ovat kunnossa'). Molemmat tekstit on ajoitettu ajankohtaiseen sääntely-ympäristöön: uusi hankintalaki tuli voimaan 16.6.2026 ja EU AI Act muokkaa institutionaalista toimintakenttää. AI Finlandin ja Business Finlandin raportti 'Näin Suomi hyödyntää tekoälyä 2026' osoittaa yrityskentän kahtiajaon syvenemisen: edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on jumissa arviointivaiheessa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Gofore rakentaa johdonmukaisen kaksoisposition kahdella toisiaan täydentävällä äänellä. AI-neuvonantaja Terhi Aho harjoittaa synteesin kokoamista: hän yhdistää hajanaisen tutkimustiedon (McKinseyn 2026-raportti yli 10 000 johtajalta, Deloitten Global Human Capital Trends 2026) yhdeksi johtamisen käytännön ohjeeksi. Ahon ydinviesti — 'knowing and doing are two different things' — on tyypillinen merkityksen välittämisen akti, joka tapahtuu tapahtumien ja blogien kautta. Samuli Soini puolestaan rakentaa julkisen sektorin hankintaosaamisen asiantuntija-asemaa kytkemällä AI:n käytön uuteen hankintalainsäädäntöön ja EU AI Actiin.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Kilpailevien kehysten kentässä on tunnistettavissa neljä päälinjaa. (1) Ihminen ensin -kehys (Gofore/Aho): tekoälytransformaatio onnistuu vain, kun uusi tieto muuttuu uudeksi käyttäytymiseksi — 'viimeinen maili on inhimillinen'. Taktiikkana ehdollistaminen. (2) Pelisäännöt ensin -kehys (Gofore/Soini): julkisessa sektorissa AI etenee vasta sääntelykehyksen selkiydyttyä; institutionaalinen uskottavuus on korkea mutta odottaminen voi muuttua pysyväksi tekosyyksi. (3) Pöhinästä tuotantoon -kehys (CGI): varovaisuuskin muuttuu riskiksi — piloteista tuotantoon on pakko siirtyä; asettaa toiminnan kynnyksen selvästi matalammalle kuin Gofore. (4) Teknologianationalismi-kehys (Forrester): hallitukset valitsevat kotimaisen AI-ensisijaisuuden malleista hosting-palveluihin asti — tämä kehys puuttuu Goforen teksteistä kokonaan, mikä on merkittävä aukko geopoliittisessa toimintaympäristössä.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Istekkin hankintajohtaja Laura Ylitalo toteaa: 'Julkiset organisaatiot ovat varsin riskikammoisia. Kulttuuri nojaa enemmän turvallisuuteen kuin rajojen rikkomiseen.' Samuli Soini jatkaa, että geopoliittinen tilanne on varjostanut AI:ta turvallisuushuolilla. Nämä lausumat edustavat vastuullista huolenpitoa, jota ei tule tulkita muutosvastarinnaksi — julkisessa hallinnossa riskikammoisuudella on institutionaaliset perusteet kriittisten palvelujen jatkuvuuden turvaamisessa. EU AI Act asettaa lisävelvoitteita erityisesti korkean riskin järjestelmille. Deloitten mukaan 66 % johtajista kokee ihmis-AI-vuorovaikutuksen tärkeäksi, mutta vain 6 % edistyy siinä — tämä kuilu on keskeinen ongelma.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee erityishuomion. Ensinnäkin McKinseyn 2026-tutkimus osoittaa, että reflektiiviset johtajat puolustavat AI:n käyttöönottoa tilastollisesti merkitsevästi useammin (61 % vs. 43 %) — tämä avaa uuden mittariston keskijohdon AI-puolestapuhumisen arviointiin, jota suomalaiset organisaatiot eivät vielä systemaattisesti käytä. Toiseksi uuden hankintalain yhden tarjouksen säännöt muuttavat pelikenttää: AI:ta tarjousprosessissa käyttävät toimijat voivat systemaattisesti lisätä tarjousmääriä ja alentaa hintoja, mikä tekee AI:sta hankintastrategisen välttämättömyyden. Kolmanneksi yrityskentän kahtiajaon syveneminen viittaa siihen, että 'pelisäännöt kunnossa' -kehys saattaa oikeuttaa jähmettymistä juuri niissä organisaatioissa, jotka eniten tarvitsisivat vauhtia.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">ihmiskeskeinen tekoälytransformaatio</span><span class="concept-chip">diskursiivinen kompetenssi</span><span class="concept-chip">merkityksen välittäminen</span><span class="concept-chip">ehdollistaminen kehystämistaktiikkana</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">EU AI Act</span><span class="concept-chip">julkiset hankinnat</span><span class="concept-chip">teknologianationalismi</span><span class="concept-chip">reflektiivinen johtajuus</span><span class="concept-chip">puolestapuhuminen</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Täydennä Goforen kehystämisrepertuaaria teknologianationalismi-kehyksellä — geopoliittinen ulottuvuus (pilvipalvelujen sijainti, datan hallinta) puuttuu julkisen sektorin AI-hankintasisällöistä kokonaan, vaikka Forrester tunnistaa sen keskeiseksi vuoden 2026 trendinä.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Rakenna McKinseyn reflektiivisen johtajuuden mittaristosta konkreettinen arviointityökalu asiakasorganisaatioille — 61 % vs. 43 % -ero puolestapuhumisessa on myyntiargumentti, joka kytkee johtamisvalmennuksen mitattavaan AI-käyttöönottotulokseen.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Muuta 'pelisäännöt kunnossa' -kehystä aktiivisemmaksi tarjoamalla julkisen sektorin asiakkaille konkreettinen, vaiheistettu etenemispolku EU AI Actin ja uuden hankintalain ristipaineessa — näin estetään kehyksen muuttuminen jähmettymistä oikeuttavaksi tekosyyksi.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Gofore julkaisi viikolla 38/2026 kaksi strategista sisältökokonaisuutta ihmiskeskeisestä tekoälytransformaatiosta ja julkisista hankinnoista.</div>
+      <div class="source-ref">📌 Gofore-blogit, viikko 38/2026</div>
+      <div class="source-quote">Pidä ihminen tekoälytransformaation keskiössä / Tekoäly julkisissa hankinnoissa etenee, kun pelisäännöt ovat kunnossa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Yli puolet suomalaisista organisaatioista on jumissa AI:n arviointivaiheessa, vaikka edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa.</div>
+      <div class="source-ref">📌 AI Finland & Business Finland: 'Näin Suomi hyödyntää tekoälyä 2026'</div>
+      <div class="source-quote">Edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on jumissa arviointivaiheessa.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Reflektiiviset johtajat puolustavat AI:n käyttöönottoa tilastollisesti merkitsevästi useammin kuin muut johtajat.</div>
+      <div class="source-ref">📌 McKinsey 2026 -raportti (yli 10 000 johtajaa)</div>
+      <div class="source-quote">Reflektiiviset johtajat puolustavat AI:n käyttöönottoa 61 % vs. 43 %.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">66 % johtajista kokee ihmis-AI-vuorovaikutuksen tärkeäksi, mutta vain 6 % edistyy siinä.</div>
+      <div class="source-ref">📌 Deloitte Global Human Capital Trends 2026</div>
+      <div class="source-quote">66 % johtajista kokee ihmis-AI-vuorovaikutuksen tärkeäksi, mutta vain 6 % edistyy siinä.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">CGI haastaa Goforen varovaisen lähestymistavan korostamalla toiminnan välttämättömyyttä.</div>
+      <div class="source-ref">📌 CGI Finland, 'Pöhinästä tuotantoon' -kehys</div>
+      <div class="source-quote">Kurinalainen eteneminen ei ole kunnianhimon puutetta.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Forrester tunnistaa teknologianationalismin keskeiseksi vuoden 2026 AI-trendiksi hallitusten hankinnoissa.</div>
+      <div class="source-ref">📌 Forrester Research 2026</div>
+      <div class="source-quote">Vuonna 2026 hallitukset valitsevat kotimaisen AI-ensisijaisuuden malleista hosting-palveluihin asti.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Julkiset organisaatiot ovat riskikammoisia ja kulttuuriltaan turvallisuushakuisia.</div>
+      <div class="source-ref">📌 Istek, hankintajohtaja Laura Ylitalo, Gofore-blogi 2026</div>
+      <div class="source-quote">Julkiset organisaatiot ovat varsin riskikammoisia. Kulttuuri nojaa enemmän turvallisuuteen kuin rajojen rikkomiseen.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Geopoliittinen tilanne on varjostanut AI:ta turvallisuushuolilla julkisessa sektorissa.</div>
+      <div class="source-ref">📌 Samuli Soini, Gofore, julkisia hankintoja käsittelevä blogi 2026</div>
+      <div class="source-quote">Geopoliittinen tilanne on varjostanut AI:ta turvallisuushuolilla.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Uusi hankintalaki tekee AI:sta hankintastrategisen välttämättömyyden tarjousprosessissa.</div>
+      <div class="source-ref">📌 Suomen hankintalaki, voimaan 16.6.2026</div>
+      <div class="source-quote">AI:ta tarjousprosessissa käyttävät toimijat voivat systemaattisesti lisätä tarjousmääriä ja alentaa hintoja.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 38/2026 — Gofore: Ihminen transformaation ytimessä & Tekoäly julkisissa hankinnoissa</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diskursiivinen kompetenssi</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">puolestapuhuminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksen välittäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">potentiaali</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">kehityskaari</span></div>
+        
+        <p>Gofore on viikolla 38/2026 julkaissut kaksi strategisesti merkittävää sisältökokonaisuutta, jotka yhdessä muodostavat johdonmukaisen kaksoisposition: yhtäältä ihmiskeskeisen tekoälytransformaation konsultointi (blogi 'Pidä ihminen tekoälytransformaation keskiössä', englanniksi 'Keep humans at the centre of AI transformation') ja toisaalta tekoälyn käytön normatiiviset ehdot julkisissa hankinnoissa ('Tekoäly julkisissa hankinnoissa etenee, kun pelisäännöt ovat kunnossa'). Molemmat tekstit on ajoitettu ajankohtaiseen sääntely-ympäristöön: uusi hankintalaki tuli voimaan 16.6.2026 ja EU:n tekoälyasetus on nyt täysimääräisesti sovellettavissa korkean riskin järjestelmiin. Tämä on selkeä esimerkki organisaation diskursiivisesta kompetenssista (Floyd & Lane 2000): Gofore käyttää julkaisujaan kehystääkseen itsensä sekä muutosjohtamisen asiantuntijaksi että julkisen sektorin AI-luotettavaksi kumppaniksi. Molemmissa blogeissa esiintyvät Goforen asiantuntijat (Terhi Aho muutoscoachina, Samuli Soini julkisten hankintojen AI-asiantuntijana) toimivat Floyd & Lanen kuvaamassa puolestapuhumisen roolissa: he vievät aloitteita asiakasorganisaatioiden johdolle konkreettisten viestintätilanteiden — tapahtumien, blogien ja verkostotapaamisten — välityksellä. Suomalaisessa kontekstissa ajoitus on kriittinen: Työterveyslaitoksen ja Tilastokeskuksen tutkimuksen mukaan vain 17 % tekoälyä käyttävistä suomalaisyrityksistä on laatinut kirjallisen tekoälystrategian — puhumattakaan julkisen sektorin organisaatioista, joissa strateginen jäsentymättömyys on vielä yleisempää.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Keskijohdon kehystämistoimet</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"><span class="a-meta-badge" style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;">Rooli: puolestapuhuminen|synteesin kokoaminen|toimeenpano</span><span class="a-meta-badge" style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;">Taktiikka: ehdollistaminen</span><span class="a-meta-badge" style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;">Dimensiot: potentiaali, nykysuorituskyky, kehityskaari</span><span class="a-meta-badge" style="background:#16A34A22;color:#16A34A;border:1px solid #16A34A44;">✓ Onnistui</span></div>
+        
+        
+        <p>Goforen teksteissä on tunnistettavissa kaksi rinnakkaista, mutta erilaisiin yleisöihin suunnattua keskijohdon toimijaa. Ensimmäinen on Terhi Aho, Goforen AI-neuvonantaja ja coach, joka harjoittaa synteesin kokoamista: hän koostaa hajanaista tutkimustietoa (McKinseyn 2026-raportti yli 10 000 johtajalta, Deloitten Global Human Capital Trends 2026) yhdeksi johtamisen käytännön ohjeeksi. Ahon ydinviesti — 'knowing and doing are two different things' — on tyypillinen merkityksen välittämisen akti, joka tapahtuu tapahtumien (kuten Goforen 16.6.2026 Leading Transformation with AI -tilaisuus) ja blogikirjoitusten välityksellä. Aho on myös käytännön sopeutumiskyvyn fasilitaattori: hän tunnetaan 'micro-experiments'-lähestymistavastaan, joka mahdollistaa organisaatioiden nopean ja hallitun AI-käyttöönoton. Tämä suojaa kokeilutilaa (Floyd & Lane) estäen sekä liiallisen varovaisuuden että hallitsemattoman nopean skaalaami­sen. Toinen toimija on Samuli Soini, joka toimii Goforen julkisen sektorin Digital Government -linjan myyntijohdon edustajana. Soini toteuttaa toimeenpanon roolia: hän muuttaa strategiset AI-linjaukset konkreettisiksi hankintatoimiksi. Hän toimii myös aloitteen markkinoijana johdolle: hän on ICT-kohtaamon vetäjä yhdessä Istekkin Laura Ylitalon kanssa — verkosto, joka kokoaa hankintayksiköiden ja toimittajien päätöstekijöitä yhteen. Soinin tapa kehystää ongelma ('paljon puhetta, mutta ei arjen käytäntöjä') noudattaa Floyd & Lanen merkityksellistämisen logiikkaa: hän tekee näkyväksi sen kuilun, joka motivoi muutosaloitetta. Molemmat roolit yhdistyvät konkreettisessa viestintäkäytännössä: julkinen blogi toimii sekä ulkoisena markkinointivälineenä että sisäisenä asiantuntijuuden osoittamisena.</p>
+        
+        
+        
+        <div class="a-success-reason">Molemmat asiantuntijat onnistuvat rakentamaan uskottavan positioinnin: Aho yhdistää tieteellisen evidenssin (McKinsey, Deloitte) käytännön transformaatiotyöhön, Soini puolestaan puhuu konkreettisista hankintatoimenpiteistä alan foorumeilla ja instituutioissa (ICT-kohtaamo, VM:n webinaarit). Viestintäkanava on valittu oikein: blogit tavoittavat sekä päättäjät että asiantuntijat, ja Soinin LinkedIn-aktiivisuus luo jatkuvuuden virallisille julkaisuille.</div>
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Ihminen ensin -kehys (Gofore/Aho)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Gofore, Terhi Aho</div>
+          <div style="font-size:13px;color:#374151;">Tekoälytransformaatio onnistuu vain, kun uusi tieto muuttuu uudeksi käyttäytymiseksi — 'viimeinen maili on inhimillinen'. Kehystämisdimensiot: potentiaali (suuri, jos ihminen on keskiössä) + kehityskaari (jatkuva reflektio ja oppiminen). Taktiikka: ehdollistaminen — 'transformaatio onnistuu VAIN kun...'. Tämä on maltillinen, vastuullinen kehys, joka ei ylilupaa. Soveltuu hyvin teknologian kypsyysvaiheeseen, jossa generatiivinen AI on laajassa käytössä mutta organisatorinen muutos on vasta aluillaan (Deloitte: 66 % johtajista kokee ihmis-AI-vuorovaikutuksen tärkeäksi, mutta vain 6 % edistyy siinä).</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Pelisäännöt ensin -kehys (Gofore/Soini)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Gofore, Samuli Soini</div>
+          <div style="font-size:13px;color:#374151;">Julkisessa sektorissa tekoäly etenee vasta sääntelykehyksen selkiydyttyä. Kehystämisdimensiot: nykysuorituskyky (alhainen — tekoäly ei ole vielä käytännön tasolla), ennuste (myönteinen kunhan pelisäännöt ovat selvillä). Taktiikka: myönnytys — julkinen sektori on riskikammoinen, 'sillä on hyvät syyt', mutta tämä ei saa estää etenemistä. Kehys resonoi uuden hankintalain (16.6.2026) ja EU:n tekoälyasetuksen kanssa, mikä antaa sille institutionaalisen uskottavuuden. Vaara: kehys voi vahvistaa status quota, jos 'odotamme pelisääntöjä' muuttuu pysyväksi tekosyyksi.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Pöhinästä tuotantoon -kehys (CGI/kilpailija)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: CGI Finland</div>
+          <div style="font-size:13px;color:#374151;">Julkisella sektorilla on tehty enemmän tekoälytyöpajoja kuin otettu käyttöön ratkaisuja. Varovaisuuskin muuttuu riskiksi. Kehystämisdimensiot: kehityskaari (piloteista tuotantoon on pakko siirtyä) + potentiaali (konkreettiset kolme käyttökohdetta). Taktiikka: johtopäätös — 'kurinalainen eteneminen ei ole kunnianhimon puutetta'. Kilpailee suoraan Goforen pelisäännöt-kehyksen kanssa asettamalla toiminnan kynnyksen selvästi matalammalle.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Teknologianationalismi-kehys (Forrester)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Forrester Research</div>
+          <div style="font-size:13px;color:#374151;">Vuonna 2026 hallitukset valitsevat kotimaisen AI-ensisijaisuuden malleista hosting-palveluihin asti. Kehystämisdimensio: ennuste (poliittinen paine muokkaa hankintasääntöjä). Tämä kehys ei suoraan näy Goforen teksteissä — mikä on merkittävä puute suomalaisen julkisen sektorin AI-hankintojen kehystämisessä, kun geopoliittinen konteksti (pilvipalvelujen sijainti, datan hallinta) on tunnistettu erilliseksi haasteeksi.</div>
+        </div>
+      </div>
+        <p>Kehystämiskilpailussa on nähtävissä selkeä jännite kahden logiikan välillä: Goforen 'ihminen ensin + pelisäännöt' -yhdistelmä asettaa pehmeän, vastuullisen kynnyksen, kun taas CGI:n 'pöhinästä tuotantoon' -kehys haastaa tämän suoremmin korostamalla toiminnan välttämättömyyttä. Hoppmannin (2020) taktiikkaluokittelulla: Gofore käyttää pääasiassa ehdollistamista ('kun pelisäännöt ovat kunnossa' / 'vasta kun uusi tieto muuttuu käyttäytymiseksi'), mikä on oikea taktiikka teknologian nykyisessä kypsyysvaiheessa mutta voi antaa varovaiselle asiakkaalle perusteen lykkäillä. Kilpailijoiden johtopäätös-taktiikka on aggressiivisempi mutta saattaa johtaa liian nopeaan skaalaamiseen ilman riittävää hallintoa. Viestintäkäytäntöjen näkökulmasta: Gofore välittää kehyksensä pääasiassa blogien ja asiantuntijatapahtumien kautta, kun taas kentän institutionaalinen kehystäminen (VM:n webinaarit, Hankinta-Suomi-ohjelma, ICT-kohtaamo) tarjoaa normatiivisemman kanavan, jossa Soini on jo aktiivinen toimija.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Goforen hankintatekstissä Istekkin hankintajohtaja Laura Ylitalo toteaa: 'Julkiset organisaatiot ovat varsin riskikammoisia. Kulttuuri nojaa enemmän turvallisuuteen kuin rajojen rikkomiseen.' Samuli Soini jatkaa, että geopoliittinen tilanne on 'varjostanut' AI:ta turvallisuushuolilla. Nämä lausumat ovat esimerkkejä vastuullisesta huolenpidosta, jota ei tule tulkita muutosvastarinnaksi. Julkisessa hallinnossa riskikammoisuudella on institutionaaliset perusteet: kun kyse on kriittisistä palveluista, hankintayksiköillä on velvollisuus varmistaa toiminnan jatkuvuus. EU:n tekoälyasetus asettaa lisäksi erityisiä velvoitteita korkean riskin tekoälyjärjestelmille (dokumentointi, ihmisvalvonta, riskienhallinta). Suomen ministeriön ohjeistus (27.2.2025) edellyttää läpinäkyvyyttä ja ihmisvalvontaa generatiivisessa AI:ssa julkishallinnossa. Nämä ovat perusteltuja institutionaalisia rajoitteita, eivät passiivisuutta.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Goforen teksti osittain tunnustaa tämän ('sillä on hyvät syyt') mutta kehystää riskikammoisuuden silti ongelmana, joka pitää ylittää, eikä institutionaalisena vastuuna, joka pitää integroida AI-strategiaan. Vastuullisempi kehystäminen erottaisi selkeästi: (1) perusteltu varovaisuus korkean riskin konteksteissa (= hyvä hallinto) vs. (2) perusteettomasti jähmettyneisyys matalan riskin rutiinitehtävissä (= todellinen este). Floyd & Lanen sopeutumiskyvyn fasilitointi tarkoittaa kokeilutilan suojelemista — mutta myös legitiimien rajoitusten tunnistamista, ei niiden ohittamista.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• McKinseyn 2026-tutkimus (yli 10 000 johtajaa) osoittaa, että reflektiiviset johtajat puolustavat AI:n käyttöönottoa tilastollisesti merkitsevästi useammin (61 % vs. 43 %) — tämä avaa uuden mittariston keskijohdon AI-puolestapuhumisen arviointiin, jota suomalaiset organisaatiot eivät vielä systemaattisesti käytä.</div><div class="signal-item">• Suomen uusi hankintalaki (voimaan 16.6.2026) yhden tarjouksen sääntöineen muuttaa pelikenttää: AI:ta tarjousprosessissa käyttävät toimijat voivat systemaattisesti lisätä tarjousmääriä ja alentaa hintoja — tämä on konkreettinen toimeenpanon mekanismi, joka muuttaa AI:n hankintastrategiseksi välttämättömyydeksi ennemmin kuin valinnaiseksi innovaatioksi.</div><div class="signal-item">• AI Finlandin ja Business Finlandin raportti 'Näin Suomi hyödyntää tekoälyä 2026' osoittaa yrityskentän kahtiajaon syvenemisen: edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on jumissa arviointivaiheessa — tämä viittaa siihen, että 'pelisäännöt kunnossa' -kehys saattaa oikeuttaa jähmettymistä juuri niissä organisaatioissa, jotka eniten tarvitsisivat vauhtia.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">06</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://gofore.com/en/keep-humans-at-the-centre-of-ai-transformation/" target="_blank" rel="noopener" class="a-source-link">Gofore — Pidä ihminen tekoälytransformaation keskiössä (EN: Keep humans at the centre of AI transformation)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://gofore.com/en/ai-in-public-procurement-can-move-forward-when-the-rules-are-clear/" target="_blank" rel="noopener" class="a-source-link">Gofore — Tekoäly julkisissa hankinnoissa etenee, kun pelisäännöt ovat kunnossa (EN: AI in public procurement can move forward when the rules are clear)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/nain-suomi-hyodyntaa-tekoalya-2026-yritysten-kahtiajako-syvenee-edellakavijat-karkaavat/" target="_blank" rel="noopener" class="a-source-link">AI Finland & Business Finland — Näin Suomi hyödyntää tekoälyä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.julkari.fi/bitstreams/a9d089c8-5228-4d1c-b21f-ef683d8c3534/download" target="_blank" rel="noopener" class="a-source-link">Työterveyslaitos — Tekoälyn hyödyntäminen yrityksissä 2025 (Digivihreä siirtymä ja työ -kyselytutkimus)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.cgi.com/fi/fi/blogi/tekoaly/pohinasta-tuotantoon-tekoaly-julkishallinnossa-vuonna-2026" target="_blank" rel="noopener" class="a-source-link">CGI Finland — Pöhinästä tuotantoon: Tekoäly julkishallinnossa vuonna 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://gofore.com/en/ai-transformation-in-finlands-public-sector/" target="_blank" rel="noopener" class="a-source-link">Gofore — AI transformation in Finland's public sector (Levasma/Digital Society 26)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://vm.fi/ict-kohtaamo" target="_blank" rel="noopener" class="a-source-link">Valtiovarainministeriö — ICT-kohtaamo (Samuli Soini vetäjänä)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.forrester.com/blogs/predictions-2026-tech-nationalism-will-reshape-public-sector-ai-security-and-procurement" target="_blank" rel="noopener" class="a-source-link">Forrester — Predictions 2026: Tech Nationalism Will Reshape Public-Sector AI and Procurement</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.5465/amr.2000.3707692" target="_blank" rel="noopener" class="a-source-link">Floyd, S. & Lane, P. (2000) — Strategizing Throughout the Organization: Managing Role Conflict in Strategic Renewal (AMR)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.1016/j.respol.2019.103hedging" target="_blank" rel="noopener" class="a-source-link">Hoppmann, J. ym. (2020) — The role of framing in technology development (Research Policy)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://lutpub.lut.fi/bitstream/handle/10024/170912/Diplomityo_Kelahaara_Eveliina.pdf" target="_blank" rel="noopener" class="a-source-link">LUT — Diplomityö: Tekoälyn mahdollisuudet julkisten hankintojen hankintaprosessissa (Kelahaara, Eveliina)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 16.9.2026 klo 15.35.43</span>
+</div>
+
+</body>
+</html>
