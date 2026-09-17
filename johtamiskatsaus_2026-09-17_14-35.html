@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suomen tekoälykenttä 2026: kehyskilpailu, tuottavuusparadoksi ja heikot signaalit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Suomen tekoälykenttä 2026: kehyskilpailu, tuottavuusparadoksi ja heikot signaalit</h1>
+  <div class="cover-date">17.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Vivicta julkisti 25.8.2026 kumppanuuden ServiceNow'n kanssa rakentaakseen AI-first-mallin, jossa tekoäly on sisäänrakennettu palveluiden suunnitteluun, operointiin ja jatkuvaan parantamiseen. Suomessa tekoälyn käyttöaste kasvaa, mutta tuottavuushyödyt jäävät jälkeen: BCG:n Nordic AI -raportin mukaan vain 3 % organisaatioista saavuttaa merkittävää tuottoa. SD Worxin tutkimus osoittaa, että moni organisaatio on jumissa välitilassa. AI Finland & Business Finlandin (2026) mukaan edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on edelleen tekoälyn arviointivaiheessa. Vivictan Nordic AI Navigator -tutkimus (340 päätöksentekijää) vahvistaa, että ongelma ei ole investointitaso vaan työtapojen muutos.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Vivicta on rakentanut strategisen kumppanuusrakenteen ServiceNow'n kanssa ja asemoitunut sekä ongelman tunnistajaksi (Nordic AI Navigator -tutkimus) että ratkaisun tarjoajaksi (ServiceNow-kumppanuus). Tämä suljettu silmukka — sama toimija diagnostisessa ja prognostisessa roolissa — on taktisesti vahva asema. Legitimiteettiä vahvistavat Microsoftin 'Frontier Firm' -tunnustus ja ISG-arviointivoitot. Organisaatio on siirtynyt perinteisestä automaatiosta uutta etsivään oppimiseen rakentamalla kyvykkyyspohjaa agenttipohjaisten työnkulkujen ympärille. ServiceNow'n AI Control Tower -hallintakehys laajentaa asemointia koko yrityksen tekoälyn hallintaan, ei vain ServiceNow'n omiin ratkaisuihin.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Suomalaisessa tekoälykeskustelussa kilpailee tällä hetkellä neljä kehystä. (1) AI-first-tehokkuuskehys (Vivicta & ServiceNow): tekoäly on rakennettava palveluiden ytimeen, ei lisätty päälle — kehys lupaa älykkäämpiä työnkulkuja ja dataohjattua toimintaa. (2) Suomen tuottavuusparadoksikehys (Vivicta, BCG, SD Worx): Suomi investoi mutta tulokset jäävät, koska työtapoja ei muuteta — diagnostinen kehys, joka resonoi vahvasti omaan dataan nojaten. (3) Suvereniteetti- ja luottamuskehys (pohjoismaiset IT-päätöksentekijät, julkinen sektori): lähes puolet pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin — kehys korostaa datahallintaa, yksityisyyttä ja kansallista kontrollia. (4) Agenttivallankumouksen uhka- ja mahdollisuuskehys (ServiceNow, teknologiamedia): copilot-aikakausi on ohi, nyt eletään agenttiaikakautta — kehys luo kiireen tunteen, mutta resonoi Suomessa vasta osittain, sillä generatiivisen tekoälyn käyttöaste on alhaisempi kuin Norjassa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Vain 41 % suomalaisista organisaatioista on tehnyt linjaukset tekoälyn eettisestä ja vastuullisesta käytöstä HR:ssä — yli 59 %:lta pohjatyö on tekemättä (SD Worx). Lähes puolet pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin (Nordic AI Navigator). Professio-tutkimus (2026) tunnistaa, että kiire, epäselvät rakenteet ja puutteellinen vaikuttavuuden seuranta hidastavat todellista muutosta. Huoli ei ole muutosvastarintaa, vaan perusteltua varovaisuutta tilanteessa, jossa eettinen ja rakenteellinen pohjatyö on kesken. EU AI Actin vaatimukset lisäävät paineita linjausten kiirehtimiseen.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee erityistä huomiota. Ensimmäinen: ServiceNow'n AI Control Tower voi muuttaa tekoälyhallinnan vastuunjakoa pohjoismaisissa organisaatioissa — jos yksi alusta toimii koko yrityksen tekoälyn hallintakerroksena, syntyy uusi rakenteellinen käytäntö, joka joko vahvistaa tai neutraloi suvereniteettikehyksen. Toinen: suomalaisyritysten kahtiajako syvenee, eikä oppiminen siirry edistyneiltä organisaatioilta hitaammille — kehyskilpailun voittaa se toimija, joka onnistuu madaltamaan kynnyksen uutta etsivään oppimiseen myös arviointivaiheessa oleville organisaatioille. Kolmas: tekoälyagenttien yleistyminen siirtää havainnollisen laukaisimen ihmiseltä datan poikkeamalle — organisaatiooppiminen voi nopeutua radikaalisti, mutta inhimillinen ymmärrys siitä, mitä ja miksi opittiin, voi heikentyä.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">toiminnallinen laukaisin</span><span class="concept-chip">havaintoperäinen laukaisin</span><span class="concept-chip">uutta etsivä oppiminen</span><span class="concept-chip">hyödyntävä oppiminen</span><span class="concept-chip">rakenteelliset käytännöt</span><span class="concept-chip">viestintäkäytännöt</span><span class="concept-chip">diagnostinen kehys</span><span class="concept-chip">prognostinen kehys</span><span class="concept-chip">kehyksen resonanssi</span><span class="concept-chip">AI-first-malli</span><span class="concept-chip">agenttipohjaiset työnkulut</span><span class="concept-chip">tuottavuusparadoksi</span><span class="concept-chip">suvereniteettikehys</span><span class="concept-chip">EU AI Act</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Käynnistä tai päivitä organisaation tekoälyn eettisen ja vastuullisen käytön linjaukset HR:ssä viimeistään Q1/2027 — yli 59 % suomalaisorganisaatioista on tämä pohjatyö tekemättä, ja EU AI Actin velvoitteet tiukentuvat.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Arvioi, mikä neljästä kilpailevasta kehyksestä ohjaa oman organisaatiosi sisäistä tekoälykeskustelua — ja varmista, että diagnostinen ja prognostinen rooli eivät ole yksinomaan ulkoisten toimittajien hallussa.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Rakenna viestintäkäytännöt, jotka kuljettavat oppimista edistyneiltä tiimeiltä arviointivaiheessa oleville — kahtiajakoa ei korjata teknologialla vaan tietoisella tiedonvälityksen rakenteella.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Vivicta julkisti kumppanuuden ServiceNow'n kanssa 25.8.2026</div>
+      <div class="source-ref">📌 Vivicta lehdistötiedote, elokuu 2026</div>
+      <div class="source-quote">AI-first-malli, jossa tekoäly on sisäänrakennettu palveluiden suunnitteluun, operointiin ja jatkuvaan parantamiseen</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Vain 3 % organisaatioista saavuttaa merkittävää tuottoa tekoälystä</div>
+      <div class="source-ref">📌 BCG Nordic AI -raportti, 2026</div>
+      <div class="source-quote">3 % saavuttaa merkittävää tuottoa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Yli puolet organisaatioista on edelleen tekoälyn arviointivaiheessa</div>
+      <div class="source-ref">📌 AI Finland & Business Finland, 2026</div>
+      <div class="source-quote">edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on edelleen jumissa tekoälyn arviointivaiheessa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tuottavuusongelma johtuu työtapojen muutoksen puutteesta, ei investointitasosta</div>
+      <div class="source-ref">📌 Vivicta Nordic AI Navigator -tutkimus, 2026 (n=340 päätöksentekijää)</div>
+      <div class="source-quote">ongelma ei ole investointitaso vaan työtapojen muutos</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Lähes puolet pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin</div>
+      <div class="source-ref">📌 Vivicta Nordic AI Navigator -tutkimus, 2026</div>
+      <div class="source-quote">lähes puolet pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">ServiceNow julisti copilot-aikakauden päättyneen Knowledge 2026 -tapahtumassa</div>
+      <div class="source-ref">📌 ServiceNow Knowledge 2026, Bill McDermott</div>
+      <div class="source-quote">tekoälyn copilot-aikakausi on ohi — nyt eletään agenttiaikakautta</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Vain 50,6 % suomalaisesta työikäisestä väestöstä käyttää generatiivista tekoälyä</div>
+      <div class="source-ref">📌 Nordic AI Navigator -tutkimus / Vivicta, 2026</div>
+      <div class="source-quote">vain 50,6 % suomalaisesta työikäisestä väestöstä käyttää generatiivista tekoälyä ylipäätään, kun Norjassa luku on lähes 50 %</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Vain 41 % suomalaisista organisaatioista on tehnyt linjaukset tekoälyn eettisestä käytöstä HR:ssä</div>
+      <div class="source-ref">📌 SD Worx -tutkimus, 2026</div>
+      <div class="source-quote">vain 41 prosenttia suomalaisista organisaatioista on tehnyt linjaukset tekoälyn eettisestä ja vastuullisesta käytöstä henkilöstöhallinnossa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Kiire, epäselvät rakenteet ja puutteellinen vaikuttavuuden seuranta hidastavat muutosta</div>
+      <div class="source-ref">📌 Professio-tutkimus, 2026</div>
+      <div class="source-quote">kiire, epäselvät rakenteet ja puutteellinen vaikuttavuuden seuranta</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">ServiceNow'n AI Control Tower kattaa kaikki yrityksen tekoälyt, ei vain ServiceNow'n omat</div>
+      <div class="source-ref">📌 ServiceNow Knowledge 2026 / tuoteviestintä</div>
+      <div class="source-quote">AI Control Tower -hallintakehys — joka kattaa kaikki yrityksen tekoälyt, ei vain ServiceNow'n omat</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Suomalaisyritysten kahtiajako syvenee eikä oppiminen siirry edistyneiltä organisaatioilta hitaammille</div>
+      <div class="source-ref">📌 AI Finland & Business Finland, 2026</div>
+      <div class="source-quote">edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on edelleen jumissa tekoälyn arviointivaiheessa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Eettisten linjausten pohjatyö on kesken yli 59 %:ssa organisaatioista agenttiaikakauden kynnyksellä</div>
+      <div class="source-ref">📌 SD Worx -tutkimus, 2026</div>
+      <div class="source-quote">Suomessa, jossa eettisten linjausten pohjatyö on vielä kesken yli 59 prosentissa organisaatioista, tämä signaali vaatii erityistä huomiota</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 38/2026 — Vivicta kaksoisanalyysi: AI-first kumppanuus & Pohjoismainen tuottavuusparadoksi</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">toiminnallinen laukaisin</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">havaintoperäinen laukaisin</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">uutta etsivä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">hyödyntävä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">rakenteelliset käytännöt</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">viestintäkäytännöt</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diagnostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">prognostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">kehyksen resonanssi</span></div>
+        
+        <p>Vivicta julkisti 25.8.2026 kumppanuuden ServiceNow'n kanssa tavoitteenaan rakentaa 'AI-first'-malli, jossa tekoäly on sisäänrakennettu palveluiden suunnitteluun, operointiin ja jatkuvaan parantamiseen. Tämä on Ritalan (2024) käsittein selkeä toiminnallinen laukaisin: organisaatio on tunnistanut, ettei perinteinen automaatio enää riitä, ja on siirtynyt uutta etsivään oppimiseen (exploratory learning) rakentamalla kokonaan uutta kyvykkyyspohjaa agenttipohjaisten työnkulkujen ympärille. Ritalan rakenteelliset käytännöt näkyvät konkreettisesti: Vivicta on luonut strategisen kumppanuusrakenteen, jossa ServiceNow-alusta tarjoaa tekoälykyvykkyyksien kehittämisen infrastruktuurin koko organisaatiolle — ei yksittäisille kokeiluprojekteille. Tämä institutionalisoi oppimisen rakenteisiin.<br><br>Viestintäkäytäntöjen näkökulmasta (Ritala) kumppanuus julkistettiin samanaikaisesti kolmella kanavalla: englanninkielinen lehdistötiedote Cision-palveluun, suomenkielinen tiedote Vivictan omaan uutishuoneeseen, sekä aiemmin keväällä ServiceNow AI Summit Helsinki -tapahtumaan osallistuminen, jossa Vivictan edustajat jakoivat oppeja SIR- ja GRC-moduulien käyttöönotosta ('lessons learned'). Tämä formaali viestintäkäytäntö on keskeinen mekanismi, jolla organisaatio rakentaa Kaplanin (2008) mukaista kehyksen resonanssia: kumppanuus kehystetään julkisesti 'AI-first-mallina', joka antaa legitimiteettipohjan sisäisille muutospäätöksille. Kehys resonoi sekä ylimmän johdon (johtajuustarina) että asiakkaiden (luotettavuus, ennustettavuus) suuntaan.<br><br>Vivictan Nordic AI Navigator -tutkimus (kesäkuu 2026, n=340 ylintä päätöksentekijää Suomesta, Ruotsista ja Norjasta) muodostaa toiselle Spotlightille diagnostisen kehyksen: Suomi käyttää tekoälyä yrityksissä vähemmän systemaattisesti kuin Ruotsi ja Norja, ja siksi tekoälyn käytön tuottavuus uhkaa jäädä Suomessa verrokkimaita heikommaksi. Ritalan havaintoperäinen laukaisin on tässä kirkas: ulkopuolinen vertailudata — oman tutkimuksen tuottamana — luo organisatorisen herätteen toimia. Paradoksi on kuitenkin syvä: suomalaisyritykset uskovat tekoälyn voivan kasvattaa liikevaihtoa noin 30 prosenttia ja tuoda 28 prosentin kustannussäästöt vuoteen 2029 mennessä, mutta vain 3 prosenttia suomalaisyrityksistä saavuttaa tekoälyinvestoinneistaan merkittävää, eli vähintään viisinkertaista, tuottoa. BCG:n (10.3.2026) löydös paljastaa, että organisaatiot ovat hyödyntävässä oppimisessa (exploitative learning) — käyttöönotto etenee, mutta työtavat ja rakenteet eivät muutu. Kuten TEM:n analyysi toteaa, uusien työtapojen ja digitaalisten työvälineiden tuloksellinen haltuunotto vaatii toimintaprosessien ja useimmiten työnjaon uudistamista — tämä prosessitason oppiminen puuttuu Suomesta laajasti. Suomessa moni organisaatio on jäänyt välitilaan: laitteet ja ohjelmistot on hankittu, mutta työskentelytavat ovat ennallaan, jolloin investoinnit valuvat hukkaan.<br><br>Viestintäkäytäntöjen siltarooli (Ritala→Kaplan): Vivictan viestintätapa — oman tutkimuksen julkaiseminen — on samalla kehystämisteko (Kaplan). Nordic AI Navigator ei ole neutraali kartoitus, vaan prognostinen kehys: se määrittelee ongelman (Suomi jää jälkeen), nimeää syyn (ei-systemaattinen käyttö) ja tarjoaa ratkaisun (Vivictan kaltainen kumppani). Viestintäkäytäntö ja kehystäminen ovat tässä erottamattomia.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">AI-first tehokkuuskehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Vivicta & ServiceNow (johto, myynti)</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on rakennettava palveluiden ytimeen — ei lisätty päälle. 'AI-first-malli' tarkoittaa, että tekoäly on sisäänrakennettu palveluiden suunnitteluun, operointiin ja jatkuvaan parantamiseen. Kehys on prognostinen: se lupaa älykkäämpiä työnkulkuja, ennakoivaa palvelunhallintaa ja dataohjattua toimintaa. Tämä on Kaplanin mukainen dominoiva kehys, joka saa legitimiteettiä Microsoftin 'Frontier Firm' -tunnustuksesta ja ISG-arviointivoitoista. Kehys elää julkisten lehdistötiedotteiden ja tapahtumaviestinnän (ServiceNow AI Summit Helsinki) kautta.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Suomen tuottavuusparadoksikehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Vivicta (tutkijatoimija), BCG, SD Worx</div>
+          <div style="font-size:13px;color:#374151;">Suomi investoi — ehkä jopa eniten suhteessa Pohjoismaisiin verrokkeihin tietyillä mittareilla — mutta tuottavuushyödyt jäävät muita heikommiksi. Vivictan Nordic AI Navigator -tutkimus, BCG:n Nordic AI -raportti (3 % saavuttaa merkittävää tuottoa) ja SD Worxin löydökset (moni organisaatio jumissa välitilassa) rakentavat diagnostista kehystä: ongelma ei ole investointitaso vaan työtapojen muutos. Kehys resonoi vahvasti, koska se nojaa omaan dataan (340 päätöksentekijää). Kehystäminen tapahtuu sekä mediatiedotteiden että ammatillisten uutiskirjeiden viestintäkäytäntöjen kautta.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Suvereniteetti- ja luottamuskehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Pohjoismaiset IT-päätöksentekijät, julkinen sektori</div>
+          <div style="font-size:13px;color:#374151;">Lähes puolet (Nordic AI Navigator) pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin. Tämä kehys korostaa datahallintaa, yksityisyyttä ja kansallista kontrollia. Se on legitimiteettitaistelu globaaleja hyperscalereita vastaan ja antaa pohjan hybridipilviratkaisujen markkinoinnille. Kehys elää erityisesti julkisen sektorin hankintojen ja sääntelykeskustelujen viestintätilanteissa. Vivicta hyödyntää tätä kehystä tarjotessaan paikallisesti operoituja vaihtoehtoja.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Agenttivallankumouksen uhka/mahdollisuus -kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: ServiceNow (Bill McDermott), teknologiamedia</div>
+          <div style="font-size:13px;color:#374151;">ServiceNow Knowledge 2026 -tapahtumassa julistettiin, että 'tekoälyn copilot-aikakausi on ohi' — nyt eletään agenttiaikakautta, jossa tekoälyagentit suorittavat kokonaisia työnkulkuja autonomisesti. Kehys luo kiireen tunteen ('50 miljoonan henkilöstövaje vuoteen 2030'). Suomessa tämä kehys on vielä haastaja: vain 50,6 % suomalaisesta työikäisestä väestöstä käyttää generatiivista tekoälyä ylipäätään, kun Norjassa luku on lähes 50 % — kehys ei vielä täysin resonoi suomalaisessa organisaatioarjessa.</div>
+        </div>
+      </div>
+        <p>Kaplanin (2008) mukaan epävarmuus on kehystämiskilpailujen raaka-aine, ja juuri nyt suomalaisessa tekoälykeskustelussa epävarmuus on maksimaalista: käyttöaste kasvaa, mutta tuottavuus ei seuraa. Tästä epävarmuudesta kilpailevat neljä kehystä. Hallitseva kehys on Vivictan oma AI-first-tehokkuuskehys, joka on taktisesti vahva koska se omistaa sekä diagnostisen roolin (Nordic AI Navigator -tutkimus) että prognostisen roolin (ServiceNow-kumppanuus ratkaisuna). Kehys on näin rakennettu 'suljetuksi silmukaksi', jossa sama toimija tunnistaa ongelman ja tarjoaa ratkaisun — klassinen kehystämisstrategia.<br><br>Kilpaileva suvereniteettikehys on latentisti vahva, koska lähes puolet pohjoismaisista päätöksentekijöistä jo omaksuu sen. Tämä kehys voi haastaa AI-first-kehystä erityisesti julkisen sektorin asiakkaissa (esim. Palkeet, jonka Vivicta on jo asiakkaana). Agenttivallankumouksen kehys on toistaiseksi haastajan asemassa Suomessa — sen resonanssi kasvaa, kun suomalaiset organisaatiot siirtyvät kokeiluista strategiseen käyttöön. Viestintäkäytännöt ovat näiden kehysten kilpatanner: julkiset lehdistötiedotteet, tutkimusjulkaisut, toimialaeventit (ServiceNow AI Summit Helsinki) ja ammatilliset uutiskirjeet ovat konkreettiset areenat, joissa kehysten elinvoima punnitaan.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Sekä Vivictan Nordic AI Navigator -tutkimuksessa että BCG:n Nordic AI -raportissa nousee esiin huoli, jota ei pidä lukea muutosvastarintana: lähes puolet pohjoismaisista vastaajista suhtautuu varauksella globaalisti ylläpidettyihin tekoälymalleihin. SD Worxin tutkimuksen mukaan vain 41 prosenttia suomalaisista organisaatioista on tehnyt linjaukset tekoälyn eettisestä ja vastuullisesta käytöstä henkilöstöhallinnossa — miltei kuusi kymmenestä on tilanteessa, jossa tämä pohjatyö on tekemättä. Professio-tutkimus (2026) tunnistaa, että kiire, epäselvät rakenteet ja puutteellinen vaikuttavuuden seuranta jarruttavat kehitystä.<br><br>Nämä huolet voivat näyttäytyä AI-first-kehystämisen valossa 'hidastajilta' tai 'muutosvastarintaisina'. Tämä olisi vakava virhetulkinta. Ritalan (2024) käsittein kyse on pikemminkin toiminnallisten mahdollistajien puuttumisesta: organisaatioilla ei ole rakenteellisia käytäntöjä (pelisääntöjä, eettisiä linjauksia, koulutusrakenteita) joiden varaan AI-kyvykkyyksien kehittäminen voisi nojata. Lisäksi Kyndrylin People Readiness Report 2026 osoittaa, että haaste ei enää ole tekoälyn käyttöönottoa koskeva teknologinen osaaminen, vaan organisaation kyky valmentaa henkilöstö tekoälyn koko potentiaalin hyödyntämiseen — tämä on vastuullinen huolenpito tulevaisuuden kyvykkyydestä, ei jarrutus.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Korjattu tulkinta: Organisaatiot, jotka vaativat eettisiä linjauksia, tietosuojakysymysten selvittämistä ja henkilöstön valmentamista ennen laajaa käyttöönottoa, harjoittavat vastuullista huolenpitoa — eivät jarruta muutosta. Ritalan viestintäkäytäntöjen näkökulmasta näiden äänten tulisi päästä mukaan sekä formaaleihin (hankintatyöryhmät, strategiaprosessit) että informaaleihin (sisäiset oppimisfoorumit, vertaisverkostot) viestintäkäytäntöihin. Kaplanin kehystämiskilpailun näkökulmasta näiden toimijoiden kehys — 'vastuullinen käyttöönotto ensin' — on oikeutettu kilpaileva kehys, ei estettävä ääni.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• ServiceNow'n AI Control Tower -hallintakehys — joka kattaa kaikki yrityksen tekoälyt, ei vain ServiceNow'n omat — voi muuttaa pohjoismaisissa organisaatioissa sen, miten tekoälyhallinnan vastuita jaetaan. Jos yksittäinen alusta alkaa toimia koko yrityksen tekoälyn 'liikennepoliisina', syntyy uusi rakenteellinen käytäntö (Ritala), joka muuttaa AI-kyvykkyyksien omistajuuden kysymyksiä. Tämä voi vahvistaa suvereniteettikehyksen (Kaplan) haastetta globaalisti ylläpidettyjä malleja kohtaan — tai vaihtoehtoisesti neutraloida sen tarjoamalla paikallisesti ohjattavan hallintatason.</div><div class="signal-item">• Suomalaisyritysten kahtiajako syvenee: edistyneiden yritysten määrä on yli nelinkertaistunut kahdessa vuodessa, mutta yli puolet organisaatioista on edelleen jumissa tekoälyn arviointivaiheessa (AI Finland & Business Finland 2026). Tämä tarkoittaa, että viestintäkäytännöt (Ritala) eivät tällä hetkellä kuljeta oppimista 'frontrunnereilta' hitaammille. Jos tämä kehitys jatkuu, Kaplanin kehystämiskilpailussa voittaa se kehys, joka onnistuu ylittämään kahtiajako-kynnyksen — eli tarjoamaan riittävän matalan kynnyksen uutta etsivään oppimiseen myös organisaatioille, jotka eivät vielä ole käynnistäneet strategista muutosta.</div><div class="signal-item">• Tekoälyagenttien yleistyminen muuttaa lähitulevaisuudessa kysymystä 'kuka oppii' organisaatioissa: jos agentti suorittaa tehtävän itsenäisesti, havaintoperäinen laukaisin (Ritala) ei enää välttämättä synny ihmistyöntekijän kokemuksesta vaan datan poikkeamasta. Tämä tarkoittaa, että organisaatiollinen oppiminen voi nopeutua radikaalisti — mutta samalla inhimillinen ymmärrys siitä, mitä opittiin ja miksi, voi heikentyä. Suomessa, jossa eettisten linjausten pohjatyö on vielä kesken yli 59 prosentissa organisaatioista, tämä signaali vaatii erityistä huomiota rakenteellisten käytäntöjen kehittämisessä.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen / Primaarilähde</span>
+            <a href="https://www.vivicta.com/fi/uutishuone/kaikki-uutiset-ja-tiedotteet/tiedotteet/26/vivicta-ja-servicenow-tuovat-tekoalyn-osaksi-palveluoperaatioiden-arkea/" target="_blank" rel="noopener" class="a-source-link">Vivicta — Vivicta ja ServiceNow tuovat tekoälyn osaksi palveluoperaatioiden arkea (25.8.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen / Primaarilähde</span>
+            <a href="https://www.vivicta.com/fi/uutishuone/kaikki-uutiset-ja-tiedotteet/tiedotteet/26/suomi-jaa-jalkeen-muista-pohjoismaista-tekoalyn-tuottavuudessa-mutta-investoi-eniten/" target="_blank" rel="noopener" class="a-source-link">Vivicta — Nordic AI Navigator: Suomi jää jälkeen muista Pohjoismaista tekoälyn tuottavuudessa mutta investoi eniten (2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.sttinfo.fi/tiedote/71862867/raportti-vain-3-percent-suomalaisyrityksista-saavuttaa-merkittavaa-tuottoa-tekoalyinvestoinneistaan" target="_blank" rel="noopener" class="a-source-link">Boston Consulting Group — Nordic AI -raportti: Vain 3 % suomalaisyrityksistä saavuttaa merkittävää tuottoa tekoälyinvestoinneistaan (10.3.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.verkkouutiset.fi/a/suomi-jai-tekoalyssajalkeen-vanhat-tyotavat-syyna/" target="_blank" rel="noopener" class="a-source-link">SD Worx — Tekoäly jäänyt jälkeen: vanhat työtavat syynä (Verkkouutiset, kesä 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/nain-suomi-hyodyntaa-tekoalya-2026-yritysten-kahtiajako-syvenee-edellakavijat-karkaavat/" target="_blank" rel="noopener" class="a-source-link">AI Finland & Business Finland — Näin Suomi hyödyntää tekoälyä 2026 (huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.verkkouutiset.fi/a/suomi-jai-tekoalyn-kaytossa-pohjoismaiden-hannille/" target="_blank" rel="noopener" class="a-source-link">Microsoft AI Diffusion -raportti — Suomi jäi tekoälyn käytössä Pohjoismaiden hännille (Verkkouutiset, toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://tem.fi/-/tekoalysta-saa-tuottavuushyotyja-vain-oppimalla-uutta-ja-pois-vanhasta" target="_blank" rel="noopener" class="a-source-link">Työ- ja elinkeinoministeriö — Tekoälystä saa tuottavuushyötyjä vain oppimalla uutta ja pois vanhasta (huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://professio.fi/tulevaisuuden-tyoelaman-taidot-2026/" target="_blank" rel="noopener" class="a-source-link">Professio — Tulevaisuuden työelämän taidot 2026 (toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://rsvp.servicenow.com/helsinkisummit2026/session/3904850/customer-vivicta" target="_blank" rel="noopener" class="a-source-link">ServiceNow AI Summit Helsinki 2026 — Vivictan sessio: Journey to a Unified Platform for Risk, Security and Continuity</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://hrviesti.fi/tekoaly-muuttaa-tyota-pysyyko-henkilosto-muutoksen-vauhdissa/" target="_blank" rel="noopener" class="a-source-link">Kyndrylin People Readiness Report 2026 — HR-viesti: Tekoäly muuttaa työtä</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.sciencedirect.com/journal/technovation" target="_blank" rel="noopener" class="a-source-link">Ritala ym. (2024) — Organizational learning and AI capabilities, Technovation</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://pubsonline.informs.org/journal/orsc" target="_blank" rel="noopener" class="a-source-link">Kaplan (2008) — Framing contests: Strategy making under uncertainty, Organization Science</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 17.9.2026 klo 17.35.03</span>
+</div>
+
+</body>
+</html>
