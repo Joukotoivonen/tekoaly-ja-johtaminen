@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pohjoismainen tekoälyn käyttöönotto 2025–2026: Investointikuilu ja organisatorinen oppiminen</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Pohjoismainen tekoälyn käyttöönotto 2025–2026: Investointikuilu ja organisatorinen oppiminen</h1>
+  <div class="cover-date">18.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Nordic State of AI -selvityksen neljäs kierros (NSOAI4, maaliskuu 2025) kartoitti yli 120 pohjoismaista yritystä ja 17 julkisen sektorin organisaatiota. Keskeisin löydös: pohjoismaisten yritysten suurin este tekoälyn skaalaamisessa on siirtynyt osaajapulasta riittämättömiin investointeihin. Tilastokeskuksen mukaan 38 % suomalaisyrityksistä käyttää jo tekoälyä, mutta vain 15 %:lla on dokumentoidut ohjeet ja käytännöt sen hyödyntämiselle. AI Finland & Business Finlandin selvitys (2026) osoittaa voimakasta polarisaatiota: edistyneiden yritysten osuus on kasvanut 9 %:sta 39 %:iin kahdessa vuodessa, mutta varovaisten osuus on samanaikaisesti kasvanut 47 %:sta 54 %:iin. Aiempi keskikasti on lähes kadonnut.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>NSOAI4-raportti toimii itsessään kehystämisinterventiona: sen julkaisijat AMD Silo AI ja AI Finland pyrkivät legitimoimaan suuria ja pitkäjänteisiä tekoälyinvestointeja tilanteessa, jossa yrityskenttä on epävarma. Valtiovarainministeriö on reagoinut raportin löydöksiin konkreettisella rakenteellisella käytännöllä: 10 miljoonan euron investointiohjelmalla (2026), joka pyrkii murtamaan julkisen sektorin siilorakenteen. Deloitten Nordic State of AI 2026 -raportti paljastaa kriittisen hallintoaukon: 79 % organisaatioista raportoi parantuneesta tehokkuudesta, mutta vain 20 % on nimennyt vastuuhenkilön arvon realisoinnista. Tämä rakenteellinen puutos estää organisatorisen oppimisen institutionalisoitumisen.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Kentällä on tunnistettavissa neljä kilpailevaa kehystä. (1) Kilpailukyky-kehys (AMD Silo AI / AI Finland): tekoäly on strateginen kilpailuedun ajuri, johon investointi on välttämätöntä selviytymiselle — 'erottautuminen syntyy räätälöidystä tekoälystä, joka on upotettu syvälle tarjontaan'. Resonoi vahvasti johtotasolla, mutta heikosti operatiivisella tasolla. (2) Varovaisen pragmatismin kehys (pohjoismaiset johtoryhmät / EY): tekoäly tunnistetaan arvokkaaksi, mutta ROI-mittarit puuttuvat ja investointiriskit ovat todelliset — rationaalista päätöksentekoa, ei muutosvastarintaa. (3) Julkisen sektorin hajanaisuuden kehys (AMD Silo AI): tekoälyhankkeet johdetaan itsenäisesti paikallisissa yksiköissä ilman yhteistä arviointikehikkoa. (4) Pilottiylikuormituksen kehys (Deloitte): organisaatiot käynnistävät kymmeniä pilotteja, mutta skaalaaminen tökkii — pelkkä pilotointi ilman strategiaa johtaa epäonnistuneeseen arvonluontiin.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Merkittävin jännite liittyy odotushorisonttiin: monet yritykset odottavat tekoälyinvestointien tuottavan 1–5 vuoden kuluessa, mikä on usein liian lyhyt aika tulosten lunastamiseen. Tämä voidaan tulkita kahdella tavalla: joko yritysten naiiviutena tai vastuullisena varainhallintana, jossa selkeän ROI-näytön vaatimus on hallitustyön velvoite, ei muutosvastarintaa. EY:n Reimagining Industry Futures -raportti (2025) vahvistaa, että pohjoismaiset yritykset ovat rakenteellisesti riskitietoisempia kuin muut — tämä ei ole heikkous vaan alueellinen ominaispiirre, joka kehystämisstrategioiden on otettava huomioon. Deloitten luku on hälyttävä: 75 % odottaa liikevaihtokasvua tekoälystä, mutta vain 18 % saavuttaa sen.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee erityishuomion. (1) Polarisaatio kiihtymässä ilman sillanrakentajia: varovaiset yritykset eivät liiku kohti edistyneempiä käytäntöjä, koska kilpailukyky-kehys ei tavoita niiden kognitiivisia rakenteita — tarvitaan täysin erilainen lähestymistapa varovaisten segmentille. (2) Vastuu ilman vastuunkantajaa: arvo syntyy, mutta sitä ei omista kukaan — 80 % organisaatioista on nimennyt arvon realisoinnin vastuuttomaksi, mikä tekee oppimisen institutionalisoinnista mahdotonta. (3) Julkisen sektorin hajautunut oppiminen: kokemukset eivät aggregoidu ministeriöiden ja virastojen välillä, mikä tekee valtiovarainministeriön 10 miljoonan euron ohjelmasta tarpeellisen mutta riittämättömän ilman yhteisiä viestintäkäytäntöjä.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">organisatorinen oppiminen</span><span class="concept-chip">havaintoperäiset laukaisimet</span><span class="concept-chip">toiminnalliset laukaisimet</span><span class="concept-chip">uutta etsivä oppiminen</span><span class="concept-chip">olemassaolevaa hyödyntävä oppiminen</span><span class="concept-chip">rakenteelliset käytännöt</span><span class="concept-chip">viestintäkäytännöt</span><span class="concept-chip">pilottiylikuormitus</span><span class="concept-chip">arvon realisointi</span><span class="concept-chip">investointikuilu</span><span class="concept-chip">kehystämisinterventio</span><span class="concept-chip">EU AI Act</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Nimeä jokaiselle tekoälyhankkeelle vastuuhenkilö arvon realisoinnille — ilman nimettyä omistajaa tehokkuushyödyt jäävät mittaamattomiksi ja oppiminen institutionalisoitumatta (vastaa Deloitten löydökseen: 80 % organisaatioista ilman vastuunkantajaa).</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Kehitä varovaisille yrityksille räätälöity kehystämisstrategia, joka ei perustu kilpailukyky-argumenttiin vaan riskienhallinnan ja vastuullisen varainhallinnon logiikkaan — kilpailukyky-kehys resonoi jo edistyneiden kanssa, ei varovaisten.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Rakenna julkisen sektorin tekoälyohjelmaan (VM:n 10 M€) eksplisiittiset viestintäkäytännöt kokemusten jakamiseksi ministeriöiden ja virastojen välillä — investointi yksin ei murra siilorakennetta ilman yhteisiä oppimisrakenteita.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">NSOAI4 kartoitti yli 120 pohjoismaista yritystä ja 17 julkisen sektorin organisaatiota</div>
+      <div class="source-ref">📌 AI Finland & AMD Silo AI, Nordic State of AI 4 (NSOAI4), maaliskuu 2025; Fairedih.fi, 2025</div>
+      <div class="source-quote">Raportti kartoitti yli 120 pohjoismaista yritystä ja 17 julkisen sektorin organisaatiota arvioidakseen tekoälyn käyttöönoton nykytilaa, investointeja ja haasteita</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">38 % suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 %:lla on dokumentoidut ohjeet</div>
+      <div class="source-ref">📌 Tilastokeskus (viitattu NSOAI4-analyysissa)</div>
+      <div class="source-quote">Tilastokeskuksen mukaan 38 % suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 %:lla on dokumentoidut ohjeet ja käytännöt sen hyödyntämiselle</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Varovaisten yritysten osuus kasvoi 47 %:sta 54 %:iin, edistyneiden 9 %:sta 39 %:iin kahdessa vuodessa</div>
+      <div class="source-ref">📌 AI Finland & Business Finland, selvitys 2026</div>
+      <div class="source-quote">Varovaisten yritysten osuus kasvoi 47 %:sta 54 %:iin kahdessa vuodessa, samalla kun edistyneiden osuus kasvoi 9 %:sta 39 %:iin</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">79 % organisaatioista raportoi parantuneesta tehokkuudesta, mutta vain 20 % on nimennyt vastuuhenkilön arvon realisoinnista</div>
+      <div class="source-ref">📌 Deloitte, Nordic State of AI 2026</div>
+      <div class="source-quote">79 % pohjoismaisista organisaatioista raportoi parantuneesta tehokkuudesta, mutta vain 20 % on nimennyt jonkun vastuulliseksi arvon realisoinnista</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Valtiovarainministeriö käynnisti 10 miljoonan euron tekoälyinvestointiohjelman</div>
+      <div class="source-ref">📌 Valtiovarainministeriö, investointiohjelma 2026</div>
+      <div class="source-quote">Valtiovarainministeriön 10 miljoonan euron investointiohjelma (2026) on ensimmäinen rakenteellinen käytäntö, joka pyrkii rikkomaan tämän siilorakenteen</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Erottautuminen syntyy räätälöidystä tekoälystä, joka on upotettu syvälle tarjontaan</div>
+      <div class="source-ref">📌 Niko Vuokko, AMD Silo AI (NSOAI4:n julkiset tiedotteet)</div>
+      <div class="source-quote">Erottautuminen syntyy räätälöidystä tekoälystä, joka on upotettu syvälle tarjontaan</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Pohjoismaiset yritykset ovat varovaisempia ja riskitietoisempia generatiivisen tekoälyn suhteen kuin muut</div>
+      <div class="source-ref">📌 EY, Reimagining Industry Futures -raportti, 2025</div>
+      <div class="source-quote">EY:n Reimagining Industry Futures -raportti (2025) osoittaa, että pohjoismaiset yritykset ovat varovaisempia ja riskitietoisempia generatiivisen tekoälyn suhteen</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Julkisella sektorilla tekoälyhankkeet johdetaan itsenäisesti paikallisten yksiköiden sisällä</div>
+      <div class="source-ref">📌 Peter Sarlin, AMD Silo AI (NSOAI4)</div>
+      <div class="source-quote">Tekoälyhankkeet johdetaan itsenäisesti paikallisten yksiköiden tai osastojen sisällä, kun yksityisellä sektorilla johtaminen on keskitetympää</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Monet yritykset odottavat tekoälyinvestointien tuottavan 1–5 vuoden kuluessa, mikä on usein liian lyhyt aika</div>
+      <div class="source-ref">📌 AI Finland / STT, 2025</div>
+      <div class="source-quote">Monet yritykset odottavat tekoälyinvestointien tuottavan 1–5 vuoden kuluessa, mikä on usein liian lyhyt aika tekoälyteknologioiden tulosten lunastamiseen</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">75 % odottaa liikevaihtokasvua tekoälystä, mutta vain 18 % saavuttaa sen</div>
+      <div class="source-ref">📌 Deloitte, Nordic State of AI 2026</div>
+      <div class="source-quote">Vain 18 % saavuttaa liikevaihtokasvua tekoälystä, vaikka 75 % odottaa sitä</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Varovaisten yritysten osuus kasvaa eikä liiku kohti edistyneempiä käytäntöjä</div>
+      <div class="source-ref">📌 AI Finland & Business Finland, selvitys 2026</div>
+      <div class="source-quote">Varovaisten yritysten osuus kasvoi 47 %:sta 54 %:iin kahdessa vuodessa — varovaiset eivät liiku</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Vain 20 % on nimennyt vastuuhenkilön arvon realisoinnille tekoälystä</div>
+      <div class="source-ref">📌 Deloitte, Nordic State of AI 2026</div>
+      <div class="source-quote">Vain 20 % on nimennyt jonkun vastuulliseksi arvon realisoinnista</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Julkisen sektorin tekoälyhankkeet siiloutuvat eivätkä tuota jaettua oppimista</div>
+      <div class="source-ref">📌 AMD Silo AI / NSOAI4, maaliskuu 2025</div>
+      <div class="source-quote">Julkisella sektorilla tekoälyhankkeet johdetaan itsenäisesti paikallisten yksiköiden tai osastojen sisällä — kokemukset eivät aggregoidu</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 38/2026 — NSOAI4-katsaus: Investointikuilu, kehystämiskilpailu ja organisatorinen oppiminen pohjoismaisessa tekoälyjohtamisessa</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">havaintoperäiset laukaisimet</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">toiminnalliset laukaisimet</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">viestintäkäytännöt</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">rakenteelliset käytännöt</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">uutta etsivä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">olemassaolevaa hyödyntävä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">esteet ja mahdollistajat</span></div>
+        
+        <p>AI Finlandin ja AMD Silo AI:n neljäs Nordic State of AI -selvitys (NSOAI4, maaliskuu 2025) on tämän katsauksen pääasiallinen primaarilähde. Raportti kartoitti yli 120 pohjoismaista yritystä ja 17 julkisen sektorin organisaatiota arvioidakseen tekoälyn käyttöönoton nykytilaa, investointeja ja haasteita (Fairedih.fi, 2025).<br><br>Ritalan (2024) organisatorisen oppimisen linssistä tarkasteltuna NSOAI4-raportti paljastaa klassisen havaintoperäisen laukaisimen: pohjoismaisten yritysten ensisijainen haaste tekoälyn skaalaamisessa on siirtynyt osaajien puutteesta riittämättömiin investointeihin (AI Finland / STT, 2025). Tämä on keskeinen toiminnallinen laaukaisin, joka osoittaa, että organisaatiot ovat tunnistaneet ongelman (havaintoperäinen taso), mutta eivät ole kyenneet aktivoimaan rakenteellisia käytäntöjä konkreettisen toiminnan tasolle — mikä on klassinen este olemassaolevaa hyödyntävälle oppimiselle.<br><br>Merkittävin löydös: valtaosa yrityksistä aikoo investoida tekoälyyn alle 500 000 euroa seuraavan vuoden aikana (AI Finland / STT, 2025), vaikka ne tunnistavat tekoälyn merkityksen kilpailuedun kannalta. Tämä 'tunnistaminen ilman toimintaa' -asetelma edustaa Ritalan käsittein tilanteen, jossa viestintäkäytännöt ovat jääneet retorisen tason 'uutta etsivän oppimisen' puheeksi — mutta rakenteelliset käytännöt (budjettirakenteet, vastuutukset, johtoryhmätyö) eivät tue siirtymää hyödyntävään vaiheeseen.<br><br>Viestintäkäytäntöjen korotettu rooli: NSOAI4-raportti itse on viestintäkäytäntönä erityisen kiinnostava. Se on formaali, julkinen kanava, joka pyrkii välittämään havaintoperäisiä laukaisimia johtoryhmätasolle ('tekoälyinvestointitaso on kriittisen matala'). Tämä kytkeytyy Floyd & Lanen käsitteistöön: raportti toimii keskijohdon ja ylimmän johdon välisen merkityksen välittämisen välineenä — tai pikemmin sen puuttumisen dokumenttina. Julkinen raportti toimii ulkoisena legitimaatiomekanismina, jonka kautta AMD Silo AI pyrkii kehystämään investointivelvoitteen kilpailukykykysymykseksi.<br><br>Suomessa tilanne on erityisen kaksijakoinen: EIBIS-tutkimuksen mukaan 66 % suomalaisyrityksistä käytti generatiivista tekoälyä vuonna 2025 — EU:n paras tulos — mutta tyypillinen suomalainen AI-hanke jää alle 100 000 euron ja varovaisten yritysten osuus on kasvanut 47 %:sta 54 %:iin vuodesta 2024 vuoteen 2026 (AI Finland / Business Finland, 2026). Tämä polarisaatio — kärkijoukko etenee, varovaiset eivät liiku lainkaan — on Ritalan teoriassa suora seuraus puutteellisista viestintäkäytännöistä: oppiminen ei leviä organisaatiorajojen yli.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Kilpailukyky-kehys (prognostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: AMD Silo AI / AI Finland / Teknologiateollisuus</div>
+          <div style="font-size:13px;color:#374151;">NSOAI4:n hallitseva kehys: tekoäly on strateginen kilpailuedun ajuri, johon investointi on välttämätöntä selviytymiselle. Raportin julkisissa tiedotteissa käytetään vahvaa prognostista kehystä: 'erottautuminen syntyy räätälöidystä tekoälystä, joka on upotettu syvälle tarjontaan' (Niko Vuokko, AMD Silo AI). Tämä kehys pyrkii legitimoimaan suuria, pitkäaikaisia investointeja ja haastaa vallitsevaa varovaisuuden normia. Kehyksen resonanssi on vahva C-suite-tasolla, mutta heikko operatiivisella tasolla, jossa budjettipäätökset syntyvät.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Varovaisen pragmatismin kehys (diagnostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Suurin osa pohjoismaisista yrityksistä / EY / pohjoismaiset johtoryhmät</div>
+          <div style="font-size:13px;color:#374151;">Käytännön johtoryhmissä vallitseva diagnostinen kehys: tekoäly tunnistetaan arvokkaaksi, mutta investointiriskit ovat todelliset, ROI-mittarit puuttuvat, ja odotusaika on liian lyhyt (1–5 vuotta). EY:n Reimagining Industry Futures -raportti (2025) osoittaa, että pohjoismaiset yritykset ovat varovaisempia ja riskitietoisempia generatiivisen tekoälyn suhteen. Tämä kehys ei ole muutosvastarintaa — se on rationaalista päätöksentekoa epävarmuuden keskellä (ks. Kaplanin ydinlöydös: epävarmuus on kehystämiskilpailujen raaka-aine).</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Julkisen sektorin hajanaisuuden kehys (diagnostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: AMD Silo AI / julkisen sektorin tutkijat</div>
+          <div style="font-size:13px;color:#374151;">NSOAI4-raportissa nousee erillinen diagnostinen kehys julkiselle sektorille: tekoälyhankkeet johdetaan itsenäisesti paikallisten yksiköiden tai osastojen sisällä, kun yksityisellä sektorilla johtaminen on keskitetympää (Peter Sarlin, AMD Silo AI). Julkisella sektorilla harvemmin on selkeää kehikkoa tekoälyinvestointien onnistumisen arviointiin. Tämä kehys resonoi vahvasti valtiovarainministeriön 10 miljoonan euron investointiohjelmassa (2026), joka on suora rakenteellinen vastaus raportin löydöksiin.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Pilot fatigue -kehys (diagnostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Deloitte / konsulttitoimistot</div>
+          <div style="font-size:13px;color:#374151;">Rinnakkainen, kasvava kehys: organisaatiot käynnistävät kymmeniä tekoälypilotteja, mutta niiden skaalaaminen tuotantoon tökkii rakenteellisista syistä. Tilastokeskuksen mukaan 38 % suomalaisyrityksistä käyttää tekoälyä, mutta vain 15 %:lla on dokumentoidut ohjeet ja käytännöt sen hyödyntämiselle. Tämä kehys haastaa kilpailukyky-kehystä: pelkkä pilotointi ilman strategiaa johtaa 'epäonnistuneeseen arvonluontiin'. Kehys elää erityisesti konsulttiyhteisön viestintäkäytännöissä (raportit, webinaarit, asiakaskohtaamiset).</div>
+        </div>
+      </div>
+        <p>NSOAI4-raportin kehystämiskilpailu käydään kahden pääjuonteen välillä: (1) 'investoi rohkeasti nyt tai jää jälkeen' (AMD Silo AI / AI Finland) vs. (2) 'investointi ilman strategiaa on tuhlausta' (Deloitte / konsulttimaailma). Kaplanin (2008) mukaan epävarmuus on kehystämiskilpailujen raaka-aine — ja juuri tätä NSOAI4-raportti dokumentoi: pohjoismainen yrityskenttä on epävarma siitä, kuinka suuria investointeja tarvitaan ja millä aikavälillä ne tuottavat.<br><br>Kehystämiskilpailu materialisoituu konkreettisissa viestintäkäytännöissä: NSOAI4 on itsessään kehystämisinterventio — formaali raportti, joka pyrkii siirtämään kognitiivista kehystä 'varovaisen pragmatismin' alueelta 'kilpailukyvyn välttämättömyyden' alueelle. Raportin lehdistötiedote, Teknologiateollisuuden blogijulkaisu ja Fairedih.fi:n yhteenveto ovat kaikki viestintäkäytäntöjä, joissa tätä kehyksen uudelleenasemointia aktiivisesti rakennetaan.<br><br>Erityisen kiinnostava on kehyksen resonanssin ongelma: Deloitten Nordic State of AI 2026 -raportti osoittaa, että pohjoismaisten organisaatioiden strateginen valmius on laskenut jyrkästi — 61 %:sta 43 %:iin — ja osaamistaso on pudonnut vain 14 %:iin. Vaikka kilpailukyky-kehys resonoi johdon puheessa, se ei muutu rakenteellisiksi käytännöiksi. Tämä on Kaplanin kehystämisteorian kannalta klassinen tilanne: kehyksen omistaja (AMD Silo AI) ei pysty lunastamaan kehyksen lupauksia, koska vastaanottavat organisaatiot operoivat eri kognitiivisilla kehyksillä.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>NSOAI4-raportin yksi merkittävä jännite liittyy epärealistisiin odotuksiin: monet yritykset odottavat tekoälyinvestointien tuottavan 1–5 vuoden kuluessa, mikä on usein liian lyhyt aika tekoälyteknologioiden tulosten lunastamiseen (AI Finland / STT, 2025). Tämä on viesti, jonka raportti esittää kritiikkinä yritysten naiiviudesta — mutta analyysi voidaan kääntää: yritykset, jotka vaativat selkeää ROI-näyttöä lyhyellä aikavälillä, harjoittavat vastuullista varainhallintaa ja hallitustyötä, eivät muutosvastarintaa.<br><br>Samoin EY:n havainto, jonka mukaan pohjoismaiset yritykset ovat varovaisempia ja riskitietoisempia generatiivisen tekoälyn suhteen, esitetään implisiittisenä ongelmana — viitteenä johdon vähäisestä sitoutumisesta teknologiaa koskeviin päätöksiin. Tämä tulkinta on analyysin kriittisen periaatteen kannalta ongelmallinen: varovaisuus ja riskitietoisuus ovat vastuullisen johtamisen merkkejä, eivät esteitä.<br><br>Liftedin Suuri johtoryhmätutkimus 2026 paljastaa, että jopa 54 % johtoryhmistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä. Tämä voidaan lukea kahdella tavalla: (a) johtoryhmät ovat epäonnistuneet strategisessa integraatiossa (kilpailukyky-kehys), tai (b) johtoryhmät tekevät rationaalista priorisointia rajallisilla resursseilla ja tietopohjan vielä kehittyessä (vastuullisen huolenpidon kehys). NSOAI4-raportti ja siihen liittyvä viestintä kallistuu lähes yksinomaan (a)-tulkintaan — mikä on kehystämisvalinta, ei neutraali havainto.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Yritysten varovaisuus, lyhyen aikavälin ROI-vaatimukset ja johtoryhmien epäröinti tekoälyn integroinnissa eivät ole muutosvastarintaa. Ne heijastavat rationaalista epävarmuuden hallintaa tilanteessa, jossa tekoälyinvestointien tuottonäyttö on vielä ohut: BCG:n maaliskuun 2026 raportin mukaan vain 4 % pohjoismaisista yrityksistä raportoi merkittävää ROI:ta tekoälyinvestoinneistaan. Tässä valossa 'alle 500 000 euron investointiaikeet' eivät ole pelkuruutta — ne voivat olla viisautta. Korjattu tulkinta: raportin tulisi erottaa selkeästi (1) strategisen kyvykkyyden puute (aito ongelma) ja (2) tarkoituksellinen varovaisuus epävarmuuden hallintavälineenä (vastuullinen käytäntö).</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• POLARISAATIO KIIHTYMÄSSÄ — VAROVAISET EIVÄT LIIKU: AI Finland & Business Finlandin selvitys (2026) osoittaa, että varovaisten yritysten osuus kasvoi 47 %:sta 54 %:iin kahdessa vuodessa, samalla kun edistyneiden osuus kasvoi 9 %:sta 39 %:iin. Aiempi 'keskikasti' (45 %) on lähes kokonaan kadonnut — se on siirtynyt edistyneisiin, mutta varovaiset eivät liiku. Ritalan teoriassa tämä on kriittinen este: organisatorinen oppiminen ei leviä populaatiotasolla, koska viestintäkäytännöt ja rakenteelliset käytännöt eivät tavoita varovaisia organisaatioita. Kehystämiskilpailun (Kaplan) näkökulmasta: kilpailukyky-kehys resonoi jo edistyneiden kanssa — mutta tarvittaisiin täysin erilainen kehys varovaisten kognitiivisiin rakenteisiin.</div><div class="signal-item">• VASTUU ILMAN VASTUUNKANTAJAA — ARVO ILMAN OMISTAJAA: Deloitten Nordic State of AI 2026 -raportti paljastaa, että 79 % pohjoismaisista organisaatioista raportoi parantuneesta tehokkuudesta, mutta vain 20 % on nimennyt jonkun vastuulliseksi arvon realisoinnista. Vain 18 % saavuttaa liikevaihtokasvua tekoälystä, vaikka 75 % odottaa sitä. Tämä on Ritalan rakenteellisten käytäntöjen kriittinen puutos: ilman nimettyä vastuunkantajaa tekoälyn tuottama arvo jää hajautuneeksi, mittaamattomaksi ja johtamattomaksi. Viestintäkäytäntöjen siltalinssistä: oppiminen ei institutionalisoidu, koska sitä ei kukaan omista.</div><div class="signal-item">• JULKISEN SEKTORIN HAJAUTUNUT OPPIMINEN — RAKENTEELLINEN ESTE: NSOAI4-raportti dokumentoi, että julkisella sektorilla tekoälyhankkeet johdetaan usein itsenäisesti paikallisten yksiköiden tai osastojen sisällä, kun taas yksityisellä sektorilla johtaminen on keskitetympää. Tämä on suora rakenteellinen este organisatoriselle oppimiselle: kokemukset eivät aggregoidu, viestintäkäytännöt ovat siiloutuneet, eikä uutta etsivä oppiminen tuota hyödyntävää oppimista. Valtiovarainministeriön 10 miljoonan euron investointiohjelma (2026) on ensimmäinen rakenteellinen käytäntö, joka pyrkii rikkomaan tämän siilorakenteen — mutta sen onnistuminen riippuu siitä, syntyykö samalla yhteisiä viestintäkäytäntöjä kokemusten jakamiseen ministeriöiden ja virastojen välillä.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Primaarilähde (analysoitu)</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2025/03/Silo_NSOAI4_INLAY_update_spreads.pdf" target="_blank" rel="noopener" class="a-source-link">AI Finland & AMD Silo AI: The Nordic State of AI, Edition IV (NSOAI4), maaliskuu 2025</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.sciencedirect.com/journal/technovation" target="_blank" rel="noopener" class="a-source-link">Ritala ym. (2024): Organizational learning and AI capabilities — Technovation</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://pubsonline.informs.org/journal/orsc" target="_blank" rel="noopener" class="a-source-link">Kaplan (2008): Framing Contests — Organization Science</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2026/04/Nain-Suomi-hyodyntaa-tekoalya-2026.pdf" target="_blank" rel="noopener" class="a-source-link">AI Finland & Business Finland: Näin Suomi hyödyntää tekoälyä 2026 (huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/dk/en/Industries/technology/research/state-of-ai-in-the-nordics.html" target="_blank" rel="noopener" class="a-source-link">Deloitte: State of AI in the Nordics 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/fi/fi/issues/ai-and-tech/tekoaly-hallitustyossa-2026.html" target="_blank" rel="noopener" class="a-source-link">Deloitte: Tekoäly hallitustyössä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.sttinfo.fi/tiedote/70971395/nordic-state-of-ai-selvitys-yritykset-tunnistavat-tekoalyn-arvon-mutta-investoinnit-laahaavat-pahasti-jaljessa" target="_blank" rel="noopener" class="a-source-link">AI Finland: Nordic State of AI -selvitys — investoinnit jäljessä (STTinfo, maaliskuu 2025)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/selvityksemme-paljastaa-tekoalyn-suurin-potentiaali-on-asiantuntijatyossa-jatkossa-tutkimuksessa/" target="_blank" rel="noopener" class="a-source-link">AI Finland: Tekoälyn suurin potentiaali asiantuntijatyössä (AI Finland, huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.salkunrakentaja.fi/2026/05/suomalaiset-johtoryhmat-eivat-pysy-tekoalyn-vauhdissa/" target="_blank" rel="noopener" class="a-source-link">Salkunrakentaja: Suomalaiset johtoryhmät eivät pysy tekoälyn vauhdissa (Lifted, toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.ey.com/fi_fi/newsroom/2025/03/on-toimittava-nopeasti-jotta-pysytaan-mukana-tekoalykehityksessa" target="_blank" rel="noopener" class="a-source-link">EY Suomi: Reimagining Industry Futures 2025 — pohjoismaiset yritykset jäävät jälkeen</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://news.cision.com/vivicta/r/nordic-organizations-are-guarded-optimists-about-ai---new-study-reveals-gap-between-ambition-and-exe,c4322463" target="_blank" rel="noopener" class="a-source-link">Vivicta / Kairos Future: Nordic AI Navigator (maaliskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.aisanomat.fi/p/deloitte-state-of-ai-2026-suomalaisyritysten-peilikuva-globaaliin-teko-lymurrokseen" target="_blank" rel="noopener" class="a-source-link">AISanomat: Deloitte State of AI 2026 — suomalaisyritysten peilikuva (maaliskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.fairedih.fi/2025/03/14/nordic-state-of-ai-tutkimus-paljastaa-tekoalyn-kayttoonoton-maturiteetin-kasvaneen-pohjoismaisissa-yrityksissa/" target="_blank" rel="noopener" class="a-source-link">Fairedih.fi: Nordic State of AI — tutkimus paljastaa maturiteetin kasvaneen (maaliskuu 2025)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://vm.fi/-/ministeri-ikonen-uusi-kymmenen-miljoonan-euron-investointiohjelma-vauhdittaa-tekoalya-valtionhallinnossa" target="_blank" rel="noopener" class="a-source-link">Valtiovarainministeriö: 10 miljoonan euron investointiohjelma valtionhallintoon (maaliskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://teknologiateollisuus.fi/pohjoismaisten-yritysten-on-herattava-tekoalyinvestointien-uuteen-mittaluokkaan/" target="_blank" rel="noopener" class="a-source-link">Teknologiateollisuus: Pohjoismaisten yritysten on herättävä tekoälyinvestointien uuteen mittaluokkaan (maaliskuu 2025)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 18.9.2026 klo 16.24.45</span>
+</div>
+
+</body>
+</html>
