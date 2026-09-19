@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälyn kehystämiskilpailu: Visma vs. Tietoevry Care</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Tekoälyn kehystämiskilpailu: Visma vs. Tietoevry Care</h1>
+  <div class="cover-date">19.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Visma ja Tietoevry Care rakentavat kumpikin omaa legitimiteettiään tekoälyn vastuullisessa käytössä, mutta eri aikahorisonteista käsin. Visma nojaa mitattavaan nykysuorituskykyyn: e-conomic leikkasi pilvi-CO₂-päästöjä 67 % vuodessa, Flex Applications saavutti 93 %:n CO₂-vähennyksen siirtymällä Azureen, ja Scope 1- ja 2-päästöt ovat laskeneet 37,8 % vuoden 2022 lähtötasosta. Tietoevry Care puolestaan kehystää Lifecare Kide AI Assistentin tulevan potentiaalin kautta: tuote on tulossa terveydenhuollon ammattilaisten käyttöön vuoden 2026 aikana, mutta konkreettisia pilottituloksia tai käyttäjämääriä ei esitetä.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Visma rakentaa legitimiteettiään kolmella toisiaan tukevalla mekanismilla: faktuaalisella evidenssillä (tarkat CO₂-prosenttiluvut), ulkoisella auktoriteetilla (YK:n UNU-INWEH-raportti, Euroopan komission teknologiasuvereenisuuspaketti) sekä institutionaalisella rakenteella (AI Governance Portal, AI Code of Conduct, lakikatselmus jokaiselle strategiselle aloitteelle). Tietoevry Care asemoituu ammattilaisroolin suojaajana: toistamalla seitsemän kertaa, että 'ammattilainen arvioi aina', yritys vastaa ennakoivasti yhteiskunnalliseen huoleen tekoälyn autonomiasta hoitopäätöksissä. Tämä defensiivinen valinta sai lisää markkinarelevanssia, kun Yle uutisoi tammikuussa 2026 tapauksesta, jossa tekoälyä käytettiin vanhuksen hoivatarpeen arvioinnissa ilman asiakkaan tietoa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Visma rakentaa 'Vastuullinen AI-toimijuus' -kehystä, jossa tekoälyn ympäristövaikutus on nykyinen hallintovaje — ei tulevaisuuden kysymys. Ratkaisu on GreenOps-käytäntöjen, AI Code of Conductin ja oikean työkalun valinnan yhdistelmä, jossa kustannussäästöt ja päästövähennykset ovat sama liike. Tietoevry Care rakentaa 'Vastuullinen ammattilaistyön tuki' -kehystä, jossa tekoäly ei korvaa ammattilaista vaan tukee tiedon löytämistä hajautetuista potilastietojärjestelmistä. Kehys on ehdollistettu ammattilaisrooliin ja tietoturvavaatimuksiin. Hoppmannin (2020) mallilla arvioituna Visman kehys on vakuuttavampi, koska se kytkee konkreettiset tulokset laajempaan normatiiviseen muutokseen — Tietoevry Caren kehys jää potentiaaliseksi ilman mitattavia tuloksia.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Tietoevry Caren kehystämisessä on merkittävä aukko: lupaukset ammattilaistyön tukemisesta ja potilastiedon hallinnan parantamisesta eivät saa tuekseen pilottituloksia, aikasäästölaskelmia tai käyttäjämääriä. Tämä heikentää kehyksen uskottavuutta erityisesti julkishallinnon hankintaprosesseissa, joissa EU AI Act edellyttää näyttöä järjestelmän toiminnasta korkean riskin käyttökohteissa. Visman osalta riskinä on, että token-pohjaisen laskutuksen kytkeminen ESG-mittareihin luo uuden kompleksisuustason operatiiviseen johtamiseen, jonka hallinta vaatii uudenlaista osaamista organisaatioissa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme nousevaa signaalia: (1) Token-talous uutena kehystämisareenana — Visman tapa kytkeä token-pohjainen laskutus sekä kustannus- että päästöjohtamiseen viestii siitä, että tekoälyn käytön johtaminen siirtyy strategiadokumenteista operatiiviselle tasolle ja IT-budjettipäätökset alkavat kilpailla ESG-tavoitteiden kanssa samasta mittarista. (2) Ammattilaisroolin suojaaminen kehystämisresurssina — terveydenhuollon tekoälyratkaisuissa defensiivinen kehystäminen ('ammattilainen arvioi aina') on muuttumassa markkinaeduksi, ei pelkäksi varovaisuusviestiksi. (3) Hallintoinfrastruktuuri kilpailutekijänä — sekä Visma että Tietoevry Care rakentavat legitimiteettiä hallintorakenteiden kautta; tekoälyn markkinoinnissa siirrytään ominaisuuskilpailusta hallintoprofiilikilpailuun, mikä resonoi erityisesti julkishallinnon B2B-hankinnassa.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">kehystäminen</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">nykysuorituskyky</span><span class="concept-chip">kehityskaari</span><span class="concept-chip">potentiaali</span><span class="concept-chip">GreenOps</span><span class="concept-chip">token-talous</span><span class="concept-chip">hallintoinfrastruktuuri</span><span class="concept-chip">EU AI Act</span><span class="concept-chip">AI Code of Conduct</span><span class="concept-chip">AI Governance Portal</span><span class="concept-chip">Scope 1- ja 2-päästöt</span><span class="concept-chip">defensiivinen kehys</span><span class="concept-chip">legitimiteettirakenne</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Tietoevry Caren tulisi julkaista mitattavia pilottituloksia Lifecare Kide AI Assistentista (esim. aikasäästö per ammattilainen, käyttäjämäärät, tiedonhaun nopeutuminen) vahvistaakseen potentiaalikehyksensä uskottavuutta EU AI Act -vaatimukset huomioiden.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Organisaatioiden, jotka harkitsevat tekoälyhankintoja julkishallinnossa tai terveydenhuollossa, tulee arvioida toimittajien hallintoprofiilia (AI Governance Portal, tietosuoja-arkkitehtuuri, EU AI Act -katselmus) ominaisuuslistausten rinnalla — hallinto on muuttumassa hankintakriteeriksi.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: HR- ja IT-johtajien tulee valmistautua token-pohjaisen tekoälylaskutuksen integroimiseen ESG-raportointiin; tämä edellyttää uusia operatiivisia mittaristoja ja vastuunjakoa, jotta tekoälyn käyttö voidaan ohjata sekä kustannus- että päästötavoitteiden mukaisesti.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">e-conomic leikkasi pilvi-CO₂-päästöjä 67 % vuodessa</div>
+      <div class="source-ref">📌 Visma: Kehystämisanalyysi (Hoppmann 2020)</div>
+      <div class="source-quote">e-conomic leikkasi pilvi-CO₂-päästöjä 67 % vuodessa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Flex Applications saavutti 93 %:n CO₂-vähennyksen siirtyessään Azureen</div>
+      <div class="source-ref">📌 Visma: Kehystämisanalyysi (Hoppmann 2020)</div>
+      <div class="source-quote">Flex Applications saavutti 93 %:n CO₂-vähennyksen siirtyessään Azureen</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Visma raportoi 78,4 % uusiutuvaa sertifioitua sähköä toimistoissa ja datakeskuksissa</div>
+      <div class="source-ref">📌 Visma: Kehystämisanalyysi (Hoppmann 2020)</div>
+      <div class="source-quote">78,4 % uusiutuvaa sertifioitua sähköä toimistoissa ja datakeskuksissa</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Scope 1- ja 2-päästöt laskeneet 37,8 % vuoden 2022 lähtötasosta</div>
+      <div class="source-ref">📌 Visma: Kehystämisanalyysi (Hoppmann 2020)</div>
+      <div class="source-quote">37,8 %:n absoluuttisen vähennyksen Scope 1- ja 2-päästöissä vuoden 2022 lähtötasosta</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Lifecare Kide AI Assistant on tulossa terveydenhuollon ammattilaisten käyttöön vuoden 2026 aikana</div>
+      <div class="source-ref">📌 Tietoevry Care: Kehystämisanalyysi (Hoppmann 2020)</div>
+      <div class="source-quote">terveydenhuollon ammattilaisten käytössä vuoden 2026 aikana</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Visma rakentaa legitimiteettiä kolmella toisiaan tukevalla mekanismilla</div>
+      <div class="source-ref">📌 Vertailu: kumpi kehys on vakuuttavampi?</div>
+      <div class="source-quote">Visma rakentaa legitimiteettiä kolmella toisiaan tukevalla mekanismilla: (1) faktuaalinen evidenssi, (2) ulkoinen auktoriteetti, (3) institutionaalinen rakenne</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tietoevry Care toistaa seitsemän kertaa, että ammattilainen arvioi aina</div>
+      <div class="source-ref">📌 Heikot signaalit</div>
+      <div class="source-quote">Tietoevry Care toistaa seitsemän kertaa eri muodoissa, että 'ammattilainen arvioi aina'</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Yle uutisoi tammikuussa 2026 tekoälyn käytöstä vanhuksen hoivatarpeen arvioinnissa ilman asiakkaan tietoa</div>
+      <div class="source-ref">📌 Heikot signaalit</div>
+      <div class="source-quote">Yle uutisoi tammikuussa 2026, että hyvinvointialueella käytettiin tekoälyä vanhuksen hoivatarpeen arvioinnissa ilman, että asiakkaalle kerrottiin siitä</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Visman kehys on diagnostinen ja prognostinen</div>
+      <div class="source-ref">📌 Vertailu: kumpi kehys on vakuuttavampi?</div>
+      <div class="source-quote">Kehys on diagnostinen (ongelmana: datapimeys ja hallintovaje) ja prognostinen (ratkaisu: GreenOps, AI Code of Conduct, oikea työkalu oikeaan tehtävään)</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tietoevry Caren kehys on ehdollistettu ammattilaisrooliin ja tietoturvavaatimuksiin</div>
+      <div class="source-ref">📌 Vertailu: kumpi kehys on vakuuttavampi?</div>
+      <div class="source-quote">Kehys on potentiaalia ja tulevaa kehityskaarta korostava, ehdollistettu ammattilaisrooliin ja tietoturvavaatimuksiin</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Token-pohjainen laskutus kytkeytyy kustannus- ja päästöjohtamiseen</div>
+      <div class="source-ref">📌 Heikot signaalit</div>
+      <div class="source-quote">Visma kytkee token-pohjaisen laskutuksen suoraan sekä kustannus- että päästöjohtamiseen</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tekoälyn markkinoinnissa siirrytään ominaisuuskilpailusta hallintoprofiilikilpailuun</div>
+      <div class="source-ref">📌 Heikot signaalit</div>
+      <div class="source-quote">tekoälyn markkinoinnissa siirrytään ominaisuuskilpailusta (mitä tekoäly tekee) hallintoprofiilikilpailuun (miten tekoälyä hallinnoidaan)</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Kehystämisvertailu: Visma vs. Tietoevry Care</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Visma: Kehystämisanalyysi (Hoppmann 2020)</span>
+        <span class="a-pills"><span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Visma rakentaa tekoälyn ympäristövaikutuksia käsittelevässä tekstissään kehystä, jossa painottuvat samanaikaisesti nykyinen suorituskyky (present performance) ja kehityskaari (progress). Konkreettiset numerot ovat keskeisiä: e-conomic leikkasi pilvi-CO₂-päästöjä 67 % vuodessa, ja Flex Applications saavutti 93 %:n CO₂-vähennyksen siirtyessään Azureen. Visma raportoi myös 78,4 % uusiutuvaa sertifioitua sähköä toimistoissa ja datakeskuksissa sekä 37,8 %:n absoluuttisen vähennyksen Scope 1- ja 2-päästöissä vuoden 2022 lähtötasosta. Nämä ovat vahvaa nykysuorituskyvyn kehystämistä.<br><br>Kehystämistaktiikat: Visma yhdistää rohkeasti sekä johtopäätös- (conclusion) että myöntämis- (concession) -taktiikkaa. Johtopäätöstaktiikka näkyy väittämässä, jonka mukaan 'token-pohjainen laskutus tarkoittaa, että vähemmän tokeneita = alhaisempi kustannus ja alemmat päästöt, yhdessä' — suora syy-seurausketju. Myöntämistaktiikka on poikkeuksellisen läpinäkyvä: Visma tunnistaa suoraan, ettei dataa ole — 'standardoitua raportointia ei ole, vertailukelpoista dataa ei ole eri tarjoajien välillä' — ja kehystää tämän hallintovajeena eikä teknologian ongelmana. Tämä on Hoppmannin mallissa harvinainen taktiikka, jossa epävarmuus otetaan kehyksen osaksi sen sijaan, että se peitettäisiin.<br><br>Kehystämisdimensiot: Visma hyödyntää vahvimmin nykysuorituskyky- (e-conomic, Flex Applications -tulokset) ja kehityskaari- (GreenOps-ohjelma, AI Governance Portal, elävä AI Code of Conduct) dimensioita. Potentiaalidimensio jää taka-alalle — tulevaisuuslupauksia ei ylikorosteta. Tämä on teknologisen kypsyyden kannalta rehellinen valinta: tekoälyn ympäristövaikutukset eivät ole tulevaisuuden kysymys vaan nykyinen hallintohaaste.<br><br>Viestintäkäytäntöjen näkökulma: Kehys elää julkisessa johtamiskirjoituksessa (thought leadership -artikkeli), joka on osoitettu B2B-yleisölle — päättäjille, jotka pohtivat sekä AI-strategiaa että ESG-raportointivelvoitteita. Viestintätilanne on valittu tietoisesti: sama teksti rakentaa sekä diagnostista kehystä (ongelman määrittely: datapimeys on hallintovaje) että prognostista kehystä (ratkaisu: käytännöt ja ohjeistukset ennen regulaatiota).</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Tietoevry Care: Kehystämisanalyysi (Hoppmann 2020)</span>
+        <span class="a-pills"><span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Tietoevry Care kehystää Lifecare Kide AI Assistentin potentiaali- ja ennuste- (prospect) dimensioiden kautta. Tuote on 'terveydenhuollon ammattilaisten käytössä vuoden 2026 aikana' — se on siis vasta tulossa, ei vielä laajassa käytössä. Keskeinen lupaus on ammattilaisen vapautuva aika potilaskohtaamiseen, kliiniseen arviointiin ja hoitotyöhön, mikä on vahva potentiaalidimensio. Konkreettisia suorituskykylukuja (esim. kuinka paljon aikaa säästyy, pilottituloksia, käyttäjämääriä) ei esitetä — tämä on merkittävä ero Vismaan verrattuna.<br><br>Kehystämistaktiikat: Tietoevry Care käyttää selvästi ehdollistamis- (conditioning) taktiikkaa: 'Kide tukee tiedon löytämistä... Ammattilainen arvioi aina Kiteen tuottaman sisällön.' Jokainen lupaus on sidottu ehtoon — ammattilaisrooliin, käyttöoikeuksiin, lainsäädännöllisiin vaatimuksiin. Lisäksi myöntämistaktiikkaa käytetään toistuvasti ('Tekoäly ei korvaa ammattilaista'), mikä on tyypillistä korkean regulaatiopaineen ympäristöissä, kuten terveydenhuollossa. Tämä on defensiivinen mutta perusteltu valinta, koska EU:n AI Act luokittelee terveydenhuollon tekoälyjärjestelmät korkean riskin järjestelmiksi.<br><br>Kehystämisdimensiot: Tietoevry Care painottaa potentiaali- ja ennuste-dimensioita: mitä Kide voisi tehdä (kokonaiskuvan muodostaminen), minkä kehityspolun se avaa (sosiaalihuollon laajentuminen, ekosysteemi kolmansien osapuolten ratkaisuille, Kanta-palveluiden integraatio). Nykysuorituskyky-dimensio on heikko — yhtään mitattavaa tulosta ei esitetä.<br><br>Teknologian kypsyys ja kehystyksen vastaavuus: Hoppmannin teorian mukaan kehystystaktiikan tulisi vastata teknologian kypsyyttä. Kide on vuoden 2026 aikana lanseerattava tuote — käyttöönottovaihe on vielä kesken. Ehdollistamis- ja potentiaalipainotus ovat siis kypsyysasteeseen nähden oikeita. Kuitenkin täydellinen mitattavien tulosten puuttuminen on riski B2B-päättäjiä ajatellen, jotka odottavat evidenssiä.<br><br>Viestintäkäytäntöjen näkökulma: Kehys elää tuotemarkkinointitekstissä, joka on kohdistettu terveydenhuollon päätöksentekijöille (hyvinvointialueet, sairaanhoitopiirit). Viestintätilanne on tarkoin rajattu: teksti ei yritä myydä aggressiivisesti vaan rakentaa luottamusta vastuullisen käyttöönoton ympärille — tämä on tyypillistä julkishallinnon B2B-viestinnässä, jossa hankintapäätöksiin liittyy vahva institutionaalinen riski-intressi.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Vertailu: kumpi kehys on vakuuttavampi?</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span> <span style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Teknologia</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Visma: Vastuullinen AI-toimijuus -kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Visma</div>
+          <div style="font-size:13px;color:#374151;">Tekoälyn ympäristövaikutus on nykyinen hallintovaje, ei tulevaisuuden kysymys. Käytännöt ja ohjeistukset on rakennettava ennen regulaatiota. Kustannussäästöt ja päästövähennykset ovat sama liike. Kehys on diagnostinen (ongelmana: datapimeys ja hallintovaje) ja prognostinen (ratkaisu: GreenOps, AI Code of Conduct, oikea työkalu oikeaan tehtävään).</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Tietoevry Care: Vastuullinen ammattilaistyön tuki -kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Tietoevry Care</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly ei korvaa ammattilaista vaan tukee tiedon löytämistä. Potilastiedon hajanaisuus on ratkaistava ongelma, ja Kide tuo ratkaisun osaksi tuttua työnkulkua. Kehys on potentiaalia ja tulevaa kehityskaarta korostava, ehdollistettu ammattilaisrooliin ja tietoturvavaatimuksiin.</div>
+        </div>
+      </div>
+        <p>Kaplanin kehystämiskilpailujen logiikalla arvioituna Visma rakentaa legitimiteettiä kolmella toisiaan tukevalla mekanismilla: (1) faktuaalinen evidenssi (tarkat prosenttiluvut CO₂-vähennyksistä), (2) ulkoinen auktoriteetti (YK:n UNU-INWEH-raportti, Euroopan komission teknologiasuvereenisuuspaketti) ja (3) institutionaalinen rakenne (AI Governance Portal, AI Code of Conduct, lakikatselmus jokaiselle strategiselle aloitteelle). Tämä on Kaplanin mallissa tehokkain legitimiteettiyhdistelmä: kehys resonoi, koska se kytkee konkreettiset tulokset laajempaan normatiiviseen muutokseen.<br><br>Tietoevry Caren kehyksen legitimiteetti rakentuu eri lähteistä: (1) toimialakokemus ('Tietoevry Caren sääntelyn mukainen lähestymistapa tietoturvaan ja yksityisyyteen perustuu pitkään kokemukseen'), (2) ekosysteemiajattelu (Kanta-integraatio, kolmansien osapuolten tekoälyekosysteemi) ja (3) ammattilaisroolin korostaminen (ammattilainen arvioi aina). Nämä ovat oikeita valintoja terveydenhuollon kontekstissa, mutta eivät riittäviä yksinään vakuuttamaan kriittistä hankintapäättäjää ilman mitattavia tuloksia.<br><br>B2B-päättäjän näkökulmasta: Jos päätöksentekijä on vastuussa sekä tehokkuudesta että regulaatiomyönteisyydestä (hyvinvointialueen IT-johtaja tai CFO), Visma resonoi todennäköisemmin, koska se yhdistää kustannus- ja päästösäästöt yhdeksi liikkeeksi ('less token use = lower cost and lower emissions, together'). Tietoevry Caren kehys puhuttelee paremmin kliinisen työn kehittämisestä vastuussa olevia (ylilääkärit, potilastietojärjestelmäpäälliköt), joille ammattilaisroolin suojaaminen on ensisijainen huoli.<br><br>Kehystämiskilpailu laajemmassa kentässä: Kaplanin mukaan epävarmuus on kehystämiskilpailujen raaka-aine. Molemmat yritykset operoivat tilanteessa, jossa tekoälyn vaikutuksia ei täysin tunneta — Visma käsittelee ympäristödatapimeyden epävarmuutta, Tietoevry Care terveydenhuollon tekoälyn regulatorista epävarmuutta. Kumpikin muuttaa epävarmuuden strategiseksi edukseen — mutta eri tavoin: Visma tekee epävarmuudesta toimintakutsun ('jokainen päivä ilman AI-käyttöpolitiikkaa on hallitsemattoman vaikutuksen päivä'), Tietoevry Care tekee epävarmuudesta perusteen varovaisuudelle ('ammattilainen arvioi aina').</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Tekstien vertailusta nousee kolme heikkoa signaalia, jotka viittaavat laajempiin kehystämiskilpailuihin tekoälyn johtamiskeskustelussa.</p>
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• Token-talous uutena kehystämisareenana: Visma kytkee token-pohjaisen laskutuksen suoraan sekä kustannus- että päästöjohtamiseen. Tämä on nouseva kehys, jossa IT-budjettipäätökset ja ESG-tavoitteet alkavat kilpailla samasta mittarista — signaali siitä, että tekoälyn käytön johtaminen siirtyy yhä enemmän operatiiviselle tasolle eikä jää strategiadokumentteihin.</div><div class="signal-item">• Ammattilaisroolin suojaaminen kehystämisresurssina terveydenhuollossa: Tietoevry Care toistaa seitsemän kertaa eri muodoissa, että 'ammattilainen arvioi aina'. Tämä ei ole pelkkä varovaisuusviesti — se on strateginen kehystämisvalinta, jolla vastataan ennakoivasti laajempaan yhteiskunnalliseen huoleen tekoälyn autonomiasta hoitopäätöksissä. Yle uutisoi tammikuussa 2026, että hyvinvointialueella käytettiin tekoälyä vanhuksen hoivatarpeen arvioinnissa ilman, että asiakkaalle kerrottiin siitä — tällainen tapaus vahvistaa Tietoevry Caren valitseman defensiivisen kehyksen markkinarelevanssia.</div><div class="signal-item">• Hallintoinfrastruktuuri kilpailutekijänä: Molemmat yritykset rakentavat legitimiteettiä hallintorakenteiden kautta (Visma: AI Governance Portal, Tietoevry: tietosuoja-arkkitehtuuri ja käyttöoikeuspohjainen tiedon hyödyntäminen). Tämä on merkki siitä, että tekoälyn markkinoinnissa siirrytään ominaisuuskilpailusta (mitä tekoäly tekee) hallintoprofiilikilpailuun (miten tekoälyä hallinnoidaan) — kehys, joka resonoi erityisesti julkishallinnon ja reguloitujen toimialojen B2B-hankinnassa.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.sciencedirect.com/science/article/abs/pii/S004873331930201X" target="_blank" rel="noopener" class="a-source-link">Hoppmann ym. (2020) – Why Matter Matters: How Technology Characteristics Shape the Strategic Framing of Technologies, Research Policy</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://pubsonline.informs.org/doi/10.1287/orsc.1070.0340" target="_blank" rel="noopener" class="a-source-link">Kaplan (2008) – Framing Contests: Strategy Making Under Uncertainty, Organization Science</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.visma.com/news/scaling-sustainability-in-the-cloud" target="_blank" rel="noopener" class="a-source-link">Visma – Scaling Sustainability in the Cloud (CTO T. Alexander Lystad, maaliskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.visma.com/company/environment" target="_blank" rel="noopener" class="a-source-link">Visma – Environmental Sustainability (yhtiön verkkosivut, 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.tietoevry.com/en/care/data-ai-and-analytics/ai-solutions/" target="_blank" rel="noopener" class="a-source-link">Tietoevry Care – AI Solutions for Healthcare and Social Care</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://unu.edu/inweh/collection/environmental-cost-of-AIs-Enrgy-Use-Carbon-water-and-land-footprints" target="_blank" rel="noopener" class="a-source-link">UNU-INWEH (2026) – Environmental Cost of AI's Energy Use: Carbon, Water and Land Footprints</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://teknologiateollisuus.fi/healthtech/tassa-ovat-terveydenhuollon-digitrendit-2026/" target="_blank" rel="noopener" class="a-source-link">Teknologiateollisuus – Terveydenhuollon digitrendit 2026 (toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://yle.fi/a/74-20202888" target="_blank" rel="noopener" class="a-source-link">Yle – Hyvinvointialueet käyttävät tekoälyä vanhuspalveluissa (tammikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://cloudsecurityalliance.org/blog/2026/08/17/responsible-ai-in-a-warming-world-why-sustainability-compliance-and-ai-governance-can-t-be-separated" target="_blank" rel="noopener" class="a-source-link">Cloud Security Alliance – Responsible AI in a Warming World (elokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://stm.fi/-/yhdessa-sote-tekoalya-kehittamaan" target="_blank" rel="noopener" class="a-source-link">STM – SOTE-tekoälyn ekosysteemi (Suomen sosiaali- ja terveysministeriö)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 19.9.2026 klo 15.46.33</span>
+</div>
+
+</body>
+</html>
