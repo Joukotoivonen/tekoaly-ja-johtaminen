@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Googlen 13 miljardin investointi ja kehystämiskilpailu Suomen tekoälypolitiikassa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Googlen 13 miljardin investointi ja kehystämiskilpailu Suomen tekoälypolitiikassa</h1>
+  <div class="cover-date">20.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Syyskuussa 2026 Google ilmoitti 13,1 miljardin euron datakeskusinvestoinneista Kajaaniin, Vaalaan ja Muhokselle — yhtiön suurimmasta Euroopan-panostuksesta koskaan. Investointi käynnisti välittömän poliittisen kiistan: hallitus kehysti hankkeen työllistämisnäkökulmasta (37 000 rakennusvaiheen ja 7 000 pysyvää työpaikkaa), kun taas oppositio, yksittäiset kokoomuslaiset kansanedustajat ja tutkijat nostivat esiin energiasuvereniteetin, sopimusraamien puuttumisen ja strategisen suunnitelmattomuuden. Fortumin ja Googlen 22-vuotinen sopimus sitoo Loviisan ydinvoimalasta yli 200 000 omakotitalon vuosittaisen sähkönkulutuksen vastaten. Eduskunnan kyselytunneilla ja mediassa käyty keskustelu osoitti, että kehystämiskilpailu ylitti puoluerajat.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Pääministeri Orpo toimi Googlen tiedotustilaisuudessa merkityksen välittäjänä korostaen työllistämisvaikutuksia ja käyttäen diskursiivista kompetenssia kehystääkseen investoinnin kansantaloudelliseksi välttämättömyydeksi. Hallituksen prognostinen kehys — 'investointi ratkaisee talousongelmat' — jäi kuitenkin vajaaksi, koska koherenttia synteesiä sähkönkulutuksen, energiasuvereniteetin ja tekoälyn kansallisen hyödyntämisen välisistä jännitteistä ei muodostettu. Suomi jää Ruotsia jälkeen tekoälystartup-investoinneissa, eikä kansallinen tekoälystrategia tue datakeskusinfrastruktuuria riittävästi. AI Finland -raportti ja useat kansanedustajat painottivat, että pelkkä rakentaminen ei riitä ilman strategisia perustoimintoja turvaavia sopimusraameja.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Neljä pääkehystä törmää julkisessa keskustelussa: (1) Kasvun ja työllisyyden kehys — hallituksen ja Googlen ylläpitämä prognostinen kehys, jolla on korkea resonanssi korkean työttömyyden alueilla. (2) Energiasuvereniteetin kriisikehys — opposition, LUT-professori Linnasen ja kansalaisaloitteen ajama diagnostinen kehys, joka esittää hallituksen toiminnan reaktiivisena 'villi länsi -meininkinä'. (3) Digitaalisen suvereniteetin ja strategian puuttumisen kehys — kansanedustaja Holopaisen, kokoomuksen dissidenssien (Westman, Salla, Toveri) ja AI Finland -raportin nostama kehys, joka haastaa hallituksen myös sisältä päin. (4) Tasapainoisen arvioinnin kehys — Etlan, Energiateollisuuden ja asiantuntijamedian ylläpitämä hybridikehys, joka pyrkii synteesiin mutta ei ole yhtä mediaviraalinen kuin ääripäiden kehykset. Erityisen merkittävää on, että kriittisiä diagnostisia kehyksiä esittivät myös hallituspuolueen omat edustajat — tämä heikentää hallituksen kehystämisotetta rakenteellisesti.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Useita rakenteellisesti perusteltuja huolia käsiteltiin julkisessa debatissa virheellisesti muutosvastarintana tai 'investointivihamielisyytenä'. Pääministeri Orpon retoriikka — 'julkisessa keskustelussa aliarvioidaan datakeskusten vaikutus työllisyyteen' — kehysti kriittiset äänenpainot epärationaalisiksi, vaikka kysymykset sopimusraameista, energiasuvereniteetista ja strategisesta puuttumisesta olivat vastuullisen huolenpidon ilmauksia. Etlan arvion mukaan 70–80 % investointieuroista valuu ulkomaille. Hallituksen viestintä ei kyennyt kokoamaan synteesiä näiden kilpailevien intressien välillä, mikä altistaa toimeenpanon epäonnistumiselle.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee erityistä huomiota: (1) Kansalaisaloite 'Datakeskukset kuriin' käynnistyi päivässä investointiuutisen jälkeen, ja Maaseudun Tulevaisuuden kysely osoitti enemmistön suomalaisista haluavan rajoittaa datakeskusten rakentamista — merkki alhaalta ylöspäin suuntautuvasta kehyksen haastamisesta, jolle ei ole vielä syntynyt poliittista synteesiä. (2) Googlen oma Gemini-tekoäly arvioi Ylen pyynnöstä Googlen investointilaskelmia 'taloustieteellisesti ja mittakaavaltaan vahvasti paisutelluiksi' — tämä avaa uuden diskursiivisen areenan: milloin AI-työkalu saa haastaa johdon virallista kehystä? (3) Suuri Johtoryhmätutkimus 2026 (Lifted) osoittaa, että 54 % johtoryhmien jäsenistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä — kun samaan aikaan tehdään 13 miljardin investointipäätöksiä tekoälyinfrastruktuuriin, syntyy strateginen kuilu julkisen puheen ja johtoryhmien arjen välille.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">merkityksen välittäminen</span><span class="concept-chip">prognostinen kehys</span><span class="concept-chip">diagnostinen kehys</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">diskursiivinen kompetenssi</span><span class="concept-chip">energiasuvereniteetti</span><span class="concept-chip">digitaalinen suvereniteetti</span><span class="concept-chip">synteesin kokoaminen</span><span class="concept-chip">kehystämiskilpailu</span><span class="concept-chip">EU AI Act</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Hallituksen on muodostettava koherentti synteesi datakeskusinvestointien, energiasuvereniteetin ja kansallisen tekoälystrategian välisistä jännitteistä — pelkkä työllistämiskehys ei riitä sisäisen kehystämiskilpailun hallitsemiseen.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Sopimusraamit Googlen ja muiden teknologiayhtiöiden kanssa on saatettava julkiseen tarkasteluun ja niiden on turvattava strategiset perustoiminnot sekä kansallinen energiasuvereniteetti ennen uusien datakeskuslupien myöntämistä.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Johtoryhmät — niin julkisella kuin yksityisellä sektorilla — on integroitava konkreettisesti tekoälyn strategiseen hyödyntämiseen, jotta 13 miljardin infrastruktuuripanostus ei jää irralliseksi julkisen puheen tasolla tapahtuvaksi kehystämiseksi ilman organisatorista toimeenpanoa.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Google ilmoitti 13,1 miljardin euron datakeskusinvestoinneista Kajaaniin, Vaalaan ja Muhokselle</div>
+      <div class="source-ref">📌 HS, artikkeli art-2000012265519</div>
+      <div class="source-quote">Googlen suurimmasta Euroopan-panostuksesta koskaan</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Fortumin ja Googlen 22-vuotinen sopimus sitoo Loviisan ydinvoimalasta yli 200 000 omakotitalon vuosittaisen sähkönkulutuksen</div>
+      <div class="source-ref">📌 HS, artikkeli art-2000012265519 / Energiasuvereniteetin kriisikehys -analyysi</div>
+      <div class="source-quote">Fortumin ja Googlen 22-vuotinen sopimus sitoo Loviisan ydinvoimalasta yli 200 000 omakotitalon vuosittaisen kulutuksen</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Strateginen asemoituminen</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Hallituksen viestinnässä ei koottu koherenttia synteesiä sähkönkulutuksen, energiasuvereniteetin ja tekoälyn kansallisen hyödyntämisen välisistä jännitteistä</div>
+      <div class="source-ref">📌 Analyysi: Keskijohdon kehystämistoimet (Floyd & Lane 2000)</div>
+      <div class="source-quote">Synteesin kokoaminen jäi vajaaksi: hallituksen viestinnässä ei koottu koherenttia synteesiä</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Kehystämiskilpailu ylitti puoluerajat: myös kokoomuslaiset kansanedustajat esittivät kriittisiä diagnostisia kehyksiä</div>
+      <div class="source-ref">📌 Analyysi: Kilpailevien kehysten radar (Kaplan 2008)</div>
+      <div class="source-quote">Kehystämiskilpailu ylitti puoluerajat: myös kokoomuslaiset kansanedustajat esittivät kriittisiä diagnostisia kehyksiä, mikä heikentää hallituksen kehystämisotetta</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">70–80 % investointieuroista valuu ulkomaille</div>
+      <div class="source-ref">📌 Etlan tutkija Lähdemäki / Tasapainoisen arvioinnin kehys -analyysi</div>
+      <div class="source-quote">70–80 % euroista valuu ulkomaille</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Pääministeri Orpo kehysti kriittiset äänenpainot epärationaalisiksi</div>
+      <div class="source-ref">📌 HS, artikkeli art-2000012265519</div>
+      <div class="source-quote">julkisessa keskustelussa Suomessa usein aliarvioidaan datakeskusten vaikutus työllisyyteen</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Googlen oma Gemini-tekoäly arvioi investointilaskelmia paisutelluiksi</div>
+      <div class="source-ref">📌 Yle / Analyysi: Heikot signaalit</div>
+      <div class="source-quote">taloustieteellisesti ja mittakaavaltaan vahvasti paisutelluiksi</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">54 % johtoryhmien jäsenistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä</div>
+      <div class="source-ref">📌 Suuri Johtoryhmätutkimus 2026 (Lifted)</div>
+      <div class="source-quote">54 % johtoryhmien jäsenistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 38/2026 — Google, datakeskukset ja epävarmuuden äänet</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">merkityksen välittäminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">prognostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diagnostinen kehys</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">kehystämiskilpailu</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">diskursiivinen kompetenssi</span></div>
+        
+        <p>Syyskuussa 2026 Suomen tekoälypoliittinen keskustelu sai räjähdysmäisen virikkeen, kun Google ilmoitti 13,1 miljardin euron datakeskusinvestoinneista Kajaaniin, Vaalaan ja Muhokselle — Googlen suurimmasta Euroopan-panostuksesta koskaan. Pääministeri Orpo esiintyi Googlen tiedotustilaisuudessa merkityksen välittäjänä (Floyd & Lane): hän kehysti investoinnin ennen kaikkea työllistämisnäkökulmasta esittäen datakeskusten vastustajien kehykset virheellisinä. HS:n politiikka-artikkeli (art-2000012265519) dokumentoi, miten tämä tilaisuus kytkeytyi laajempaan eduskunnan kyselytuntikeskusteluun, jossa oppositio nosti esille energiasuvereniteetin ja strategisen ohjauksen puuttumisen. Kaplan (2008) tunnistaa tässä klassisen kehystämiskilpailun: hallituksen prognostinen kehys ('investointi = kasvu = työpaikat') törmäsi useisiin kilpaileviin diagnostisiin kehyksiin, jotka nostivat esille sähkön riittävyyden, kansallisen digitaalisen suvereniteetin ja datakeskusten sääntelyn puutteet. Suomalaisessa kontekstissa tilanne on erityinen: AI Finland -selvitys 2026 toteaa, että 'Suomi ymmärtää tekoälyä varsin hyvin, pilotoi suhteellisen hyvin, mutta ei teollista sitä'. Googlen datakeskusjätti tarjoaa infrastruktuuria, mutta strateginen ohjaus sen hyödyntämiseksi kansallisesti on avoin kysymys — ja tämä jännite on HS:n artikkelin poliittisen debatin ytimessä.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Keskijohdon kehystämistoimet</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"><span class="a-meta-badge" style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;">Rooli: puolestapuhuminen|merkityksen välittäminen</span><span class="a-meta-badge" style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;">Taktiikka: johtopäätös|myönnytys</span><span class="a-meta-badge" style="background:#9B44A822;color:#9B44A8;border:1px solid #9B44A844;">Dimensiot: potentiaali, legitimiteetti</span><span class="a-meta-badge" style="background:#DC262622;color:#DC2626;border:1px solid #DC262644;">✗ Epäonnistui</span></div>
+        
+        
+        <p>HS:n artikkelin kontekstissa Floyd & Lanen (2000) neljä roolia ilmenevät usealla tasolla. Pääministeri Orpon puolestapuhuminen ja merkityksen välittäminen: Orpo toimi tiedotustilaisuudessa keskeisimpänä merkityksen välittäjänä korostaen työllistämisvaikutuksia ja kritisoimalla datakeskusten 'aliarvioimista'. Hän käytti diskursiivista kompetenssia kehystäessään investoinnin kansantaloudelliseksi välttämättömyydeksi. Synteesin kokoaminen jäi vajaaksi: hallituksen viestinnässä ei koottu koherenttia synteesiä sähkönkulutuksen, energiasuvereniteetin ja tekoälyn kansallisen hyödyntämisen välisistä jännitteistä. LUT-professori Lassi Linnanen kritisoi hallituksen toteuttavan 'banaanivaltion teollisuuspolitiikkaa'. Sopeutumiskyvyn fasilitointi puuttui: yksittäiset kansanedustajat — myös hallituspuolue kokoomuksen sisältä (Westman, Salla, Toveri) — nostivat esille huolia sopimusraamien puuttumisesta, mikä kertoo siitä, että strateginen kokeilutila ei ollut muodostunut riittävän strukturoiduksi. Toimeenpano on kesken: Deloitte & DIF -tutkimus 2026 toteaa, että tekoälystrategia on 'monessa organisaatiossa vielä keskeneräinen', ja sama pätee poliittiseen tasoon — 13 miljardin investointi nopeuttaa toimeenpanon tarvetta mutta ei itsessään ratkaise hallintaongelmia. Viestintäkäytäntöinä Ritalan mielessä: Orpon tiedotustilaisuuspuhe, eduskunnan kyselytunti ja ministeriötason vastaukset ovat konkreettisia areenoita, joissa merkityksen välittäminen tapahtuu — ja joissa kilpailevat kehykset törmäävät julkisesti.</p>
+        
+        
+        
+        <div class="a-success-reason">Hallituksen synteesin kokoaminen oli puutteellista: se ei onnistunut integroimaan energiasuvereniteetin, sähkönhinnan ja digitaalisen strategian kehyksiä yhdeksi koherentiksi kertomukseksi, mikä avasi tilaa useille kilpaileville kehyksille — jopa hallituspuolueen sisällä. Kokoomuksen 'rivien sekaisin' -ilmiö (Westman, Salla, Toveri) osoittaa, ettei sisäinen synteesin kokoaminen onnistunut ennen julkista kommunikointia.</div>
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Kasvun ja työllisyyden kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Pääministeri Orpo / Hallitus / Google</div>
+          <div style="font-size:13px;color:#374151;">Investointi on historiallinen työllistäjä: 37 000 rakennusvaiheen ja 7 000 pysyvää työpaikkaa. Datakeskukset ovat Suomelle mahdollisuus, ei uhka. Kehyksen resonanssi korkeaa erityisesti korkean työttömyyden alueilla (Kajaani, Muhos). Hallitus käytti Googlen tiedotustilaisuutta prognostisena kehyksenä — 'tämä on ratkaisu talousongelmiin'.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Energiasuvereniteetin kriisikehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Oppositio (Holopainen/Vihr), LUT-professori Linnanen, kansalaisaloite</div>
+          <div style="font-size:13px;color:#374151;">Yksi datakeskus voi kuluttaa lähes kymmenesosan Suomen sähköstä. Fortumin ja Googlen 22-vuotinen sopimus sitoo Loviisan ydinvoimalasta yli 200 000 omakotitalon vuosittaisen kulutuksen. Tämä diagnostinen kehys esittää hallituksen toiminnan reaktiivisena — 'villi länsi -meininkiä'. Kehys on vahvistunut nopeasti ja kerännyt kansalaisaloitteen muodossa laajaa kannatusta.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Digitaalisen suvereniteetin ja strategian puuttumisen kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Kansanedustaja Holopainen, kokoomuksen dissidentit (Westman, Salla, Toveri), AI Finland -raportti</div>
+          <div style="font-size:13px;color:#374151;">Pelkkä datakeskusten rakentaminen ei riitä ilman kansallista tekoälystrategiaa. Suomi jää Ruotsia jälkeen tekoälystartup-investoinneissa. Sopimusraamit puuttuvat strategisten perustoimintojen turvaamiseksi. Tämä kehys haastaa hallituksen myös sisältä päin, mikä on Kaplanin (2008) teorian kannalta erityisen merkityksellinen kehystämiskilpailun merkki: epävarmuus (kenelle hyödyt menevät?) ruokkii kilpailevia kehyksiä.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Tasapainoisen arvioinnin kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Etlan tutkija Lähdemäki, Energiateollisuuden tj. Leskelä, Tekniikan Maailma</div>
+          <div style="font-size:13px;color:#374151;">Investointi on hyvä, mutta luvut ovat osin optimistisia. 70–80 % euroista valuu ulkomaille. Uhkia ei pidä liioitella mutta ei aliarvioida. Tämä neutraali diagnostis-prognostinen hybridikehys pyrkii synteesin kokoamiseen, mutta ei ole yhtä mediaviraalinen kuin ääripäiden kehykset.</div>
+        </div>
+      </div>
+        <p>Kaplanin (2008) ydinlöydös toteutuu täsmällisesti: Googlen 13 miljardin investoinnin synnyttämä epävarmuus — kuka hyötyy, riittääkö sähkö, missä suvereniteetti? — on kehystämiskilpailujen raaka-aine. HS:n artikkeli art-2000012265519 toimii areenana, jossa nämä neljä kehystä törmäävät. Hallituksen prognostinen kehys (kasvu ja työpaikat) joutui välittömästi haastetuksi diagnostisilla kehyksillä (energiakriisi, strateginen puuttuminen). Merkittävää on, että kehystämiskilpailu ylitti puoluerajat: myös kokoomuslaiset kansanedustajat esittivät kriittisiä diagnostisia kehyksiä, mikä heikentää hallituksen diskursiivista kompetenssia legitimiteettiä rakennettaessa. Viestintäkäytäntöinä nämä kehykset elivät samanaikaisesti usealla areenalla: Yle-uutinen, eduskunnan kyselytunti, Uusi Suomi -blogit, Tekniikan Maailma -analyysi ja kansalaisaloite. Jokaisella areenalla kehyksen resonanssi vaihteli yleisön mukaan.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>HS:n artikkelin kontekstissa useita epävarmuuden ääniä tulkittiin julkisessa debatissa virheellisesti muutosvastarinnaksi tai 'investointivihamielisyydeksi'. Pääministeri Orpo totesi tiedotustilaisuudessa, että 'julkisessa keskustelussa Suomessa usein aliarvioidaan datakeskusten vaikutus työllisyyteen' — tämä retorisesti kehysti kriittiset äänenpainot epärationaalisiksi. Vastaavasti kun kansanedustaja Holopainen, LUT-professori Linnanen tai kokoomuksen Westman kysyivät sopimusraameista ja energiasuvereniteetista, nämä huolet olivat rakenteellisesti perusteltuja vastuullisen huolenpidon ilmauksia. Vastuullisia huolia: (1) Energiasuvereniteettihuoli: Fortumin ja Googlen 22-vuotinen sopimus sitoo Loviisan ydinvoimalan puolet tuotannosta — tämä on huoltovarmuuteen liittyvä rakenteellinen kysymys, ei muutosvastarinta. (2) Strategisen ohjauksen puuttuminen: AI Finland -raportti 2026 toteaa Suomen teollistavan tekoälyä hitaasti. Datakeskusinvestointi ilman kansallista tekoälystrategiaa on todellakin riskialtis yhdistelmä — tämän huolen esittäminen on vastuullista ennakointia. (3) Taloudellisen hyödyn jakautuminen: 70–80 % investointirahoista kulkee ulkomaille (palvelimet, sirut). Tämä ei ole investointivastaisuutta vaan realistista talousanalyysiä. (4) Psykologinen turvallisuus organisaatioissa: Lifted-tutkimus 2026 tunnistaa, että tekoälyä käytetään 'salaillen' koska ihmiset pelkäävät työllistymisestä — tämä on organisatorinen turvallisuusongelma, ei vastarinta. Floyd & Lanen (2000) termein: nämä kriittiset äänet harjoittavat sopeutumiskyvyn fasilitointia — ne suojelevat harkintaa ja estävät yksioikoista käyttöönottoa.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Hallituksen diskursiivinen kompetenssi olisi vahvistunut, jos se olisi tunnistanut nämä äänet merkityksen välittämisen resursseiksi eikä esteiden aiheuttajiksi. Kaplan (2008) ennustaa: kun epävarmuus on kehystämiskilpailun raaka-ainetta, aidosti vastuullisten huolten sivuuttaminen ei lopeta kilpailua vaan ruokkii sen intensiivisemmäksi. Eduskunnan kyselytunti osoitti tämän: hallituksen defensiivinen asemoituminen vahvisti opposition kehyksiä sen sijaan, että olisi sulautunut ne synteettisesti osaksi hallituksen omaa narratiivia.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#0F9D8A22;color:#0F9D8A;border:1px solid #0F9D8A44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Keskijohto</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• Kansalaisaloite 'Datakeskukset kuriin' käynnistettiin päivässä Googlen investointiuutisen jälkeen ja Maaseudun Tulevaisuuden kysely osoitti enemmistön suomalaisista haluavan rajoittaa datakeskusten rakentamista — tämä viittaa siihen, että kansalaistason kehystämiskilpailu on huomattavasti hallituksen konsensusta laajempi, ja edustaa Floyd & Lanen merkityksessä 'alhaalta ylöspäin' suuntautuvaa kehyksen haastamista, johon ei ole vielä syntynyt poliittista synteesiä.</div><div class="signal-item">• Googlen oma Gemini-tekoäly arvioi Ylen pyynöstä Googlen investointilaskelmia 'taloustieteellisesti ja mittakaavaltaan vahvasti paisutelluiksi' — tämä on heikko signaali tekoälyn käytöstä kriittisenä legitimiteetin tarkastajana omistajansa kehyksiä vastaan, mikä avaa uuden diskursiivisen areenan organisaatioviestinnälle: milloin ja miten AI-työkalu saa haastaa johdon virallista kehystä?</div><div class="signal-item">• Suuri Johtoryhmätutkimus 2026 (Lifted) osoittaa, että 54 % johtoryhmien jäsenistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä — kun samaan aikaan hallitustasolla tehdään 13 miljardin investointipäätöksiä tekoälyinfrastruktuuriin, syntyy strateginen kuilu julkisen puheen ja johtoryhmien arjen välille, joka on Floyd & Lanen teorian kannalta klassinen toimeenpanon epäonnistumiselle altistava rakenne.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">06</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.5465/amr.2000.2791608" target="_blank" rel="noopener" class="a-source-link">Floyd, S. W. & Lane, P. J. (2000). Strategizing throughout the organization. Academy of Management Review, 25(1), 154–177.</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.1287/orsc.1070.0340" target="_blank" rel="noopener" class="a-source-link">Kaplan, S. (2008). Framing contests: Strategy making under uncertainty. Organization Science, 19(5), 729–752.</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://yle.fi/a/74-20245271" target="_blank" rel="noopener" class="a-source-link">Yle: Google investoi Suomeen 13 miljardia – suurin Euroopan-panostus (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://yle.fi/a/74-20245322" target="_blank" rel="noopener" class="a-source-link">Yle: Googlen oma tekoäly suhtautuu yhtiön antamiin lukuihin kriittisesti (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://yle.fi/a/74-20246512" target="_blank" rel="noopener" class="a-source-link">Yle: Suomalaiset heräilevät vastustamaan datakeskuksia (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://yle.fi/a/74-20245610" target="_blank" rel="noopener" class="a-source-link">Yle: Googlen datakeskukset – eduskunnan kyselytunti (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://uutiskooste.fi/analyysi-google-heitti-paaministeri-orpolle-pelastusrenkaan" target="_blank" rel="noopener" class="a-source-link">Uutiskooste: Analyysi – Google heitti pääministeri Orpolle pelastusrenkaan (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutismedia</span>
+            <a href="https://tekniikanmaailma.fi/ilo-uusista-google-toista-on-perusteltua-mutta-mieleen-hiipii-myos-kysymyksia/" target="_blank" rel="noopener" class="a-source-link">Tekniikan Maailma: Ilo uusista Google-töistä on perusteltua, mutta mieleen hiipii myös kysymyksiä (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.salkunrakentaja.fi/2026/05/suomalaiset-johtoryhmat-eivat-pysy-tekoalyn-vauhdissa/" target="_blank" rel="noopener" class="a-source-link">Lifted: Suuri Johtoryhmätutkimus 2026 – tekoälyn käyttö johtoryhmätasolla hajanaista (toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2026/04/Nain-Suomi-hyodyntaa-tekoalya-2026.pdf" target="_blank" rel="noopener" class="a-source-link">AI Finland: Näin Suomi hyödyntää tekoälyä 2026 -selvitys (huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/fi/fi/issues/ai-and-tech/tekoaly-hallitustyossa-2026.html" target="_blank" rel="noopener" class="a-source-link">Deloitte & DIF: Tekoäly hallitustyössä 2026 (2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.kokoomus.fi/wp-content/uploads/2026/06/Tekoalyraportti-2026.pdf" target="_blank" rel="noopener" class="a-source-link">Kokoomus: Tekoälyn aika – Kymmenen päätöstä, sadan päivän ohjelma ja kolme skenaariota (kesäkuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.uutispeili.fi/index.php/2026/09/10/orpon-hallitus-on-housut-kintuissa-datakeskusbuumin-edessa-ministeri-multala-on-kaatamassa-kustannuksia-valtiolle-ja-veronmaksajille-sanoo-kansanedustaja-mari-holopainen/" target="_blank" rel="noopener" class="a-source-link">Uutistoimisto Uutispäivä: Orpon hallitus datakeskusbuumin edessä – Holopainen (syyskuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://lifted.fi/johtamisen-artikkelit/tekoalyn-hyodyntaminen-johtamisessa/" target="_blank" rel="noopener" class="a-source-link">Lifted: Tekoälyn hyödyntäminen edellyttää johdon linjauksia (2026)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 20.9.2026 klo 16.24.20</span>
+</div>
+
+</body>
+</html>
