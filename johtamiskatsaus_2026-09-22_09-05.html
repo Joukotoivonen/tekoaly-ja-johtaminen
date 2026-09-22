@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-väsymys ja kilpailevat kehykset suomalaisessa johtamisessa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>AI-väsymys ja kilpailevat kehykset suomalaisessa johtamisessa</h1>
+  <div class="cover-date">22.9.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Lau ym. (2026) ovat empiirisesti validoineet AI-väsymyksen neljä ulottuvuutta: kognitiivinen, emotionaalinen, käyttäytymiseen liittyvä ja fyysinen. 720 osallistujan aineistolla rakennettu 15-osioinen mittari osoittaa, että suurempi AI-väsymys ennustaa merkittävästi matalampaa tekoälyn käyttöä ja vahvistuvia aikomuksia vähentää sitä. Samanaikaisesti Lifted (2026) raportoi, että 54 % suomalaisista johtoryhmien jäsenistä ei pidä tekoälyä osana yhteistä työskentelyä, ja tekoälyä käytetään organisaatioissa 'salaillen' työllistymispelon vuoksi. Alle 20 % tekoälyä hyödyntävistä suomalaisyrityksistä on kirjallinen AI-strategia.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Hallitseva tehokkuuden ja kasvun kehys dominoi julkista keskustelua: kaksi kolmesta suomalaisesta hallituksen jäsenestä raportoi merkittäviä tehokkuushyötyjä, ja Suomen hallitus on suunnannut 10 miljoonaa euroa tekoälyagenttiautomaatioon julkishallinnossa. Tämä tuotoskeskeinen asemoituminen mittaa menestystä käyttöönottona eikä oppimisena. Vastapaino löytyy organisatorisen oppimisen kehyksestä: AI-kyvykkyydet syntyvät toistuvasta testauksesta, reflektiosta ja kokemusten jakamisesta — ei pelkästä teknologiainvestoinnista. Johtoryhmien on itse otettava tekoäly osaksi omaa työtään, eikä vain delegoitava käyttöönotto alaspäin.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Suomalaisessa tekoälykeskustelussa on tunnistettavissa neljä aktiivisessa kilpailussa olevaa kehystä. (1) Tehokkuuden ja kasvun kehys (Alma Media, Deloitte/DIF) hallitsee mediaa ja ylintä johtoa prognostisella viestillään 'kuka uskaltaa investoida, se voittaa'. (2) AI-väsymyksen ja psykologisen turvallisuuden kehys (Lau ym. 2026; Lifted; TTL/TEIJO) elää tutkimusjulkaisuissa ja HR-verkostoissa — sen legitimiteettiä heikentää maine 'hitaana' tai 'varovaisena'. (3) Johtoryhmän valmiuden kehys (Lifted 2026) haastaa tehokkuuskehyksen siitä, mikä on muutoksen oikea lähtöpiste. (4) Organisatorisen oppimisen kehys (Ritala ym. 2024; TTL/TEIJO) korostaa havaintoperäisten ja toiminnallisten laukaisijoiden välistä jännitettä ja rakentaa legitimiteettiään koulutustilaisuuksissa ja sisäisissä fasilitointiprosesseissa.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>AI-väsymys ei ole asenneongelma tai muutosvastarinta, vaan empiirisesti dokumentoitu psykofysiologinen ilmiö, joka toimii yli yleisen digitaalisen väsymyksen ja teknologiastressin vaikutuksen. Tekoälyagenttien käyttöönotto tuo mukanaan uuden valvontavastuun kerroksen — niin sanotun 'toisen työn: tekoälyn valvomisen' — joka ei näy tuottavuuslaskelmissa mutta kasvattaa kognitiivista kuormitusta. Samanaikaisesti tekoälyn salailu organisaatioissa kertoo psykologisen turvallisuuden puutteesta, joka hidastaa oppimista ja diffuusiota tehokkaimmin juuri siellä, missä käyttöönotto on jo alkanut.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsevat seurannan. Ensiksi: AI-väsymyksen validoitu mittari avaa polun, jolla HR-toiminnot ja TTL voivat sisällyttää AI-väsymysseurannan osaksi työhyvinvoinnin mittaristoa burnout-indikaattoreiden rinnalle — mikä muuttaisi ilmiön aseman anekdootista mitattavaksi riskiksi. Toiseksi: johtoryhmien salailu-ilmiö viittaa siihen, että seuraava johtamisen murros ei ole 'enemmän tekoälyä' vaan 'turvallisemmat kanavat kokemusten jakamiselle' — HENRY ry:n ja Sitran agenda voi siirtyä tähän suuntaan syksyllä 2026. Kolmanneksi: hallituksen 10 miljoonan euron agentti-investointi julkishallinnossa on potentiaalisesti merkittävä AI-väsymysriski, joka — Kaplanin kilpailevien kehysten logiikan mukaisesti — saattaa nousta hallitsevaksi kehykseksi vuoden 2027 budjettineuvotteluissa, mikäli oppimisrakenteita ei rakenneta käyttöönoton rinnalle.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">AI-väsymys</span><span class="concept-chip">kognitiivinen kuormitus</span><span class="concept-chip">psykologinen turvallisuus</span><span class="concept-chip">kilpailevat kehykset</span><span class="concept-chip">organisatorinen oppiminen</span><span class="concept-chip">toiminnalliset laukaisimet</span><span class="concept-chip">havaintoperäiset laukaisimet</span><span class="concept-chip">tekoälyagentti</span><span class="concept-chip">HR</span><span class="concept-chip">EU AI Act</span><span class="concept-chip">viestintäkäytännöt</span><span class="concept-chip">uutta etsivä oppiminen</span><span class="concept-chip">olemassaolevaa hyödyntävä oppiminen</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Sisällytä validoitu AI-väsymysmittari (Lau ym. 2026, 15 osiota) organisaation työhyvinvoinnin vuosiseurantaan ja kytke tulokset tekoälyn käyttöönotto-ohjelman arviointiin.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Rakenna johtoryhmälle psykologisesti turvallinen, säännöllinen foorumi tekoälykokemusten jakamiseen — epäformaalit viestintäkäytännöt ovat diffuusion todellinen pullonkaula, ei teknologia.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Tekoälyagenttien käyttöönottohankkeisiin (ml. julkishallinto) on liitettävä eksplisiittiset oppimisrakenteet ja kognitiivisen kuormituksen seuranta ennen skaalaamista, jotta investointi ei tuota hallitsematonta AI-väsymysriskiä.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">AI-väsymyksellä on neljä empiirisesti validoitua ulottuvuutta ja se ennustaa tekoälyn käytön vähenemistä.</div>
+      <div class="source-ref">📌 Lau ym. (2026). AI fatigue in human–AI interaction. Computers in Human Behavior Reports. doi:10.1016/j.chbr.2026.101186</div>
+      <div class="source-quote">Suurempi AI-väsymys ennusti merkittävästi matalampaa tekoälyn käyttöä ja vahvempia aikomuksia vähentää käyttöä seuraavan kolmen kuukauden aikana.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">54 % suomalaisista johtoryhmien jäsenistä ei pidä tekoälyä osana yhteistä työskentelyä.</div>
+      <div class="source-ref">📌 Lifted. Suuri johtoryhmätutkimus 2026.</div>
+      <div class="source-quote">Tekoälyn ja datan hyödyntäminen saa johtoryhmätutkimuksen heikoimman arvion.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Alle 20 % tekoälyä käyttävistä suomalaisyrityksistä on kirjallinen AI-strategia.</div>
+      <div class="source-ref">📌 Ritala ym. (2024). LUT / Technovation.</div>
+      <div class="source-quote">AI-kyvykkyydet eivät synny teknologiainvestoinneista vaan organisatorisesta oppimisesta.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Epävarmuus on kilpailevien kehysten raaka-ainetta strategisessa päätöksenteossa.</div>
+      <div class="source-ref">📌 Kaplan, S. (2008). Framing contests: Strategy making under uncertainty.</div>
+      <div class="source-quote">Making strategy under uncertainty can be comprehended as a product of contests over which frame should guide the understanding of an ambiguous environment.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Kaksi kolmesta suomalaisesta hallituksen jäsenestä raportoi merkittäviä tehokkuushyötyjä tekoälystä.</div>
+      <div class="source-ref">📌 Alma Media / AI Finland (Raivisto & Partanen, 2026); Deloitte/DIF-hallitustutkimus 2026.</div>
+      <div class="source-quote">Kuka uskaltaa investoida, se voittaa.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Tekoälyä käytetään organisaatioissa salaillen psykologisen turvallisuuden puutteen vuoksi.</div>
+      <div class="source-ref">📌 Lifted. Suuri johtoryhmätutkimus 2026; TTL / TEIJO-hanke.</div>
+      <div class="source-quote">Tekoälyä käytetään 'salaillen' organisaatioissa, joissa ei ole psykologista turvallisuutta.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Huolenaiheet</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">AI-väsymys on psykofysiologinen ilmiö, ei asenneongelma, ja se toimii yli yleisen digitaalisen väsymyksen vaikutuksen.</div>
+      <div class="source-ref">📌 Lau ym. (2026). AI fatigue in human–AI interaction. Computers in Human Behavior Reports. doi:10.1016/j.chbr.2026.101186</div>
+      <div class="source-quote">AI-väsymys ennusti matalampaa tekoälyn käyttöä yli ja ohi yleisen digitaalisen väsymyksen ja tekoälyyn liittyvän teknologiastressin.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Suomen hallituksen 10 miljoonan euron panostus tekoälyagenttiautomaatioon julkishallinnossa on potentiaalinen AI-väsymysriski.</div>
+      <div class="source-ref">📌 AI Finland 2026.</div>
+      <div class="source-quote">Suomen hallituksen 10 miljoonan euron panostus tekoälyagenttiautomaatioon julkishallinnossa on potentiaalisesti suuri AI-väsymysriski, jos käyttöönottoa ei tueta riittävillä oppimisrakenteilla.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Epäformaalit viestintäkäytännöt ovat tekoälyn diffuusion todellinen pullonkaula suomalaisissa johtoryhmissä.</div>
+      <div class="source-ref">📌 Lifted. Suuri johtoryhmätutkimus 2026.</div>
+      <div class="source-quote">Seuraava johtamisen murros ei ole 'enemmän tekoälyä' vaan 'turvallisemmat kanavat tekoälykokemusten jakamiselle'.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 39/2026 — AI-väsymys organisatorisen oppimisen ja kehystämiskilpailujen valossa</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">AI-väsymys (kognitiivinen, emotionaalinen, käyttäytymis-, fyysinen)</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">toiminnalliset laukaisimet</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">uutta etsivä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">olemassaolevaa hyödyntävä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">esteet ja mahdollistajat</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">viestintäkäytännöt (formaalit vs. epäformaalit)</span></div>
+        
+        <p>Lau ym. (2026) julkaisivat vertaisarvioidun tutkimuksen 'AI fatigue in human–AI interaction', jossa kehitetään 15-osioinen AI-väsymysasteikko (Computers in Human Behavior Reports, doi:10.1016/j.chbr.2026.101186). Tutkimus tunnistaa neljä AI-väsymyksen ulottuvuutta: kognitiivinen, emotionaalinen, käyttäytymiseen liittyvä ja fyysinen. Löydös on johtamisen näkökulmasta kriittinen: suurempi AI-väsymys ennusti merkittävästi matalampaa tekoälyn käyttöä ja vahvempia aikomuksia vähentää käyttöä seuraavan kolmen kuukauden aikana. Suomalaisessa kontekstissa tämä osuu suoraan Liftedin Suuri johtoryhmätutkimus 2026 -tuloksiin: yli puolet (54 %) suomalaisista johtoryhmien jäsenistä ei koe tekoälyn olevan osa yhteistä johtoryhmätyöskentelyä, ja tekoälyn ja datan hyödyntäminen saa tutkimuksen heikoimman arvion. Ritalan ym. (2024, Technovation) viitekehyksessä tämä on olennainen este: AI-kyvykkyydet rakentuvat organisatorisen oppimisen kautta, ja AI-väsymys on suora toiminnallinen este uutta etsivän oppimisen (explorative learning) käynnistymiselle. Kun kognitiivinen kuorma nousee liian korkeaksi, organisaatio jää hyödyntävän oppimisen (exploitative learning) tilaan tai luopuu tekoälyn käytöstä kokonaan. Suomalaisissa teollisuusyrityksissä — joita Ritalan ym. tutkimus erityisesti koskee — tämä tarkoittaa, että pilotit jäävät irrallisiksi eivätkä skaalaudu systeemisiksi kyvykkyyksiksi. Viestintäkäytäntöjen näkökulmasta Lifted (2026) tunnistaa lisäksi kriittisen ilmiön: tekoälyä saatetaan käyttää 'salaillen', koska avoimuuden puuttuminen estää kokemusten jakamisen formaalien ja epäformaalien kanavien kautta. Tämä on juuri se viestintäkäytäntöjen puute, jonka Ritala ym. (2024) tunnistavat keskeiseksi esteeksi AI-kyvykkyyksien yhteisölliselle rakentumiselle.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Tehokkuuden ja kasvun kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Alma Media / AI Finland (Raivisto & Partanen, 2026); Deloitte/DIF-hallitustutkimus 2026</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on konkreettinen muutosvoima, jonka hyödyt syntyvät aktiiviselle investoijalle. Kaksi kolmesta suomalaisesta hallituksen jäsenestä raportoi merkittäviä tehokkuushyötyjä. Kehys on prognostinen: 'kuka uskaltaa investoida, se voittaa.' Tämä on vahvasti tuotokseen (output) keskittyvä diagnostinen kehys, joka mittaa menestystä käyttöönottona, ei oppimisena. Kaplanin (2008) termein tämä on vallitseva kehys, jolla on vahvin legitimiteettiperusta ylimmässä johdossa ja mediassa.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">AI-väsymyksen ja psykologisen turvallisuuden kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Lau ym. (2026); Lifted / Suuri johtoryhmätutkimus 2026; TTL / TEIJO-hanke</div>
+          <div style="font-size:13px;color:#374151;">Jatkuva ihminen–tekoäly-vuorovaikutus tuottaa psykofysiologista kuormitusta, joka heikentää käyttöä ja sitoutumista. AI-väsymys on mitattava ilmiö (4 dimensiota, 720 osallistujaa, α=.92). Tekoälyä käytetään 'salaillen' organisaatioissa, joissa ei ole psykologista turvallisuutta. Tämä on diagnostinen kehys: ongelma ei ole teknologia vaan inhimillinen kestävyys pitkäkestoisessa vuorovaikutuksessa. Kehys kamppailee legitimiteetistä, koska se koetaan helposti 'hitaana' tai 'varovaisena' verrattuna hallitsevaan tehokkuuskehykseen.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Johtoryhmän valmiuden kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Lifted (2026); Salkunrakentaja-analyysi (toukokuu 2026)</div>
+          <div style="font-size:13px;color:#374151;">54 % suomalaisista johtoryhmien jäsenistä ei pidä tekoälyä osana yhteistä työskentelyä — tekoälyn ja datan hyödyntäminen saa johtoryhmätutkimuksen heikoimman arvion. Kehys on sekä diagnostinen (nykytilan kuvaus) että prognostinen: johtoryhmien on itse otettava tekoäly osaksi omaa työtään, ei vain delegoitava sen käyttöönotto alaspäin. Tämä kehys kilpailee hallitsevan tehokkuuskehyksen kanssa siitä, mikä on oikea muutoksen 'lähtöpiste'.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Organisatorisen oppimisen kehys</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Ritala ym. (2024, LUT / Technovation); TTL / TEIJO-hanke</div>
+          <div style="font-size:13px;color:#374151;">AI-kyvykkyydet eivät synny teknologiainvestoinneista vaan organisatorisesta oppimisesta: toistuvasta testauksesta, reflektiosta ja kokemusten jakamisesta. Alle 20 % tekoälyä käyttävistä suomalaisyrityksistä on kirjallinen AI-strategia. Tämä kehys erottaa havaintoperäiset laukaisimet (kentältä nousevat ongelmat) ja toiminnalliset laukaisimet (johdon linjaukset) ja korostaa niiden keskinäistä jännitettä. Kehyksen legitimiteetin rakennuspaikkana ovat erityisesti koulutustilaisuudet, tutkimusraportit ja sisäiset fasilitointiprosessit — ei julkinen mediakeskustelu.</div>
+        </div>
+      </div>
+        <p>Kaplanin (2008) mukaan epävarmuus on kehystämiskilpailujen raaka-ainetta: 'making strategy under uncertainty can be comprehended as a product of contests over which frame should guide the understanding of an ambiguous environment.' Suomalaisessa tekoälykeskustelussa syyskuussa 2026 nämä neljä kehystä ovat aktiivisessa kilpailussa. Hallitseva tehokkuuden kehys saa pääasialliset viestintäkäytäntönsä mediajulkisuudessa (podcast-haastattelut, hallitustutkimusraportit, SuomiAreena 2026). AI-väsymyksen ja psykologisen turvallisuuden kehys elää tutkimusjulkaisuissa ja HR-ammattilaisten verkostoissa, mutta ei ole vielä saavuttanut riittävää kehyksen resonanssia johtoryhmätasolla. Legitimiteettitaistelu on selkeä: tehokkuuskehys leimaa hitauden vastarinnaksi (ks. kriittinen tulkintaperiaate alla), kun taas AI-väsymyksen kehyksen omistajat — Lau ym. (2026), TTL:n TEIJO-hanke — pyrkivät uudelleenasemoimaan inhimillisen kestävyyden kilpailukykyedun ehdoksi. Viestintäkäytäntöjen kannalta: kehykset eivät ainoastaan elä rinnakkain — ne myös sulkevat toisiaan pois siinä, mitä pidetään relevantteina havaintoperäisinä laukaisimina johtoryhmässä.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Lau ym. (2026) dokumentoivat empiirisesti, että AI-väsymys on psykofysiologinen ilmiö — ei asenne-ongelma tai muutosvastarinta. Tutkimuksen 720 osallistujalla mitattu malli osoittaa: suurempi AI-väsymys ennustaa matalampaa tekoälyn käyttöä ja vahvempia aikomuksia vähentää käyttöä, yli ja ohi yleisen digitaalisen väsymyksen ja tekoälyyn liittyvän teknologiastressin (technostress). Suomalaisessa johtamiskontekstissa Lifted (2026) tunnistaa saman dynamiikan toisesta suunnasta: tekoälyä käytetään 'salaillen', koska pelätään käyttöönoton vaikutusta omaan työllistymiseen. Nämä ilmiöt — kognitiivinen kuormitus, tunneperäinen väsyminen, käyttäytymisen muutos — luetaan johtoryhmissä usein 'hitaudeksi' tai 'vastarinnaksi', vaikka ne ovat rationaalisia responsseja riittämättömään tukeen, psykologisen turvallisuuden puuttumiseen ja rakenteelliseen ylikuormitukseen. Kaplanin (2008) kehystämiskilpailun logiikka selittää tämän: hallitseva tehokkuuskehys ('kuka ei ota käyttöön, häviää kilpailussa') luo kehyksen, joka tekee epävarmuuden esittämisestä poliittisesti epäedullista. Tulos on, että organisaation kannalta tärkeimmät havaintoperäiset laukaisimet — käyttäjäkokemusten ongelmat, kognitiivinen kuorma, koulutuksen puutteet — eivät nouse johtoryhmien asialistalle, koska niiden esittäminen on kehystetty muutosvastarinnaksi.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Epävarmuus AI-väsymyksestä, käyttönopeuden hidastamisesta tai psykologisen turvallisuuden vaatimisesta on vastuullista huolenpitoa organisaation oppimiskyvystä — ei muutosvastarintaa. Ritalan ym. (2024) viitekehyksessä se on toiminnallinen laukaisin, joka pitää tunnistaa ja käsitellä viestintäkäytäntöjen tasolla ennen kuin explorative learning voi tapahtua. Johtoryhmien tehtävä on luoda rakenteet, joissa nämä signaalit voivat nousta esiin turvallisesti — ei kehystää niitä pois.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• AI-väsymyksen neljä dimensiota (kognitiivinen, emotionaalinen, käyttäytymis-, fyysinen) ovat nyt empiirisesti validoitu ja mitattavissa — tämä avaa mahdollisuuden, että suomalaiset HR-toiminnot ja TTL alkavat sisällyttää AI-väsymysmittauksen osaksi työhyvinvoinnin seurantaa (verrattavissa burnout-mittareihin). Jos TTL:n TEIJO-hanke ottaa AI-väsymyksen osaksi tutkimusagendaansa, se muuttaisi sen asemaa johtamiskeskustelussa: pelkästä anekdootista mitattavaksi riskiksi.</div><div class="signal-item">• Suomalaisten johtoryhmien tekoälyn 'salailu'-ilmiö (Lifted 2026) viittaa siihen, että epäformaalit viestintäkäytännöt ovat tekoälyn diffuusion todellinen pullonkaula — ei teknologia eikä strategia. Tämä on heikko signaali siitä, että seuraava johtamisen murros ei ole 'enemmän tekoälyä' vaan 'turvallisemmat kanavat tekoälykokemusten jakamiselle'. HENRY ry:n ja Sitran agenda voisi siirtyä tähän suuntaan syksyllä 2026.</div><div class="signal-item">• Tekoälyagenttien 'fatigue'-ilmiö skaalautuu nopeasti: agenttiteknologian käyttöönotto tuo mukanaan uuden kerroksen valvontavastuuta ('toinen työ: tekoälyn valvominen'), joka ei näy tuottavuuslaskelmissa mutta näkyy kognitiivisessa kuormituksessa. Suomen hallituksen 10 miljoonan euron panostus tekoälyagenttiautomaatioon julkishallinnossa (AI Finland 2026) on potentiaalisesti suuri AI-väsymysriski, jos käyttöönottoa ei tueta riittävillä oppimisrakenteilla. Tämä on heikko signaali, joka Kaplanin kehystämiskilpailun logiikalla saattaa nousta vahvaksi kehykseksi vuoden 2027 budjettineuvotteluissa.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.sciencedirect.com/science/article/pii/S2451958826002605" target="_blank" rel="noopener" class="a-source-link">Lau ym. (2026) — AI fatigue in human–AI interaction: Conceptual framework, scale development and validation, and associations with AI engagement. Computers in Human Behavior Reports, 23, 101186.</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://www.sciencedirect.com/science/article/pii/S0166497224001706" target="_blank" rel="noopener" class="a-source-link">Ritala, Aaltonen, Ruokonen & Nemeh (2024) — Developing industrial AI capabilities: An organisational learning perspective. Technovation, 138, 103120.</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://pubsonline.informs.org/doi/10.1287/orsc.1070.0340" target="_blank" rel="noopener" class="a-source-link">Kaplan, S. (2008) — Framing Contests: Strategy Making Under Uncertainty. Organization Science, 19(5), 729–752.</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.salkunrakentaja.fi/2026/05/suomalaiset-johtoryhmat-eivat-pysy-tekoalyn-vauhdissa/" target="_blank" rel="noopener" class="a-source-link">Lifted — Suuri johtoryhmätutkimus 2026 (Salkunrakentaja-analyysi, toukokuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.deloitte.com/fi/fi/issues/ai-and-tech/tekoaly-hallitustyossa-2026.html" target="_blank" rel="noopener" class="a-source-link">Deloitte & Directors' Institute Finland (DIF) — Tekoäly hallitustyössä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2026/04/Nain-Suomi-hyodyntaa-tekoalya-2026.pdf" target="_blank" rel="noopener" class="a-source-link">AI Finland — Näin Suomi hyödyntää tekoälyä 2026 (huhtikuu 2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://lifted.fi/johtamisen-artikkelit/tekoalyn-hyodyntaminen-johtamisessa/" target="_blank" rel="noopener" class="a-source-link">Lifted — Tekoälyn hyödyntäminen edellyttää johdon linjauksia (viestintäkäytännöt ja psykologinen turvallisuus)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://www.ttl.fi/en/research/projects/artificial-intelligence-and-algorithms-supporting-leadership-teijo" target="_blank" rel="noopener" class="a-source-link">TTL / Työterveyslaitos — Tekoäly ja algoritmit johtajuuden tukena (TEIJO-hanke)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://kaiusniemi.com/puheet-ja-kolumnit/suomiareena-2026-tekoaly-johtajana" target="_blank" rel="noopener" class="a-source-link">Kaius Niemi — SuomiAreena 2026: Tekoäly ei korvaa johtamista, se nostaa sen vaatimustasoa</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Ammatillinen</span>
+            <a href="https://lmsomeco.fi/blogi/tekoalyn-kaytto-suomessa-2026/" target="_blank" rel="noopener" class="a-source-link">LMSome — Tekoälyn käyttö Suomessa 2026 (Tilastokeskus-data, toimialavertailu)</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 22.9.2026 klo 12.05.20</span>
+</div>
+
+</body>
+</html>
