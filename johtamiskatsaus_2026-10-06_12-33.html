@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälyn sääntely kiihtyy: Kalifornian aloitteet ja suomalainen sopeutumishaaste</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --ink:#0F1623; --surface:#F5F7FA; --card:#fff; --border:#E2E8F0;
+    --muted:#64748B; --ritala:#3B7DD8; --floyd:#0F9D8A; --kaplan:#B8860B; --hoppmann:#9B44A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--surface); color:var(--ink); font-size:14px; line-height:1.7; -webkit-print-color-adjust:exact; }
+
+  /* ── NAV ── */
+  .top-nav { background:var(--ink); color:#fff; padding:12px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .top-nav-brand { font-weight:800; font-size:14px; }
+  .top-nav-links { display:flex; gap:20px; }
+  .top-nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.5px; }
+  .top-nav-links a:hover { color:#fff; }
+
+  /* ── FACTSHEET STYLES (inlined from buildFactsheetHTML) ── */
+  .cover { background:linear-gradient(135deg,#0F1623 0%,#1a2744 50%,#0F1623 100%); color:#fff; padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(59,125,216,0.3) 0%,transparent 70%); pointer-events:none; }
+  .cover-meta { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .cover-meta::before { content:''; display:inline-block; width:28px; height:2px; background:var(--ritala); }
+  .cover h1 { font-size:32px; font-weight:900; line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+  .cover-date { font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .lens-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .lens-tag { font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; border:1px solid; letter-spacing:0.3px; }
+  .lt-r { color:#7EB8F7; border-color:rgba(126,184,247,0.4); }
+  .lt-f { color:#5FD0C0; border-color:rgba(95,208,192,0.4); }
+  .lt-k { color:#E8C55A; border-color:rgba(232,197,90,0.4); }
+  .lt-h { color:#CE91DC; border-color:rgba(206,145,220,0.4); }
+  .body-wrap { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .section { margin-bottom:32px; }
+  .section-label { font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .section h2 { font-size:18px; font-weight:800; margin-bottom:12px; letter-spacing:-0.3px; }
+  .section p { color:#374151; line-height:1.8; }
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .concept-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .concept-chip { background:#EEF2FF; color:#4338CA; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; }
+  .actions-wrap { display:flex; flex-direction:column; gap:12px; }
+  .action-item { display:flex; gap:16px; align-items:flex-start; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .action-num { font-size:11px; font-weight:800; color:#16A34A; min-width:24px; padding-top:2px; }
+  .action-text { font-size:13px; line-height:1.6; color:#166534; }
+  .sources-cover { display:flex; gap:20px; align-items:center; background:var(--ink); color:#fff; padding:32px 56px; }
+  .sources-cover-icon { font-size:32px; }
+  .sources-cover h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+  .sources-cover p { font-size:13px; color:rgba(255,255,255,0.5); }
+  .sources-body { max-width:820px; margin:0 auto; padding:32px 24px; }
+  .source-section { margin-bottom:28px; }
+  .source-section-heading { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .source-item-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+  .source-claim { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .source-ref { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .source-quote { font-size:13px; font-style:italic; color:#475569; padding:8px 12px; background:#F8FAFC; border-radius:6px; border-left:2px solid var(--border); }
+  .source-quote::before { content:'“'; }
+  .source-quote::after  { content:'”'; }
+  .footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:16px 40px; background:var(--ink); color:rgba(255,255,255,0.35); font-size:11px; letter-spacing:0.3px; }
+  .footer-brand { font-weight:700; color:rgba(255,255,255,0.55); }
+
+  /* ── PITKÄ ANALYYSI ── */
+  .analysis-section { max-width:820px; margin:0 auto; padding:40px 24px; }
+  .analysis-heading { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+  .analysis-heading h2 { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
+  .a-section { background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+  .a-summary { display:flex; align-items:center; gap:12px; padding:16px 20px; cursor:pointer; list-style:none; user-select:none; }
+  .a-summary::-webkit-details-marker { display:none; }
+  .a-summary:hover { background:#F8FAFC; }
+  .a-num { font-size:11px; font-weight:800; color:var(--muted); min-width:24px; }
+  .a-title { font-size:14px; font-weight:700; flex:1; }
+  .a-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .a-chevron { color:var(--muted); font-size:11px; transition:transform 0.2s; }
+  details[open] .a-chevron { transform:rotate(180deg); }
+  .a-body { padding:0 20px 20px; border-top:1px solid var(--border); }
+  .a-body p { margin-top:14px; color:#374151; line-height:1.8; }
+  .signals-box { margin-top:16px; background:#F0F9FF; border-left:3px solid #0EA5E9; border-radius:0 8px 8px 0; padding:12px 16px; }
+  .signals-title { font-size:11px; font-weight:800; color:#0EA5E9; margin-bottom:6px; }
+  .signal-item { font-size:13px; color:#0C4A6E; margin-bottom:4px; }
+  .section-divider { border:none; border-top:3px solid var(--ink); margin:48px 0 0; }
+  /* Lähteet */
+  .a-sources-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+  .a-source-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #E2E8F0; font-size:13px; }
+  .a-source-row:last-child { border-bottom:none; }
+  .a-source-type { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:#F1F5F9; color:#64748B; white-space:nowrap; }
+  .a-source-link { color:#3B7DD8; text-decoration:none; font-weight:500; }
+  .a-source-link:hover { text-decoration:underline; }
+  /* Metadata-badget */
+  .a-meta-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  /* Korjattu tulkinta */
+  .a-correction { margin-top:14px; padding:12px 16px; background:#F0FDF4; border-left:3px solid #16A34A; border-radius:0 8px 8px 0; font-size:13px; color:#166534; line-height:1.7; }
+  /* Onnistumissyy */
+  .a-success-reason { margin-top:10px; padding:8px 14px; background:#F8FAFC; border-left:2px solid #E2E8F0; font-size:13px; color:#64748B; font-style:italic; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="top-nav-brand" href="index.html" style="text-decoration:none;color:inherit;">🔬 Tekoäly &amp; Johtaminen</a>
+  <div class="top-nav-links">
+    <a href="index.html" style="background:#1E2A3A;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 12px;font-weight:700;color:rgba(255,255,255,0.85);">← Etusivu</a>
+    <a href="#factsheet">▲ Factsheet</a>
+    <a href="#analyysi">▼ Koko analyysi</a>
+  </div>
+</nav>
+
+<!-- ══ OSA 1: FACTSHEET ══ -->
+<div id="factsheet">
+
+<div class="cover">
+  <div class="cover-meta">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Tekoälyn sääntely kiihtyy: Kalifornian aloitteet ja suomalainen sopeutumishaaste</h1>
+  <div class="cover-date">6.10.2026</div>
+  <div class="lens-strip">
+    <span class="lens-tag lt-r">Oppiminen</span>
+    <span class="lens-tag lt-f">Keskijohto</span>
+    <span class="lens-tag lt-k">Kilpailevat kehykset</span>
+    <span class="lens-tag lt-h">Teknologian kehystäminen</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+  
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2>Tilannekuva</h2>
+    <p>Kalifornian kuvernööri Newsom allekirjoitti 9.9.2026 lait SB 813 ja AB 1405, jotka luovat Yhdysvaltojen ensimmäisen riippumattomien kolmansien osapuolten auditointikehyksen tekoälyjärjestelmille. Samaan aikaan EU AI Actin pääosa tuli sovellettavaksi 2.8.2026. Tilastokeskuksen 2026-datan mukaan vain 15 % suomalaisyrityksistä on dokumentoinut tekoälyn käyttöä koskevia ohjeita tai toimintatapoja, ja alle 25 % tunnistaa EU AI Actin sisällön. Sääntely-ympäristö muuttuu nopeasti sekä Atlantin takaisten edelläkävijöiden että EU-tason kehityksen kautta, mutta suomalaisten organisaatioiden tietopohja on selvästi riittämätön.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2>Strateginen asemoituminen</h2>
+    <p>Suomalaisille organisaatioille avautuu kaksi erilaista polkua. Ensimmäinen on minimaalinen vaatimustenmukaisuus: EU AI Actin velvoitteiden täyttäminen teknisesti, ilman strategista kyvykkyyksien rakentamista. Toinen on proaktiivinen asemoituminen: hyödynnetään Kalifornian auditointimalleja ja syntyvää tekoälytarkastajien ammattikuntaa kilpailuedun rakentamiseen. Teknologiateollisuuden toimijoilla — Teknologiateollisuus ry, Business Finland — on mahdollisuus ottaa aktiivinen rooli kansallisen tekoälyn hallintakehyksen muotoilussa sen sijaan, että odotetaan passiivisesti EU-tason ohjausta. Governance-vaje yhdistettynä vahvaan teknologiaosaamiseen on suomalaisten organisaatioiden keskeinen jännite.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2>Kilpailevat kehykset</h2>
+    <p>Neljä kilpailevaa kehystä muokkaa tekoälykeskustelua samanaikaisesti. (1) Vastuullisen innovaation kehys (Newsom/Kalifornia): tekoäly lupaa paljon, mutta edellyttää merkityksellisiä suojatoimia — tuekseen myös Anthropicin ja OpenAI:n kaltaisten toimijoiden tuki. (2) Itsesääntelykehys (Trump/liittohallitus): sääntely on ongelma, ei ratkaisu; yritykset valvovat itse itseään vapaaehtoisen White House Accord on Super Intelligence -sopimuksen kautta — kehyksen heikkous on sen juridisesti sitomaton luonne. (3) Kalifornia kansallisena standardinasettajana (media/analyytikot): instituutionaaliset realiteetit ohittavat ideologiset väittämät, kun yritykset sopeutuvat Kalifornian sääntelyyn pysyäkseen markkinoilla. (4) EU:n vaatimustenmukaisuuden kehys (suomalaiset yritykset): hallitseva kehys Suomessa on diagnostinen — 'mitä meidän täytyy tehdä?' — mikä voi ohjata kohti minimaalista täyttämistä strategisen oppimisen sijaan.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2>Huolenaiheet</h2>
+    <p>Tekninen epävarmuus on aito haaste: onko pakollinen hätäpysäytysmekanismi frontier-tekoälymalleille ylipäätään toteuttamiskelpoinen? Tämä on vastuullinen kysymys, ei muutosvastarinta. SB 813:n vapaaehtoisuuteen perustuva lähestymistapa — auditointi ei ole oletuksena pakollista — heijastaa tätä tasapainohakuisuutta. Suomessa vastaava vastuullinen huoli koskee tietopohjan riittämättömyyttä: EU AI Actin heikko tunnettavuus ei tarkoita, että yritykset vastustavat sääntelyä, vaan että valmiudet sopeutua siihen ovat puutteelliset. Compliance-painotteinen ajattelu voi estää syvempää, uutta etsivää oppimista.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2>Heikot signaalit</h2>
+    <p>Kolme heikkoa signaalia ansaitsee huomion. (1) Terminologiakiistat strategisena ilmiönä: Trumpin päätös nimetä tekoäly virallisesti 'superintelligenceksi' ja Newsoman vastaus — Kalifornian virastojen velvoittaminen käyttämään edelleen termiä 'artificial intelligence' — osoittaa, että käsitteellinen taso on muuttunut kilpailukentäksi. Suomalaisille organisaatioille sisäiset tekoälykäsitteistöt ja viestintäkäytännöt ovat strateginen, ei pelkästään tekninen valinta. (2) Auditointiteollisuuden syntyminen: AB 1405 luo rekisterin tekoälytarkastajille ja SB 813 sertifioi Independent Verification Organizations -organisaatiot. Uusi ammattikunta on syntymässä, ja suomalaiset EU AI Act -vaatimustenmukaisuuspalveluja tarjoavat yritykset ovat jo tunnistaneet tämän liiketoimintamahdollisuuden. (3) Yritysjohtajat pyytävät sääntelyä: Newsomin toistuva viittaus siihen, että 'tekoälyn toimitusjohtajat itse pyytävät sääntelyä', merkitsee perinteisen vastakkainasettelun murtumista teollisuuden ja regulaattorin välillä — suomalaisille toimijoille tämä on kutsu proaktiivisempaan rooliin.</p>
+  </div>
+  
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Avaintermit</div>
+    <div class="concept-cloud"><span class="concept-chip">havaintoperäiset laukaisimet</span><span class="concept-chip">rakenteelliset käytännöt</span><span class="concept-chip">uutta etsivä oppiminen</span><span class="concept-chip">olemassaolevaa hyödyntävä oppiminen</span><span class="concept-chip">esteet ja mahdollistajat</span><span class="concept-chip">diagnostinen kehys</span><span class="concept-chip">prognostinen kehys</span><span class="concept-chip">kehyksen uudelleenasemointi</span><span class="concept-chip">EU AI Act</span><span class="concept-chip">governance-vaje</span><span class="concept-chip">vaatimustenmukaisuus</span><span class="concept-chip">Independent Verification Organizations</span></div>
+  </div>
+
+  
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">Toimenpide-ehdotukset</div>
+    <div class="actions-wrap">
+    <div class="action-item"><div class="action-num">01</div><div class="action-text">Toimenpide 1: Kartoita organisaation tekoälyn käyttö ja dokumentoi sisäiset ohjeistukset EU AI Actin vaatimusten mukaisesti — tavoiteaika Q4/2026, vastuutaho: lakiasiat ja HR yhdessä.</div></div>
+    <div class="action-item"><div class="action-num">02</div><div class="action-text">Toimenpide 2: Arvioi proaktiivisesti Kalifornian SB 813- ja AB 1405 -auditointimallien sovellettavuus omaan toimintaan, erityisesti jos organisaatiolla on liiketoimintaa tai kumppanuuksia Yhdysvalloissa.</div></div>
+    <div class="action-item"><div class="action-num">03</div><div class="action-text">Toimenpide 3: Osallistu kansallisen AI-hallintakehyksen muotoiluun toimialan järjestöjen kautta (Teknologiateollisuus ry, Business Finland) sen sijaan, että odotetaan passiivisesti EU-tason ohjausta — kilpailuedun rakentaminen edellyttää siirtymistä compliance-ajattelusta strategiseen kyvykkyyksien kehittämiseen.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="sources-cover">
+  <div class="sources-cover-icon">📎</div>
+  <div><h2>Lähteet &amp; konkretisoinnit</h2><p>Väitteiden taustat ja lähdeviitteet</p></div>
+</div>
+<div class="sources-body">
+  
+  <div class="source-section">
+    <div class="source-section-heading">Tilannekuva</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">SB 813 ja AB 1405 luovat Yhdysvaltojen ensimmäisen riippumattomien kolmansien osapuolten auditointikehyksen tekoälyjärjestelmille.</div>
+      <div class="source-ref">📌 Newsoman allekirjoitustoimenpiteet 9.9.2026; analyysin Spotlight-osio</div>
+      <div class="source-quote">Newsoman allekirjoittama SB 813 ja AB 1405 (9.9.2026) luovat ensimmäistä kertaa Yhdysvalloissa riippumattomien kolmansien osapuolten auditointikehyksen tekoälyjärjestelmille.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Vain 15 % suomalaisyrityksistä on dokumentoinut tekoälyn käyttöä koskevia ohjeita tai toimintatapoja.</div>
+      <div class="source-ref">📌 Tilastokeskus 2026</div>
+      <div class="source-quote">Tilastokeskuksen 2026-data kertoo, että vain 15 % suomalaisyrityksistä on dokumentoinut tekoälyn käyttöä koskevia ohjeita tai toimintatapoja, vaikka EU AI Actin pääosa tuli sovellettavaksi 2.8.2026.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">EU AI Actin pääosa tuli sovellettavaksi 2.8.2026.</div>
+      <div class="source-ref">📌 EU AI Act; analyysin Spotlight-osio</div>
+      <div class="source-quote">EU AI Actin pääosa tuli sovellettavaksi 2.8.2026.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Kilpailevat kehykset</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Teollisuuden johtajat, mukaan lukien Anthropic ja OpenAI, tukivat Kalifornian lainsäädäntöä.</div>
+      <div class="source-ref">📌 Analyysin Kilpailevien kehysten -radar -osio</div>
+      <div class="source-quote">AI-johtajat (Anthropic, OpenAI) tukivat lainsäädäntöä, mikä antaa kehykselle legitimiteettivoimaa jopa teollisuuden sisällä.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">White House Accord on Super Intelligence -sopimus on juridisesti sitomaton.</div>
+      <div class="source-ref">📌 Analyysin Kilpailevien kehysten -radar -osio</div>
+      <div class="source-quote">Sopimus on juridisesti ei-sitova, ja se tunnustettiin laajalti 'unenforceable' -luonteiseksi.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Epävarmuus on kehystämiskilpailujen raaka-aine.</div>
+      <div class="source-ref">📌 Kaplan 2008</div>
+      <div class="source-quote">Kaplanin (2008) mukaan epävarmuus on kehystämiskilpailujen raaka-aine: tekoälyn riskit ovat reaalisia ja kiisteltyjä, mikä tekee kehystämisestä erityisen voimakasta.</div>
+    </div>
+  </div>
+  <div class="source-section">
+    <div class="source-section-heading">Heikot signaalit</div>
+    
+    <div class="source-item-card">
+      <div class="source-claim">Trump nimesi tekoälyn virallisesti 'superintelligenceksi' ja Newsom velvoitti Kalifornian virastot käyttämään edelleen termiä 'artificial intelligence'.</div>
+      <div class="source-ref">📌 Analyysin Heikot signaalit -osio; liittohallituksen ja Kalifornian toimeenpanomääräykset 2026</div>
+      <div class="source-quote">Trump muutti tekoälyn virallisen nimen 'superintelligenceksi' (SI) kaikissa liittohallituksen dokumenteissa, ja Newsom vastasi toimeenpanomääräyksellä, joka velvoittaa Kalifornian virastojen käyttämään edelleen termiä 'artificial intelligence'.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Suomalaiset EU AI Act -vaatimustenmukaisuuspalveluja tarjoavat yritykset ovat tunnistaneet auditointiteollisuuden liiketoimintamahdollisuuden.</div>
+      <div class="source-ref">📌 aiFinland 2026; analyysin Heikot signaalit -osio</div>
+      <div class="source-quote">Suomessa EU AI Actin vaatimustenmukaisuuspalveluja tarjoavat yritykset ovat jo tunnistaneet tämän liiketoimintamahdollisuuden (aiFinland 2026).</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Newsom viittasi toistuvasti siihen, että tekoälyn toimitusjohtajat itse pyytävät sääntelyä.</div>
+      <div class="source-ref">📌 Analyysin Heikot signaalit -osio; Newsoman julkiset lausunnot syyskuu 2026</div>
+      <div class="source-quote">Newsom viittasi toistuvasti siihen, että 'AI CEOs themselves are begging for regulation'.</div>
+    </div>
+    <div class="source-item-card">
+      <div class="source-claim">Toiminnalliset laukaisimet voivat kiihdyttää uutta etsivää oppimista organisaatioissa.</div>
+      <div class="source-ref">📌 Ritala ym. 2024; analyysin Spotlight- ja Heikot signaalit -osiot</div>
+      <div class="source-quote">Tämä on Ritalan mukainen toiminnallinen laukaisin, joka voi kiihdyttää uutta etsivää oppimista suomalaisissa organisaatioissa, joilla on teknologiaosaamista mutta governance-vaje.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ OSA 2: PITKÄ ANALYYSI ══ -->
+<hr class="section-divider">
+<div id="analyysi" class="analysis-section">
+  <div class="analysis-heading">
+    <div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Koko analyysi</div>
+      <h2>Viikko 41/2026 — Kalifornian AI-turvatakuut & kehystämiskilpailu</h2>
+    </div>
+  </div>
+  
+    <details class="a-section" open>
+      <summary class="a-summary">
+        <span class="a-num">01</span>
+        <span class="a-title">Suomalainen Spotlight</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;"><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">havaintoperäiset laukaisimet</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">rakenteelliset käytännöt</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">uutta etsivä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">olemassaolevaa hyödyntävä oppiminen</span><span style="background:#F1F5F9;color:#475569;border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;">esteet ja mahdollistajat</span></div>
+        
+        <p>Newsoman allekirjoittama SB 813 ja AB 1405 (9.9.2026) luovat ensimmäistä kertaa Yhdysvalloissa riippumattomien kolmansien osapuolten auditointikehyksen tekoälyjärjestelmille. Tämä on suomalaiselle johtamiskeskustelulle merkittävä ulkoinen havaintoperäinen laukaisin (Ritala ym. 2024): regulatorinen ympäristö muuttuu nopeasti sekä Atlantin takaisten edelläkävijöiden että EU AI Actin kautta. Tilastokeskuksen 2026-data kertoo, että vain 15 % suomalaisyrityksistä on dokumentoinut tekoälyn käyttöä koskevia ohjeita tai toimintatapoja, vaikka EU AI Actin pääosa tuli sovellettavaksi 2.8.2026. Tämä kuilu — laaja käyttöönotto ilman rakenteellisia käytäntöjä — on Ritalan teorian mukainen rakenteellinen este AI-kyvykkyyksien kehittymiselle. Suomalaiset organisaatiot ovat pääosin olemassaolevaa hyödyntävässä vaiheessa (exploitative learning): tekoälyä käytetään tuottavuuden parantamiseen, mutta uutta etsivää oppimista (explorative learning) — kuten auditointikäytäntöjen, läpinäkyvyysrakenteiden tai governance-mallien kehittämistä — harjoitetaan vasta alle neljäsosassa yrityksistä, joista alle neljännes tunnistaa edes EU:n keskeisen tekoälylain. Newsoman lainsäädäntöpaketti tarjoaa konkreettisen mallin rakenteellisista käytännöistä (structural practices): kolmansien osapuolten auditointirekisteri (AB 1405), IVO-sertifiointivaatimukset (SB 813) ja asiantuntijaryhmän 60 päivän toimeksianto ovat kaikki organisationaalisen oppimisen infrastruktuuria, jota Suomesta toistaiseksi puuttuu. Viestintäkäytäntöjen näkökulmasta on huomionarvoista, että OpenAI ja Anthropic — siis suurimmat kehittäjät — tukivat lainsäädäntöä julkisesti. Tämä on esimerkki siitä, miten kehystäminen ('vastuullinen tekoäly' vs. 'innovaation jarru') tapahtuu nimenomaan julkisten lausuntojen kautta, ei pelkästään poliittisissa prosesseissa.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">02</span>
+        <span class="a-title">Kilpailevien kehysten -radar</span>
+        <span class="a-pills"><span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+        
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Vastuullisen innovaation kehys (prognostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Newsom / Kalifornia</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on 'extraordinary promise', mutta vaatii 'meaningful safeguards'. Kehys rakentuu julkisissa allekirjoitustilaisuuksissa, lehdistötiedotteissa ja toimeenpanomääräyksissä. Resonanssi: AI-johtajat (Anthropic, OpenAI) tukivat lainsäädäntöä, mikä antaa kehykselle legitimiteettivoimaa jopa teollisuuden sisällä. Kehyksen prognostinen ulottuvuus: 'kill switch' -selvitys ja 60 päivän asiantuntijaryhmä luovat eteenpäin katsovan toimintaohjelman.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Itsesääntelykehys (diagnostinen)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Trump / liittohallitus</div>
+          <div style="font-size:13px;color:#374151;">Tekoäly on nimettävä uudelleen 'superintelligenceksi' (SI), ja yritykset 'itsepoliisoivat' itsensä vapaaehtoisella White House Accord on Super Intelligence -sopimuksella. Kehyksen diagnostinen ulottuvuus: sääntelystä tehdään ongelma ('patchwork of state laws stifles innovation'), ei ratkaisu. Kehys elää mediahaastatteluissa, Valkoisen talon tapahtumissa ja toimeenpanomääräyksissä. Kehyksen heikkous: sopimus on juridisesti ei-sitova, ja se tunnustettiin laajalti 'unenforceable' -luonteiseksi.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">Kehyksen uudelleenasemointi: Kalifornia kansallisena standardinasettajana</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Axios / toimittajat / teollisuuden analyytikot</div>
+          <div style="font-size:13px;color:#374151;">Kolmas kilpaileva kehys ei tule poliitikoilta vaan mediaviestinnästä: Kaliforniasta muodostuu de facto kansallinen standardi, koska yritykset sopeutuvat sen sääntelyyn pysyäkseen markkinoilla. Tämä kehys haastaa sekä Newsoman 'ensimmäisenä toimiminen' -narratiivin että Trumpin 'vapaa markkina' -narratiivin asettamalla instituutionaaliset realiteetit ideologisten väittämien yläpuolelle.</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#B8860B;margin-bottom:4px;">EU:n vaatimustenmukaisuuden kehys (toiminnallinen laukaisin)</div>
+          <div style="font-size:11px;color:#64748B;margin-bottom:6px;">Omistaja: Suomalaiset yritykset / EU-regulaattorit</div>
+          <div style="font-size:13px;color:#374151;">Suomalaisessa kontekstissa hallitseva kehys on EU AI Actin vaatimustenmukaisuus elokuusta 2026 alkaen. Kehys on pääosin diagnostinen — 'mitä meidän täytyy tehdä?' — eikä niinkään prognostinen. Tämä voi olla este uutta etsivälle oppimiselle: compliance-mindset ohjaa kohti minimaalista täyttämistä, ei strategista kyvykkyyksien rakentamista.</div>
+        </div>
+      </div>
+        <p>Newsoman syyskuun 2026 toimenpiteet — SB 813, AB 1405 ja toimeenpanomääräys N-9-26 — muodostavat yhtenäisen kehystämisstrategian, joka kilpailee liittohallituksen itsesääntelykehyksen kanssa. Kaplanin (2008) mukaan epävarmuus on kehystämiskilpailujen raaka-aine: tekoälyn riskit ovat reaalisia ja kiisteltyjä, mikä tekee kehystämisestä erityisen voimakasta. Keskeinen jännite on diagnostisten ja prognostisten kehysten välillä: Trump diagnostisoi sääntelyhimon ongelmaksi ja tarjoaa vapaaehtoisuuden ratkaisuksi; Newsom diagnostisoi liittohallituksen toimettomuuden ongelmaksi ja tarjoaa valtion interventiota ratkaisuksi. Viestintäkäytäntöjen rooli on tässä kriittinen: kehykset eivät kilpaile abstraktisti, vaan konkreettisissa viestintätilanteissa — Newsoman lehdistötilaisuuksissa, Trumpin Valkoisen talon seremonioissa, teollisuuden toimitusjohtajien julkilausumissa. Erityisen merkittävää on, että OpenAI:n ja Anthropicin Newsom-tuki tapahtui julkisissa lausunnoissa, mikä osoittaa, miten viestintäkäytännöt rakentavat kehyksen legitimiteettiä (Ritala + Kaplan -kytkös). Suomalaiselle johtajalle tämä tarkoittaa: EU AI Actin mukainen compliance-kehys on vasta lattia, ei katto.</p>
+        
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">03</span>
+        <span class="a-title">Epävarmuuden vastuullinen ääni</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        <p>Newsoman 'kill switch' -aloite on herättänyt teknistä epävarmuutta: onko pakollinen hätäpysäytysmekanismi frontier-malleille teknisesti toteuttamiskelpoinen? Tämä on aito, vastuullinen kysymys — ei muutosvastarinta. Vapaaehtoisuuteen perustuva ohjelma (SB 813 ei vaadi auditointia oletuksena) on tasapainon hakemista innovaation ja turvallisuuden välillä. Suomalaisessa kontekstissa vastaava vastuullinen epävarmuus koskee sitä, miten alle 25 % suomalaisyrityksistä tunnistaa edes EU AI Actin sisällön — tämä ei tarkoita, että yritykset vastustavat sääntelyä, vaan että tietopohja on riittämätön vastuulliseen päätöksentekoon.</p>
+        
+        
+        <div class="a-correction"><div style="font-size:11px;font-weight:800;color:#16A34A;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">✓ Korjattu tulkinta</div>Kriittinen tulkintaperiaate: kun yritysjohtaja kysyy 'onko kill switch edes mahdollinen?' tai 'miten auditointikriteerit määritellään?', hän ei vastusta tekoälyn sääntelyä — hän harjoittaa vastuullista huolenpitoa (due diligence). Johtamiskeskustelussa tämä epävarmuus on arvokas havaintoperäinen laukaisin (Ritala): se osoittaa, missä organisaation oppiminen tarvitsee rakenteellisia tukia, kuten sisäisiä viestintäkäytäntöjä AI-kokemusten jakamiseksi.</div>
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">04</span>
+        <span class="a-title">Heikot signaalit</span>
+        <span class="a-pills"><span style="background:#3B7DD822;color:#3B7DD8;border:1px solid #3B7DD844;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Oppiminen</span> <span style="background:#B8860B22;color:#B8860B;border:1px solid #B8860B44;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Kehykset</span></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        <div class="signals-box"><div class="signals-title">📡 Heikot signaalit</div><div class="signal-item">• Nimeämispoliittiikka kehystämisvälineenä: Trump muutti tekoälyn virallisen nimen 'superintelligenceksi' (SI) kaikissa liittohallituksen dokumenteissa, ja Newsom vastasi toimeenpanomääräyksellä, joka velvoittaa Kalifornian virastojen käyttämään edelleen termiä 'artificial intelligence'. Heikko signaali: terminologiakiistat ovat merkki siitä, että kehystämiskilpailu on siirtymässä käsitteelliselle tasolle — kuka hallitsee kieltä, hallitsee kehystä (Kaplan 2008). Suomalaisille organisaatioille tämä tarkoittaa, että sisäiset AI-käsitteistöt ja viestintäkäytännöt ovat strateginen, ei pelkästään tekninen valinta.</div><div class="signal-item">• Auditointiteollisuuden syntyminen: AB 1405 luo valtiollisen rekisterin AI-auditoreille, ja SB 813 sertifioi Independent Verification Organizations (IVO) -organisaatiot. Heikko signaali: uusi ammattikunta — tekoälytarkastajat — on syntymässä. Suomessa EU AI Actin vaatimustenmukaisuuspalveluja tarjoavat yritykset ovat jo tunnistaneet tämän liiketoimintamahdollisuuden (aiFinland 2026). Tämä on Ritalan mukainen toiminnallinen laukaisin, joka voi kiihdyttää uutta etsivää oppimista suomalaisissa organisaatioissa, joilla on teknologiaosaamista mutta governance-vaje.</div><div class="signal-item">• Yritysjohtajat pyytävät sääntelyä — poikkeuksellinen kehystämissiirtymä: Newsom viittasi toistuvasti siihen, että 'AI CEOs themselves are begging for regulation'. Heikko signaali: tämä merkitsee kehyksen uudelleenasemointia (Kaplan) — teollisuuden ja regulaattorin perinteinen vastakkainasettelu murtuu. Suomalaisessa kontekstissa tämä voi tarkoittaa, että teknologiateollisuuden (Teknologiateollisuus ry, Business Finland) kannattaa ottaa proaktiivisempi rooli kansallisen AI-governance-kehyksen muotoilussa sen sijaan, että odottaa EU-tason sääntelyä.</div></div>
+        
+        
+        
+      </div>
+    </details>
+    <details class="a-section" >
+      <summary class="a-summary">
+        <span class="a-num">05</span>
+        <span class="a-title">Lähteet</span>
+        <span class="a-pills"></span>
+        <span class="a-chevron">▼</span>
+      </summary>
+      <div class="a-body">
+        
+        
+        
+        
+        
+        <div class="a-sources-list"><div class="a-source-row">
+            <span class="a-source-type">Primäärinen (gov)</span>
+            <a href="https://www.gov.ca.gov/2026/09/09/governor-newsom-signs-first-in-the-nation-ai-safeguards-to-protect-californians-calls-on-the-federal-government-to-do-its-part/" target="_blank" rel="noopener" class="a-source-link">gov.ca.gov — Governor Newsom signs first-in-the-nation AI safeguards (9.9.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Primäärinen (gov)</span>
+            <a href="https://www.gov.ca.gov/2026/09/18/governor-newsom-issues-executive-order-to-accelerate-independent-oversight-and-advance-the-creation-of-an-ai-kill-switch/" target="_blank" rel="noopener" class="a-source-link">gov.ca.gov — Executive Order N-9-26: AI Kill Switch (18.9.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Primäärinen (gov)</span>
+            <a href="https://www.gov.ca.gov/2026/09/30/californias-nation-leading-ai-framework-just-got-stronger-governor-newsom-signs-more-first-in-the-nation-worker-protections-and-more/" target="_blank" rel="noopener" class="a-source-link">gov.ca.gov — California's nation-leading AI framework (30.9.2026)</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutinen</span>
+            <a href="https://www.yahoo.com/news/politics/articles/california-enacts-first-u-laws-120420261.html" target="_blank" rel="noopener" class="a-source-link">Yahoo News — California enacts first U.S. laws requiring independent AI audits</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutinen</span>
+            <a href="https://statescoop.com/newsom-signs-legislation-establishing-framework-for-third-party-ai-auditors/" target="_blank" rel="noopener" class="a-source-link">StateScoop — Newsom signs legislation establishing framework for third party AI auditors</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutinen</span>
+            <a href="https://www.ciodive.com/news/California-AI-auditing-legislation/830104/" target="_blank" rel="noopener" class="a-source-link">CIO Dive — What California's AI auditing bills mean for enterprises</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutinen</span>
+            <a href="https://truthout.org/articles/trump-rejects-ai-regulation-as-tech-ceos-sign-voluntary-self-policing-accord/" target="_blank" rel="noopener" class="a-source-link">Truthout — Trump Rejects AI Regulation as Tech CEOs Sign Voluntary Self-Policing Accord</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Uutinen</span>
+            <a href="https://www.transparencycoalition.ai/news/gov-newsom-wraps-california-term-by-enacting-11-more-laws-on-ai-safety" target="_blank" rel="noopener" class="a-source-link">Transparency Coalition — Gov. Newsom wraps California term by enacting 11 more laws on AI safety</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Oikeudellinen analyysi</span>
+            <a href="https://www.fmglaw.com/cyber-privacy-security/california-raises-the-bar-for-ai-accountability-independent-audits/" target="_blank" rel="noopener" class="a-source-link">Freeman Mathis & Gary — California raises the bar for AI accountability & independent audits</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Oikeudellinen analyysi</span>
+            <a href="https://news.bgov.com/bloomberg-government-news/newsom-signs-ai-bills-to-assign-auditors-to-weigh-safety-risks" target="_blank" rel="noopener" class="a-source-link">Bloomberg Government News — Newsom Signs AI Bills to Assign Auditors to Weigh Safety Risks</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Suomalainen (tilastot)</span>
+            <a href="https://spoken.fi/tekoaly-suomalaisissa-yrityksissa-tilastokeskuksen-2026-data-ja-mita-se-tarkoittaa-kielipalveluille/" target="_blank" rel="noopener" class="a-source-link">Spoken.fi — Tekoäly suomalaisissa yrityksissä, Tilastokeskuksen 2026-data</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Suomalainen (sääntely)</span>
+            <a href="https://wicflow.com/blog/eu-tekoalyasetus-pk-yritys-2026-tarkistuslista/" target="_blank" rel="noopener" class="a-source-link">Wicflow — EU:n tekoälyasetus ja suomalainen pk-yritys: elokuun 2026 tarkistuslista</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Suomalainen (tilastot ja trendi)</span>
+            <a href="https://aifinland.fi/wp-content/uploads/2026/04/Nain-Suomi-hyodyntaa-tekoalya-2026.pdf" target="_blank" rel="noopener" class="a-source-link">aiFinland.fi — Näin Suomi hyödyntää tekoälyä 2026</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.1016/j.technovation.2024.102957" target="_blank" rel="noopener" class="a-source-link">Ritala ym. (2024) — Organizational learning and AI capabilities, Technovation</a>
+          </div><div class="a-source-row">
+            <span class="a-source-type">Tieteellinen</span>
+            <a href="https://doi.org/10.1287/orsc.1070.0340" target="_blank" rel="noopener" class="a-source-link">Kaplan (2008) — Framing contests: Strategy making under uncertainty, Organization Science</a>
+          </div></div>
+        
+        
+      </div>
+    </details>
+</div>
+
+<div class="footer">
+  <span class="footer-brand">Tekoäly &amp; Johtaminen · AI-katsausagentti</span>
+  <span>Luotu 6.10.2026 klo 15.33.18</span>
+</div>
+
+</body>
+</html>
