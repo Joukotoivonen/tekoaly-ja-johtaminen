@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitkittäisanalyysi — Tekoäly &amp; Johtaminen 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F3; --bg2: #EDECEA;
+  --fg: #1A1917; --fg2: #5C5A56; --fg3: #9B9893;
+  --card: #FFFFFF; --border: #E0DDD8;
+  --accent: #C4522A; --warn: #E8A020; --ok: #4A7C59;
+  --blue: #3B6FB5;
+  --tag-bg: #F0ECE6;
+  --f-display: 'DM Serif Display', Georgia, serif;
+  --f-body: 'DM Sans', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17150F; --bg2: #201E18;
+    --fg: #F0EDE8; --fg2: #A8A49E; --fg3: #6B6862;
+    --card: #262318; --border: #2E2B24;
+    --accent: #D96035; --warn: #F0B030; --ok: #5A9B6A;
+    --blue: #5B8FD5;
+    --tag-bg: #1E1C15;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--f-body);
+  background: var(--bg); color: var(--fg);
+  font-size: 15px; line-height: 1.6;
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+}
+.page { max-width: 860px; margin: 0 auto; padding-block: 48px 80px; }
+
+/* NAV */
+.nav { margin-bottom: 32px; }
+.nav a {
+  font-size: 13px; color: var(--accent); text-decoration: none; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.nav a:hover { text-decoration: underline; }
+
+/* HEADER */
+.header { margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+.header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.header h1 { font-family: var(--f-display); font-size: clamp(28px, 5vw, 44px); line-height: 1.15; color: var(--fg); margin-bottom: 12px; }
+.header-meta { font-size: 13px; color: var(--fg3); }
+
+/* TILES */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 36px; }
+.tile { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.tile-num { font-family: var(--f-display); font-size: 36px; line-height: 1; color: var(--accent); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.tile-label { font-size: 12px; color: var(--fg2); font-weight: 500; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 36px; flex-wrap: wrap; }
+.tab-btn {
+  font-family: var(--f-body); font-size: 13px; font-weight: 600;
+  padding: 10px 18px; border: none; background: transparent;
+  color: var(--fg3); cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: color 0.15s; border-radius: 6px 6px 0 0;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--fg); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* SECTION */
+.section { margin-bottom: 48px; }
+.section-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--fg3); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* LEGEND */
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--fg2); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* SIGNAL LIST */
+.signal-list { display: flex; flex-direction: column; }
+.signal-item { display: grid; grid-template-columns: 80px 1fr; gap: 0 20px; border-bottom: 1px solid var(--border); }
+.signal-item:last-child { border-bottom: none; }
+.signal-date-col { padding: 18px 20px 14px 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: flex-end; }
+.signal-date { font-size: 11px; color: var(--fg3); font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.signal-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.dot-new { background: var(--accent); }
+.dot-grow { background: var(--warn); }
+.dot-main { background: var(--ok); }
+.signal-body { padding: 14px 0; }
+.signal-title { font-size: 14px; font-weight: 600; color: var(--fg); margin-bottom: 4px; line-height: 1.4; }
+.signal-desc { font-size: 13px; color: var(--fg2); line-height: 1.55; }
+.signal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--tag-bg); color: var(--fg2); white-space: nowrap; }
+.tag-red { background: rgba(196,82,42,0.12); color: var(--accent); }
+.tag-amber { background: rgba(232,160,32,0.12); color: var(--warn); }
+.tag-green { background: rgba(74,124,89,0.12); color: var(--ok); }
+.tag-blue { background: rgba(59,111,181,0.12); color: var(--blue); }
+
+/* THEMES */
+.themes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.theme-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+.theme-card-icon { font-size: 22px; margin-bottom: 10px; }
+.theme-card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--fg); }
+.theme-card-body { font-size: 13px; color: var(--fg2); line-height: 1.6; }
+.theme-card-bar { height: 3px; border-radius: 2px; margin-top: 14px; background: var(--border); position: relative; overflow: hidden; }
+.theme-card-bar-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 2px; }
+
+/* TOP 3 */
+.top3 { display: flex; flex-direction: column; gap: 14px; }
+.top3-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.top3-title { font-size: 13px; font-weight: 700; color: var(--fg); margin-bottom: 6px; }
+.top3-desc { font-size: 13px; color: var(--fg2); line-height: 1.6; }
+
+/* FRAME CHART */
+.frame-intro { font-size: 13px; color: var(--fg2); line-height: 1.7; margin-bottom: 28px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+.frame-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.frame-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--fg2); font-weight: 500; }
+.frame-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.frame-legend-dot.f-tuot { background: var(--blue); }
+.frame-legend-dot.f-inno { background: var(--ok); }
+.frame-legend-dot.f-risk { background: var(--accent); }
+.frame-legend-dot.f-tyo { background: var(--warn); }
+
+.frame-timeline { display: flex; flex-direction: column; gap: 0; }
+.frame-row { display: grid; grid-template-columns: 78px 1fr; gap: 0 16px; border-bottom: 1px solid var(--border); align-items: stretch; }
+.frame-row:last-child { border-bottom: none; }
+.frame-date-col { padding: 14px 12px 12px 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 3px; }
+.frame-date { font-size: 11px; color: var(--fg3); font-weight: 600; white-space: nowrap; }
+.frame-dom { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; color: #fff; white-space: nowrap; text-align: center; }
+.frame-dom.f-tuot { background: var(--blue); }
+.frame-dom.f-inno { background: var(--ok); }
+.frame-dom.f-risk { background: var(--accent); }
+.frame-dom.f-tyo  { background: var(--warn); color: #1A1917; }
+.frame-bars-col { padding: 12px 0; display: flex; flex-direction: column; gap: 5px; }
+.frame-bar-row { display: flex; align-items: center; gap: 8px; }
+.frame-bar-label { font-size: 10px; color: var(--fg3); width: 28px; text-align: right; flex-shrink: 0; }
+.frame-bar-wrap { flex: 1; height: 7px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+.frame-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+.frame-bar-fill.f-tuot { background: var(--blue); }
+.frame-bar-fill.f-inno { background: var(--ok); }
+.frame-bar-fill.f-risk { background: var(--accent); }
+.frame-bar-fill.f-tyo  { background: var(--warn); }
+.frame-note { font-size: 11px; color: var(--fg3); padding: 4px 0 2px; font-style: italic; }
+
+/* FRAME SUMMARY CARDS */
+.frame-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 32px; }
+.frame-summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.frame-summary-card .fsc-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.frame-summary-card .fsc-label.f-tuot { color: var(--blue); }
+.frame-summary-card .fsc-label.f-inno { color: var(--ok); }
+.frame-summary-card .fsc-label.f-risk { color: var(--accent); }
+.frame-summary-card .fsc-label.f-tyo  { color: var(--warn); }
+.frame-summary-card .fsc-body { font-size: 12px; color: var(--fg2); line-height: 1.6; }
+
+/* FRAME SHIFT HIGHLIGHT */
+.frame-shift { margin-top: 28px; padding: 20px 22px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; }
+.frame-shift-title { font-size: 13px; font-weight: 700; color: var(--fg); margin-bottom: 8px; }
+.frame-shift-body { font-size: 13px; color: var(--fg2); line-height: 1.7; }
+
+/* FOOTER */
+.footer { font-size: 12px; color: var(--fg3); border-top: 1px solid var(--border); padding-top: 24px; margin-top: 48px; }
+.footer a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 560px) {
+  .signal-item { grid-template-columns: 56px 1fr; gap: 0 12px; }
+  .signal-date { font-size: 10px; }
+  .tiles { grid-template-columns: repeat(2, 1fr); }
+  .frame-row { grid-template-columns: 58px 1fr; gap: 0 10px; }
+  .tab-btn { font-size: 12px; padding: 8px 12px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav"><a href="index.html">← Etusivu</a></div>
+
+  <div class="header">
+    <div class="header-eyebrow">Pitkittäisanalyysi · syyskuu–lokakuu 2026</div>
+    <h1>Tekoäly &amp; Johtaminen<br>— Katsausten poikki</h1>
+    <div class="header-meta">22 katsausta · 6.9.–13.10.2026 · Jouko Toivonen</div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="tile-num">22</div><div class="tile-label">Katsausta analysoitu</div></div>
+    <div class="tile"><div class="tile-num">6</div><div class="tile-label">Toistuvaa teemaa</div></div>
+    <div class="tile"><div class="tile-num">3</div><div class="tile-label">Vahvistunutta signaalia</div></div>
+    <div class="tile"><div class="tile-num">4</div><div class="tile-label">Kaplanin kehystä</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('heikot')">📡 Heikot signaalit</button>
+    <button class="tab-btn" onclick="showTab('kehykset')">🔭 Kehystransformaatio</button>
+  </div>
+
+  <!-- TAB 1: HEIKOT SIGNAALIT -->
+  <div id="tab-heikot" class="tab-panel active">
+
+    <div class="section">
+      <div class="section-title">Heikot signaalit — kehityskaari</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Uusi signaali</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div>Vahvistuu</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--ok)"></div>Vakiintunut pääteema</div>
+      </div>
+      <div class="signal-list">
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">6.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Agenttitekoälyn hallintavaje</div>
+            <div class="signal-desc">AI-agenteille ei ole omistajaa. Kukaan organisaatiossa ei vastaa ihminen–agentti-yhteistyön säännöistä, vaikka agentit jo tekevät päätöksiä.</div>
+            <div class="signal-tags"><span class="tag tag-red">Toistuu 8× katsauksissa</span><span class="tag">Hallinto</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">6.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Oppimisinfrastruktuuri strategisena resurssina</div>
+            <div class="signal-desc">Epäformaalit oppimiskanavat (kahvipöytä, mentorointi, parityö) ovat kriittinen rakenne, joka häviää tehokkuusoptimoidussa AI-käyttöönotossa.</div>
+            <div class="signal-tags"><span class="tag tag-amber">Vahvistuu</span><span class="tag">Osaaminen</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">7.9.</div><div class="signal-dot dot-main"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Pilotti-inflaatio ilman skaalausta</div>
+            <div class="signal-desc">79 % yrityksistä on AI-agentti jossakin muodossa, vain ~11 % tuotannossa. "Pilot fatigue" — pilottien kasautuminen ilman reittiä tuotantoon.</div>
+            <div class="signal-tags"><span class="tag tag-green">Vakiintunut pääteema</span><span class="tag">Skaalaus</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">9.9.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Suomen polarisaatiokuilu syvenee</div>
+            <div class="signal-desc">Edistyneiden yritysten osuus kasvanut 9 %:sta 39 %:iin kahdessa vuodessa. Keskikerros on lähes kadonnut — ei enää hitaita, vain jumissa olevia.</div>
+            <div class="signal-tags"><span class="tag tag-amber">Vahvistuu</span><span class="tag">Kilpailukyky</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">11.9.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Agenttitekoäly uhkaa purkaa keskijohdon</div>
+            <div class="signal-desc">66 % agenttitekoälyä käyttävistä organisaatioista odottaa hierarkioiden madaltumista. Keskijohdon synteesi- ja fasilitointirooli on korvattavissa, ellei sitä uudelleenmääritellä.</div>
+            <div class="signal-tags"><span class="tag tag-red">Kriittinen</span><span class="tag">Keskijohto</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">12.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Kansallinen skaalausrakenne puuttuu</div>
+            <div class="signal-desc">Suomelta puuttuu areena, jossa kilpailevat AI-kehykset ratkaistaan. Kehystämiskilpailu jatkuu ilman yhteistä synteesiä eikä oppi siirry organisaatioiden välillä.</div>
+            <div class="signal-tags"><span class="tag">Ekosysteemi</span><span class="tag tag-amber">Vahvistuu</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">12.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">EU AI Act -harhakäsitys antaa väärää lisäaikaa</div>
+            <div class="signal-desc">Digital Omnibus siirsi korkean riskin velvoitteita joulukuuhun 2027 — mutta läpinäkyvyysvelvoitteet ovat voimassa 2.8.2026 alkaen. Organisaatiot uskovat, että aikaa on enemmän kuin on.</div>
+            <div class="signal-tags"><span class="tag tag-red">Akuutti</span><span class="tag">Sääntely</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">14.9.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Varjo-AI oireena, ei kapinana</div>
+            <div class="signal-desc">Työntekijät käyttävät AI:ta piilossa — ei vastarintana vaan epäselvien ohjeistojen oireena. Organisaatiot, joilla ei ole kirjallisia ohjeita (85 %), tuottavat tämän riskin itse.</div>
+            <div class="signal-tags"><span class="tag tag-amber">Vahvistuu</span><span class="tag">Hallinto</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">16.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Arvorealisaatio ilman omistajaa</div>
+            <div class="signal-desc">80 % organisaatioista on jättänyt AI:n arvorealisaation nimeämättä kenellekään. Hyöty syntyy mutta ei institutionalisoidu — oppiminen ei kumuloidu.</div>
+            <div class="signal-tags"><span class="tag tag-red">Toistuu läpi aineiston</span><span class="tag">Hallinto</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">18.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Google Gemini kyseenalaistaa Googlen omat luvut</div>
+            <div class="signal-desc">Yle-uutisessa AI-työkalu kuvasi oman yrityksensä investointilaskelmat "taloustieteellisesti paisutelluiksi". Milloin AI-työkalu haastaa organisaation virallisen narratiivin?</div>
+            <div class="signal-tags"><span class="tag">Yhteiskunta</span><span class="tag tag-red">Uusi ilmiö</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">19.9.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Token-talous yhdistää kustannus- ja ESG-johtamisen</div>
+            <div class="signal-desc">Token-pohjainen laskutus kytkee AI-käytön ympäristöjalanjälkeen. IT-budjetti ja ESG-tavoitteet alkavat kilpailla samasta mittarista — uusi operatiivinen johtamistaso.</div>
+            <div class="signal-tags"><span class="tag">ESG</span><span class="tag tag-amber">Kehittyvä</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">20.9.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">AI-väsymys mitattavana riskinä</div>
+            <div class="signal-desc">Agenttien valvonta on "toinen työ" joka ei näy tuottavuuslaskelmissa. AI-väsymys siirtyy anekdootista mitattavaksi työhyvinvointiriskiksi — uusi indikaattori HR-mittaristoihin.</div>
+            <div class="signal-tags"><span class="tag tag-amber">Vahvistuu</span><span class="tag">Työhyvinvointi</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">22.9.</div><div class="signal-dot dot-new"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Liiketoimintajohto poissa AI-päätöksistä</div>
+            <div class="signal-desc">AI-päätökset tehdään IT-johdon (46 %) ja ylimmän johdon (46 %) välillä — liiketoimintayksikön keskijohto on lähes poissa. Strategia muodostuu siilossa.</div>
+            <div class="signal-tags"><span class="tag tag-red">Rakenteellinen ongelma</span><span class="tag">Päätöksenteko</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">2.10.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Kognitiivinen velka — ajattelun rapautuminen</div>
+            <div class="signal-desc">55 % johtajista luottaa koneen suositukseen oman harkintansa yli rutiinipäätöksissä. AI:n käyttö ajattelun korvikkeena heikentää omia päättelytaitoja pitkällä aikavälillä.</div>
+            <div class="signal-tags"><span class="tag tag-red">Uusi kriittinen</span><span class="tag">Johtajuus</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">7.10.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Koulutusinvestointi ilman rakennemuutosta tuottaa vähän</div>
+            <div class="signal-desc">Sote-aineistossa käyttöaste vaihtelee 28 %:sta (vanhuspalvelut) 78 %:iin (hallinto). Erot johtuvat laitepuutteista — ei asenteesta. Koulutusbudjetit menevät väärään ongelmaan.</div>
+            <div class="signal-tags"><span class="tag tag-amber">Vahvistuu</span><span class="tag">Rakenteet</span></div>
+          </div>
+        </div>
+
+        <div class="signal-item">
+          <div class="signal-date-col"><div class="signal-date">10.10.</div><div class="signal-dot dot-grow"></div></div>
+          <div class="signal-body">
+            <div class="signal-title">Workslop — ammattimaiselta näyttävä ontto sisältö</div>
+            <div class="signal-desc">AI on levinnyt sähköpostiin, kalenteriin ja rekrytointiin ilman laadunvalvontaa. Kollektiivinen kyky erottaa hyvä AI-tuotos heikosta on kiireellinen johtamishaaste.</div>
+            <div class="signal-tags"><span class="tag tag-red">Uusi termi ja ilmiö</span><span class="tag">Laatu</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kuusi toistuvaa teemaa</div>
+      <div class="themes-grid">
+        <div class="theme-card">
+          <div class="theme-card-icon">🔁</div>
+          <div class="theme-card-title">Piloteista tuotantoon -kuilu</div>
+          <div class="theme-card-body">Esiintyy lähes jokaisessa katsauksessa. Suomi pilotoi hyvin, mutta teollistaminen ei onnistu. Rakenne- ja johtamisongelma, ei tekninen.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:95%;background:var(--accent)"></div></div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-card-icon">⚖️</div>
+          <div class="theme-card-title">Hallintovaje kasvaa käyttöä nopeammin</div>
+          <div class="theme-card-body">Vain 15–17 % organisaatioista on kirjalliset AI-ohjeet, vaikka 66 % käyttää generatiivista AI:ta. Kuilu kasvaa koko seuranta-ajan.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:88%;background:var(--warn)"></div></div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-card-icon">🏢</div>
+          <div class="theme-card-title">Keskijohto puristuksessa</div>
+          <div class="theme-card-body">Odotetaan välittämään AI-lupaukset uskottavasti, vaikka johtoryhmä on epäyhtenäinen ja tulokset puuttuvat. Samanaikaisesti roolia uhataan agenteilla.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:80%;background:var(--accent)"></div></div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-card-icon">📉</div>
+          <div class="theme-card-title">Polarisaatio ilman siltoja</div>
+          <div class="theme-card-body">Edistyneet firmat kasvavat, jumissa olevat eivät liiku. Oppi ei siirry nopeista hitaisiin. Kansallinen kilpailukyky uhattuna.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:75%;background:var(--warn)"></div></div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-card-icon">🧠</div>
+          <div class="theme-card-title">Johtoryhmien sitoutuminen puuttuu</div>
+          <div class="theme-card-body">54 % johtoryhmien jäsenistä ei pidä AI:ta osana yhteistä työtä. Tämä luku toistuu lähes sanasta sanaan kymmenessä eri katsauksessa.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:70%;background:var(--ok)"></div></div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-card-icon">📋</div>
+          <div class="theme-card-title">EU AI Act realisoituu hitaasti</div>
+          <div class="theme-card-body">Velvoitteet ovat voimassa, mutta valmistautuminen on jäljessä. Sääntely alkaa nousta strategisesta taustamelusta oikeudelliseksi vastuuksi.</div>
+          <div class="theme-card-bar"><div class="theme-card-bar-fill" style="width:60%;background:var(--ok)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kolme signaalia, jotka vahvistuivat eniten</div>
+      <div class="top3">
+        <div class="top3-item" style="border-left:3px solid var(--accent)">
+          <div class="top3-title">1 · Agenttitekoälyn hallintavaje</div>
+          <div class="top3-desc">Alkoi syyskuun alussa yksittäisenä signaalina, esiintyy jokaisessa myöhemmässä katsauksessa. Kehityskaari: uusi ilmiö → vakava organisaatiohaaste → oikeudellinen riski (EU AI Act). Lokakuussa nimetty jo "kiireelliseksi johtamishaasteeksi".</div>
+        </div>
+        <div class="top3-item" style="border-left:3px solid var(--warn)">
+          <div class="top3-title">2 · Kognitiivinen velka ja workslop-ilmiö</div>
+          <div class="top3-desc">Syyskuussa nuorten oppimishuoli, lokakuussa 55 % johtajista luottaa koneen suositukseen oman harkintansa yli. Heikosta oppimishuolesta kehittyi strateginen johtajuusriski kuudessa viikossa.</div>
+        </div>
+        <div class="top3-item" style="border-left:3px solid var(--ok)">
+          <div class="top3-title">3 · Rakenteet > koulutus käyttöönoton esteenä</div>
+          <div class="top3-desc">Aluksi "asenteet esteenä" -kehys hallitsi. Lokakuun sote-katsaus tarjosi dataa: erot selittyvät laitepuutteilla ja järjestelmäesteillä, ei asenteella. Koulutusbudjetteja käytetään väärään ongelmaan.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-heikot -->
+
+  <!-- TAB 2: KEHYSTRANSFORMAATIO -->
+  <div id="tab-kehykset" class="tab-panel">
+
+    <div class="section">
+      <div class="section-title">Kaplanin kehystransformaatio — johdanto</div>
+      <div class="frame-intro">
+        Kaplan (2008) esittää, että uuden teknologian ympärillä kilpailee useita tulkintakehyksiä — ja se kehys, joka "voittaa", määrittää miten organisaatiot investoivat, johtavat ja mittaavat. Alla on seurattu, miten neljä kehystä ovat painottuneet 22:ssa katsauksessa. <strong>Hallitseva kehys</strong> on kunkin katsauksen aineistossa selvästi vahvimpana esiintyvä — mutta kaikki neljä kehystä ovat läsnä lähes jokaisessa katsauksessa samanaikaisesti.
+      </div>
+
+      <div class="frame-legend">
+        <div class="frame-legend-item"><div class="frame-legend-dot f-tuot"></div>Tuottavuus / tehokkuus</div>
+        <div class="frame-legend-item"><div class="frame-legend-dot f-inno"></div>Innovaatio / kasvu</div>
+        <div class="frame-legend-item"><div class="frame-legend-dot f-risk"></div>Riski / regulaatio</div>
+        <div class="frame-legend-item"><div class="frame-legend-dot f-tyo"></div>Työn muutos / ihmiset</div>
+      </div>
+
+      <div class="frame-timeline">
+
+        <!-- Rivi: 6.9. (katsaus 1) -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">6.9. #1</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:50%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:60%"></div></div></div>
+            <div class="frame-note">Tehokkuushyödyt, EU AI Act-deadline, inhimillinen johtaminen</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 6.9. (katsaus 2) -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">6.9. #2</div>
+            <div class="frame-dom f-tyo">Työ</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:30%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:90%"></div></div></div>
+            <div class="frame-note">Käyttöönotto on ensisijaisesti ihmisten johtamisen haaste; inhimillinen kestävyys</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 7.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">7.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:60%"></div></div></div>
+            <div class="frame-note">Tehokkuusloikka dominoi; Sitran 50M€; nuorten oppimishuoli nousee</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 9.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">9.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Tuottavuuspakko vahvana; työn muutos vahvana vastakehyksenä; polarisaatiovaroitus</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 10.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">10.9.</div>
+            <div class="frame-dom f-tyo">Työ</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Osaamiskuilu, SAK:n huolet; tehokkuus tärkeä mutta työ vahvempi</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 11.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">11.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Tehokkuuspakko + inhimillinen kilpailuetu; EU AI Act pakottaa vastuullisuuteen</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 12.9. #1 -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">12.9. #1</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:20%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Innovaatio lähes poissa; tehokkuus ylivoimainen; vastuullisuus ja työ vahvoja vastavoimia</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 12.9. #2 -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">12.9. #2</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:30%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Riski nousee lähes tuottavuuden tasolle; AI Act, hallintovaje; compliance-velvoitteet</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 14.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">14.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:50%"></div></div></div>
+            <div class="frame-note">Agentti-integraatio, "shelfware"-retoriikka; riski nousee pilottikuilun kautta</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 15.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">15.9.</div>
+            <div class="frame-dom f-risk">Riski</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:50%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Julkisen sektorin hankintaosaaminen, "viimeinen maili on inhimillinen"; riski hallitsee</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 16.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">16.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:50%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:70%"></div></div></div>
+            <div class="frame-note">Tuottavuusparadoksi ydinteemana; AI-first-malli; osaamiskahtiajako</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 17.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">17.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Fyysinen tekoäly uutena kasvukehyksenä; työn muutos lähes yhtä vahva kuin tehokkuus</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 18.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">18.9.</div>
+            <div class="frame-dom f-inno">Inno.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:40%"></div></div></div>
+            <div class="frame-note">Googlen datakeskusinvestointi; kasvukehys hallitsee; energiasuvereniteetti riskinä</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 19.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">19.9.</div>
+            <div class="frame-dom f-risk">Riski</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:70%"></div></div></div>
+            <div class="frame-note">Hallintovaje, EU AI Act, AI Code of Conduct; riski hallitsee selkeästi</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 20.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">20.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div>
+            <div class="frame-note">AI-väsymys + tehokkuushegemoniat; ihmiskehys vahva; riski laskee hetkellisesti</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 22.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">22.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Tehokkuus dominoi julkista puhetta; ihmiskehys on sen vastavoima</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 24.9. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">24.9.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Tehokkuusloikka-kehys yritysjohdon hegemonia; fyysinen AI kasvukehyksenä; henkilöstöhuoli vahva</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 2.10. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">2.10.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:70%"></div></div></div>
+            <div class="frame-note">Tuottavuusparadoksi + aggregaatiokysymys; kognitiivinen velka nousee uutena huolena</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 6.10. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">6.10.</div>
+            <div class="frame-dom f-risk">Riski</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:20%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:20%"></div></div></div>
+            <div class="frame-note">Puhtaasti riskikeskeinen katsaus: auditoinnit, EU AI Act, hätäpysäytys, governance-vaje</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 7.10. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">7.10.</div>
+            <div class="frame-dom f-tuot">Tuott.</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:50%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:60%"></div></div></div>
+            <div class="frame-note">Sote-katsaus: tehokkuus hallitsee; riski vahvistuu (eettinen huoli); laitepuutteet rakennekysymyksenä</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 10.10. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">10.10.</div>
+            <div class="frame-dom f-risk">Riski</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:60%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:50%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:90%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:80%"></div></div></div>
+            <div class="frame-note">Workslop, compliance-virheet, psykografinen johtajaprofiili; riski + työn muutos vahva pari</div>
+          </div>
+        </div>
+
+        <!-- Rivi: 13.10. -->
+        <div class="frame-row">
+          <div class="frame-date-col">
+            <div class="frame-date">13.10.</div>
+            <div class="frame-dom f-tyo">Työ</div>
+          </div>
+          <div class="frame-bars-col">
+            <div class="frame-bar-row"><div class="frame-bar-label">Tuot</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tuot" style="width:40%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Inno</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-inno" style="width:80%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Risk</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-risk" style="width:70%"></div></div></div>
+            <div class="frame-bar-row"><div class="frame-bar-label">Työ</div><div class="frame-bar-wrap"><div class="frame-bar-fill f-tyo" style="width:90%"></div></div></div>
+            <div class="frame-note">Inhimillinen johtaminen tekoälyaikana; nuorten ambivalenssi; innovaatio kasvaa teknologisen välttämättömyyden kautta</div>
+          </div>
+        </div>
+
+      </div><!-- /frame-timeline -->
+    </div>
+
+    <!-- KEHYSTRANSFORMAATIO YHTEENVETO -->
+    <div class="section">
+      <div class="section-title">Mitä kehystransformaatiossa tapahtui</div>
+
+      <div class="frame-shift">
+        <div class="frame-shift-title">Kaplanin ennustama siirtymä: osittain toteutunut</div>
+        <div class="frame-shift-body">
+          Kaplan (2008) ennusti, että teknologian kehyskilpailusta "voittaa" kehys, joka yhdistää konkreettiset hyödyt laajimpaan koalitioon. Tässä aineistossa tuottavuus/tehokkuus on pysynyt hallitsevana koko seuranta-ajan — mutta sen rinnalle on noussut riski/regulaatio-kehys, joka ei ollut mukana lokakuun alussa yhtä voimakkaana. Työn muutos / ihmiset -kehys on ollut koko ajan vahva vastakehys, ei heikko signaali. Selvä muutos: <strong>innovaatio/kasvu on menettänyt asemaansa</strong> syyskuun lopulta lokakuuhun — sen tilalle on tullut riski ja ihminen.
+        </div>
+      </div>
+
+      <div class="frame-summary">
+        <div class="frame-summary-card">
+          <div class="fsc-label f-tuot">Tuottavuus / tehokkuus</div>
+          <div class="fsc-body">Hallitseva koko seuranta-ajan. 16/22 katsauksessa dominoiva tai yhtä vahva. Yritysjohdon "default-kehys" — muut kehykset positioituvat suhteessa siihen.</div>
+        </div>
+        <div class="frame-summary-card">
+          <div class="fsc-label f-inno">Innovaatio / kasvu</div>
+          <div class="fsc-body">Aaltomainen. Vahva syyskuun puolivälissä (fyysinen AI, datakeskukset), mutta laskee lokakuussa. Ei koskaan selvästi dominoiva — toimii toiveena, ei strategiana.</div>
+        </div>
+        <div class="frame-summary-card">
+          <div class="fsc-label f-risk">Riski / regulaatio</div>
+          <div class="fsc-body"><strong>Trendinä nouseva.</strong> Syyskuun alussa toissijainen, lokakuussa dominoiva kahdessa katsauksessa. EU AI Act, hallintovaje ja compliance-velvoitteet konkretisoituvat ajan myötä.</div>
+        </div>
+        <div class="frame-summary-card">
+          <div class="fsc-label f-tyo">Työn muutos / ihmiset</div>
+          <div class="fsc-body">Johdonmukaisesti vahva koko seuranta-ajan — ei heikko signaali vaan vakiintunut vastakehys. Vahvistuu lokakuussa kognitiivisen velan, workslopin ja nuorten kautta.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-kehykset -->
+
+  <div class="footer">
+    Jouko Toivonen · Tekoäly &amp; Johtaminen · <a href="index.html">toivotonaijohto.fi</a>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
