@@ -884,7 +884,7 @@ async function runAnalysis() {
   responseArea.innerHTML = `<div class="loading-card"><div class="spinner"></div><div style="font-size:15px; font-weight:700; margin-bottom:4px;">Analysoidaan kehystämistä...</div><div style="font-size:13px; color:var(--muted);">Tilanne: ${currentSituation} · Linssit: ${situationConfigs[currentSituation].label}</div></div>`;
 
   try {
-    const resp = await fetch('/api/anthropic', {
+    const resp = await fetch('https://anthropic-proxy-0j0n.onrender.com/api/anthropic', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
