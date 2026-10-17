@@ -190,6 +190,34 @@
   .response-area { display: none; }
   .response-area.visible { display: block; }
 
+  /* ── JOUKON NOSTOT ── */
+  .joukon-nostot-wrap {
+    margin: 16px 0 8px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--kaplan);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .joukon-nostot-header {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .joukon-label {
+    font-size: 13px; font-weight: 700; color: var(--kaplan); letter-spacing: 0.3px;
+  }
+  .joukon-hint {
+    font-size: 12px; color: var(--muted);
+  }
+  .joukon-textarea {
+    width: 100%; min-height: 90px;
+    background: var(--bg-deep); color: var(--text);
+    border: 1px solid var(--border); border-radius: 7px;
+    padding: 10px 14px; font-family: var(--font-ui); font-size: 14px; line-height: 1.6;
+    resize: vertical; transition: border-color 0.15s;
+  }
+  .joukon-textarea:focus { outline: none; border-color: var(--kaplan); }
+  .joukon-textarea::placeholder { color: var(--muted); }
+
   .loading-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; text-align: center; }
   .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--db); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -452,6 +480,15 @@
 
   <!-- RESPONSE -->
   <div class="response-area" id="responseArea"></div>
+
+  <!-- JOUKON NOSTOT -->
+  <div class="joukon-nostot-wrap" id="joukonNostotWrap" style="display:none;">
+    <div class="joukon-nostot-header">
+      <span class="joukon-label">✏️ Joukon nostot</span>
+      <span class="joukon-hint">Omat kommenttisi sisältyvät Factsheet-lataukseen ja GitHub-vientiin</span>
+    </div>
+    <textarea id="joukonNostotInput" class="joukon-textarea" placeholder="Kirjoita omat havaintosi, täydennykset tai kriittiset huomiot tähän ennen vientiä..."></textarea>
+  </div>
 
 </main>
 </div>
@@ -847,13 +884,11 @@ async function runAnalysis() {
   responseArea.innerHTML = `<div class="loading-card"><div class="spinner"></div><div style="font-size:15px; font-weight:700; margin-bottom:4px;">Analysoidaan kehystämistä...</div><div style="font-size:13px; color:var(--muted);">Tilanne: ${currentSituation} · Linssit: ${situationConfigs[currentSituation].label}</div></div>`;
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('/api/anthropic', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'prompt-caching-2024-07-31'
+        'x-api-key': apiKey
       },
       body: JSON.stringify({
         model: 'claude-opus-4-5',
@@ -878,6 +913,7 @@ async function runAnalysis() {
 
     document.getElementById('globalFactsheetBtn').disabled = false;
     document.getElementById('globalGhPushBtn').disabled = false;
+    document.getElementById('joukonNostotWrap').style.display = 'block';
 
   } catch(err) {
     responseArea.innerHTML = `<div class="error-card"><div style="font-size:16px; font-weight:700; margin-bottom:8px;">⚠️ Virhe</div>${err.message}</div>`;
@@ -896,6 +932,10 @@ function generateFactsheet() {
   const d = lastAnalysis;
   let md = `# ${d.week_label || 'Analyysi'}\n\n*${new Date().toLocaleDateString('fi-FI', {weekday:'long', year:'numeric', month:'long', day:'numeric'})}*\n\n`;
   md += `**Analyysikehys:** Kaplan (2008) · Dewulf & Bouwen (2012) · Floyd & Lane · Ritala ym. (2024)\n\n---\n\n`;
+  const joukonNostot = document.getElementById('joukonNostotInput').value.trim();
+  if (joukonNostot) {
+    md += `## ✏️ Joukon nostot\n\n${joukonNostot}\n\n---\n\n`;
+  }
   (d.sections || []).forEach(sec => {
     md += `## ${sec.title}\n\n`;
     if (sec.kaplan_frame) md += `**Kaplan-kehys:** ${sec.kaplan_frame}\n\n`;
@@ -931,7 +971,11 @@ async function pushToGitHub() {
   const filename = `kehystamiskatsaus_${date}.md`;
   const path = folder ? `${folder}/${filename}` : filename;
 
+  const joukonNostotGh = document.getElementById('joukonNostotInput').value.trim();
   let md = `# ${lastAnalysis.week_label || 'Kehystämiskatsaus'}\n\n`;
+  if (joukonNostotGh) {
+    md += `## ✏️ Joukon nostot\n\n${joukonNostotGh}\n\n---\n\n`;
+  }
   (lastAnalysis.sections || []).forEach(sec => {
     md += `## ${sec.title}\n\n${sec.content || ''}\n\n`;
   });
