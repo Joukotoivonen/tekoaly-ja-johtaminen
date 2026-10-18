@@ -602,7 +602,7 @@ Roolit: puolestapuhuminen · synteesin kokoaminen · sopeutumiskyvyn fasilitoint
 LINSSI 4 — Ritala ym. (2024): Missä mekanismissa kehystäminen tapahtuu
 Communicative leverage: käsitteellistäminen, viestintä, tiedon levitys
 Structural leverage: rahoitus, rakenteet, R&D-integraatio, organisaation uudelleensuunnittelu
-Conjoined learning: kaksisuuntainen oppiminen — ihminen oppii AI:sta (sen logiikasta, rajoitteista, mahdollisuuksista) ja samalla AI muovautuu ihmisestä (käytön, palautteen ja koulutuksen kautta). Tunnista analyysissä ERIKSEEN: (a) kohdat joissa organisaatio/ihmiset oppivat AI:lta, ja (b) kohdat joissa AI-järjestelmä on muovautunut ihmisten käytön tai palautteen perusteella. Nämä ovat saman ilmiön kaksi puolta — älä sekoita yksipuoliseen käyttöönottoon.
+Conjoined learning: kaksisuuntainen oppiminen — ihminen oppii tekoälystä (sen logiikasta, rajoitteista, mahdollisuuksista) ja samalla tekoäly muovautuu ihmisestä (käytön, palautteen ja koulutuksen kautta). Tunnista analyysissä ERIKSEEN kohdat joissa organisaatio oppii tekoälystä, ja kohdat joissa tekoälyjärjestelmä on muovautunut ihmisten käytön tai palautteen perusteella. Nämä ovat saman ilmiön kaksi puolta — älä sekoita yksipuoliseen käyttöönottoon.
 
 KRIITTINEN PERIAATE: Epävarmuus ≠ vastarinta. Huolet ja kriittiset kysymykset ovat vastuullisen huolenpidon merkkejä — merkitse aina jos lähde sekoittaa nämä.
 
@@ -884,7 +884,7 @@ async function runAnalysis() {
   responseArea.innerHTML = `<div class="loading-card"><div class="spinner"></div><div style="font-size:15px; font-weight:700; margin-bottom:4px;">Analysoidaan kehystämistä...</div><div style="font-size:13px; color:var(--muted);">Tilanne: ${currentSituation} · Linssit: ${situationConfigs[currentSituation].label}</div></div>`;
 
   try {
-    const resp = await fetch('/api/anthropic', {
+    const resp = await fetch('https://anthropic-proxy-0j0n.onrender.com/api/anthropic', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -997,4 +997,3 @@ syncLensBar(['kaplan','db','floyd']);
 </script>
 </body>
 </html>
-
