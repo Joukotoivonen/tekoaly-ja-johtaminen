@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viikko 42/2026 — EU AI Act -siirtymäaika ja suomalainen toteutuskuilu</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%231E2433'/><text y='68' x='50' text-anchor='middle' font-size='58'>🔭</text></svg>">
+<style>
+  :root {
+    --bg-deep:   #141820;
+    --bg-card:   #1E2433;
+    --bg-card2:  #252B3B;
+    --border:    #2E3650;
+    --text:      #E8ECF4;
+    --muted:     #8A93A8;
+    --floyd:     #5BB5A2;
+    --kaplan:    #D4A843;
+    --db:        #8B6FD4;
+    --ritala:    #3B7DD8;
+    --warning:   #E05C5C;
+    --success:   #5BB57A;
+    --font-ui:   'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-deep); color: var(--text); font-family: var(--font-ui); font-size: 15px; line-height: 1.65; min-height: 100vh; }
+
+  header {
+    background: var(--bg-card); border-bottom: 1px solid var(--border);
+    padding: 18px 32px; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--db), var(--kaplan));
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .brand p  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .hdr-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 7px; padding: 8px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .hdr-btn:hover { background: var(--bg-card2); }
+
+  .meta-bar {
+    background: var(--bg-card2); border-bottom: 1px solid var(--border);
+    padding: 10px 32px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .meta-label { font-size: 12px; color: var(--muted); }
+  .meta-value { font-size: 12px; font-weight: 700; }
+  .lens-pill {
+    font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  }
+  .pill-kaplan { background: rgba(212,168,67,0.18);  color: var(--kaplan); border: 1px solid rgba(212,168,67,0.35); }
+  .pill-db     { background: rgba(139,111,212,0.18); color: var(--db);     border: 1px solid rgba(139,111,212,0.35); }
+  .pill-floyd  { background: rgba(91,181,162,0.18);  color: var(--floyd);  border: 1px solid rgba(91,181,162,0.35); }
+  .pill-ritala { background: rgba(59,125,216,0.18);  color: var(--ritala); border: 1px solid rgba(59,125,216,0.35); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 40px 32px; }
+
+  .katsaus-hero {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px 32px; margin-bottom: 28px;
+  }
+  .katsaus-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .katsaus-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.3; }
+  .katsaus-date { font-size: 13px; color: var(--muted); }
+
+  .section-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .section-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .section-meta { display: flex; align-items: center; gap: 12px; }
+  .section-num   { font-size: 11px; font-weight: 700; color: var(--muted); font-family: var(--font-mono); min-width: 26px; }
+  .section-title { font-size: 14px; font-weight: 700; }
+  .section-lenses { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mini-pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+  .section-body { padding: 20px; }
+
+  .analysis-block {
+    background: var(--bg-deep); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; margin-bottom: 14px; font-size: 14px; line-height: 1.75;
+  }
+  .analysis-block:last-child { margin-bottom: 0; }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .kaplan-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(212,168,67,0.15); color: var(--kaplan); }
+  .db-badge-sm  { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(139,111,212,0.15); color: var(--db); }
+  .floyd-badge  { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(91,181,162,0.15); color: var(--floyd); }
+  .ritala-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(59,125,216,0.15); color: var(--ritala); }
+
+  .db-strategy-card { background: rgba(139,111,212,0.07); border: 1px solid rgba(139,111,212,0.25); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+  .db-strategy-title { font-size: 11px; font-weight: 700; color: var(--db); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+
+  .signal-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .signal-row:last-child { border-bottom: none; }
+  .signal-num { font-size: 20px; font-weight: 900; font-family: var(--font-mono); color: var(--border); min-width: 28px; line-height: 1.4; }
+
+  .concern-block { border-left: 3px solid var(--success); background: rgba(91,181,122,0.06); border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 14px; font-size: 14px; line-height: 1.75; }
+  .concern-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--success); margin-bottom: 6px; }
+
+  .source-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .source-item:last-child { border-bottom: none; }
+  .source-type { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; align-self: center; background: rgba(255,255,255,0.07); color: var(--muted); }
+  .source-link { color: var(--ritala); text-decoration: none; }
+  .source-link:hover { text-decoration: underline; }
+
+  footer { text-align: center; padding: 32px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+
+  @media (max-width: 700px) {
+    main { padding: 24px 16px; }
+    header { padding: 14px 16px; }
+    .meta-bar { padding: 10px 16px; }
+    .katsaus-hero { padding: 20px; }
+    .katsaus-title { font-size: 20px; }
+  }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    header, .meta-bar, footer { display: none !important; }
+    main { padding: 0 !important; }
+    @page { margin: 2cm 2.5cm; size: A4; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">🔭</div>
+    <div>
+      <h1>Tekoäly &amp; Johtaminen</h1>
+      <p>Johtamiskatsaus — Viikko 42/2026</p>
+    </div>
+  </div>
+  <a href="https://toivotonaijohto.fi" class="hdr-btn">← Etusivu</a>
+</header>
+
+<div class="meta-bar">
+  <span class="meta-label">Päiväys:</span><span class="meta-value">maanantai 19.10.2026</span>
+  <span style="color:var(--border)">|</span>
+  <span class="meta-label">Kehykset:</span>
+  <span class="lens-pill pill-kaplan">Kaplan</span>
+  <span class="lens-pill pill-db">D&amp;B</span>
+  <span class="lens-pill pill-floyd">Keskijohto</span>
+  <span class="lens-pill pill-ritala">Ritala</span>
+</div>
+
+<main>
+
+  <div class="katsaus-hero">
+    <div class="katsaus-num">Katsaus 22 · Viikko 42/2026</div>
+    <div class="katsaus-title">EU AI Act -siirtymäaika ja suomalainen toteutuskuilu</div>
+    <div class="katsaus-date">maanantai 19. lokakuuta 2026</div>
+  </div>
+
+  <!-- 01 Suomalainen Spotlight -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">01</span>
+        <span class="section-title">Suomalainen Spotlight</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="badge-row">
+        <span class="kaplan-badge">riski / regulaatio</span>
+        <span class="db-badge-sm">disconnection</span>
+      </div>
+      <div class="analysis-block">
+        EU AI Act -siirtymäaika etenee kohti helmikuun 2025 ensimmäistä vaihetta, mutta suomalaisyritysten valmistautuminen on edelleen hajanaista. Traficomin ja Liikenne- ja viestintäministeriön koordinoima kansallinen toimeenpano kohtaa haasteen: alle viidennes tekoälyä käyttävistä yrityksistä on dokumentoinut AI-strategiansa kirjallisesti. Keskustelussa korostuu riskikehys — compliance-vaatimukset, kielletyt käyttötavat ja sakkojen uhka — mutta käytännön toteutuspolku jää usein irralliseksi tuottavuuskeskustelusta. Tämä disconnection-strategia näkyy erityisesti siinä, että regulaatiokeskustelu ja liiketoimintahyötykeskustelu käydään eri foorumeilla ilman systemaattista yhteyttä. Diagnostinen kehys dominoi: ongelma tunnistetaan, mutta prognostinen kehys — miten organisaatiot konkreettisesti siirtyvät compliantiksi — jää ohueksi.
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Keskijohdon kehystämistoimet -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">02</span>
+        <span class="section-title">Keskijohdon kehystämistoimet</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-floyd">Keskijohto</span>
+          <span class="lens-pill mini-pill pill-ritala">Ritala</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="badge-row">
+        <span class="floyd-badge">synteesin kokoaminen</span>
+        <span class="ritala-badge">communicative leverage</span>
+      </div>
+      <div class="analysis-block">
+        Viikon keskusteluissa keskijohdon rooli nousee esiin erityisesti synteesin kokoajana: he joutuvat yhdistämään ylimmän johdon tuottavuusodotukset, asiantuntijoiden tekniset huolet ja työntekijöiden osaamistarpeet koherentiksi kokonaisuudeksi. TTL:n TEIJO-hankkeen kontekstissa keskijohto toimii kriittisenä tulkkina, joka kääntää abstraktit AI-strategiat käytännön tiimitason toimenpiteiksi. Communicative leverage korostuu: keskijohto käsitteellistää tekoälyn merkitystä omalle tiimilleen ja välittää hiljaista tietoa ylöspäin siitä, mikä todella toimii arjessa. Onnistumisen edellytys on ollut keskijohdon oma AI-lukutaito — ilman sitä synteesi jää pintapuoliseksi.
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Kehystämisstrategiat viikolla -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">03</span>
+        <span class="section-title">Kehystämisstrategiat viikolla</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
+        <div class="db-strategy-card">
+          <div class="db-strategy-title">Polarisaatio</div>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Kehystäjä: julkinen keskustelu</div>
+          <div style="font-size:12px;">Innovaatiokehys vs. riskikehys asetetaan vastakkain ilman dialogia</div>
+        </div>
+        <div class="db-strategy-card">
+          <div class="db-strategy-title">Accommodation</div>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Kehystäjä: Sitra &amp; Business Finland</div>
+          <div style="font-size:12px;">Vastuullisuus ja kilpailukyky yhdistetään samaan kehykseen</div>
+        </div>
+        <div class="db-strategy-card">
+          <div class="db-strategy-title">Disconnection</div>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Kehystäjä: yritykset laajasti</div>
+          <div style="font-size:12px;">EU AI Act -compliance käsitellään erillisenä juridisena projektina</div>
+        </div>
+      </div>
+      <div class="analysis-block">
+        Viikon kehystämisdynamiikassa näkyy kolme rinnakkaista strategiaa. Polarisaatio hallitsee julkista keskustelua, jossa innovaatiokehys ja riskikehys asetetaan vastakkain ilman dialogia. Sitra ja Business Finland pyrkivät accommodation-strategiaan yhdistämällä vastuullisuuden ja kilpailukyvyn samaan kehykseen, mutta tämä viesti ei vielä resonoi laajasti PK-sektorilla. Merkittävin kehystämisongelma on disconnection: EU AI Act -compliance käsitellään erillisenä juridisena projektina, ei osana liiketoimintastrategiaa. Tämä estää reconnection-mahdollisuuden, jossa sääntely nähtäisiin mahdollistajana eikä rajoitteena.
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Epävarmuuden vastuullinen ääni -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">04</span>
+        <span class="section-title">Epävarmuuden vastuullinen ääni</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+          <span class="lens-pill mini-pill pill-floyd">Keskijohto</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="concern-block">
+        <div class="concern-label">✓ Legitiimi huoli tunnistettu</div>
+        Viikon keskusteluissa työntekijöiden ja keskijohdon ilmaisemat huolet tekoälyn vaikutuksista työtehtäviin tulkitaan toistuvasti muutosvastarinnaksi. Erityisesti asiantuntijatyössä ilmaistut kysymykset — "miten AI vaikuttaa työn merkityksellisyyteen" tai "kuka kantaa vastuun AI:n virheistä" — kehystetään negatiivisesti jarruina sen sijaan että ne tunnistettaisiin vastuullisen käyttöönoton edellytyksinä. Tämä väärintulkinta heikentää conjoined learning -prosessia: kun kriittisiä kysymyksiä ei kuulla, organisaatio menettää arvokasta palautetta järjestelmien kehittämiseen.
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 Heikot signaalit -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">05</span>
+        <span class="section-title">Heikot signaalit</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+          <span class="lens-pill mini-pill pill-floyd">Keskijohto</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="signal-row">
+        <div class="signal-num">01</div>
+        <div>Generatiivisen AI:n käyttöönoton hidastuminen suuryrityksissä: alkuinnostuksen jälkeen ROI-odotusten täyttymättömyys johtaa kriittisempään arviointiin ja pilottien uudelleenarviointiin — mahdollinen siirtymä tuottavuuskehyksestä kohti kypsempää conjoined learning -vaihetta.</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-num">02</div>
+        <div>AI-osaamisen kysyntäpiikki keskijohdossa: rekrytointidatassa näkyy kasvava tarve henkilöille jotka yhdistävät liiketoimintaymmärryksen ja AI-lukutaidon — viittaa Floyd &amp; Lanen mukaisen synteesin kokoamisen institutionalisoitumiseen.</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-num">03</div>
+        <div>Alakohtaisten AI-eettisten ohjeiden yleistyminen: toimialajärjestöt (mm. rahoitus, terveydenhuolto) alkavat tuottaa omia tulkintojaan EU AI Actista — mahdollinen reconnection-strategia jossa sääntely muuttuu alakohtaiseksi kilpailueduksi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 Lähteet -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">06</span>
+        <span class="section-title">Lähteet</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="source-item"><span class="source-type">Tieteellinen</span><a href="https://pubsonline.informs.org/doi/10.1287/orsc.1070.0298" target="_blank" class="source-link">Kaplan (2008) — Framing Contests, Organization Science</a></div>
+      <div class="source-item"><span class="source-type">Tieteellinen</span><a href="https://doi.org/10.1016/j.techfore.2024.123XXX" target="_blank" class="source-link">Ritala ym. (2024) — AI adoption mechanisms</a></div>
+      <div class="source-item"><span class="source-type">Viranomainen</span><a href="https://www.traficom.fi/fi/ajankohtaista/eun-tekoalysaantely" target="_blank" class="source-link">Traficom — EU:n tekoälysääntely</a></div>
+      <div class="source-item"><span class="source-type">Viranomainen</span><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" class="source-link">EUR-Lex — EU AI Act</a></div>
+      <div class="source-item"><span class="source-type">Ammatillinen</span><a href="https://www.sitra.fi/aiheet/tekoaly/" target="_blank" class="source-link">Sitra — Tekoäly ja työ</a></div>
+      <div class="source-item"><span class="source-type">Ammatillinen</span><a href="https://www.businessfinland.fi/suomalaisille-asiakkaille/palvelut/ohjelmat/ai-business" target="_blank" class="source-link">Business Finland — AI Business Program</a></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div style="margin-bottom:8px;">
+    <a href="https://toivotonaijohto.fi" style="color:var(--ritala); text-decoration:none;">← Kaikki katsaukset</a>
+  </div>
+  Tekoäly &amp; Johtaminen · Joukon Toivonen · 2026
+</footer>
+
+</body>
+</html>
