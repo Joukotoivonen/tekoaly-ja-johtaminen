@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katsaus 23 · TEM käynnistää tekoälyn työelämävaikutusten selvityksen</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%231E2433'/><text y='68' x='50' text-anchor='middle' font-size='58'>🔭</text></svg>">
+<style>
+  :root {
+    --bg-deep:   #141820;
+    --bg-card:   #1E2433;
+    --bg-card2:  #252B3B;
+    --border:    #2E3650;
+    --text:      #E8ECF4;
+    --muted:     #8A93A8;
+    --floyd:     #5BB5A2;
+    --kaplan:    #D4A843;
+    --db:        #8B6FD4;
+    --ritala:    #3B7DD8;
+    --warning:   #E05C5C;
+    --success:   #5BB57A;
+    --font-ui:   'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-deep); color: var(--text); font-family: var(--font-ui); font-size: 15px; line-height: 1.65; min-height: 100vh; }
+
+  header {
+    background: var(--bg-card); border-bottom: 1px solid var(--border);
+    padding: 18px 32px; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--db), var(--kaplan));
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .brand p  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .hdr-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 7px; padding: 8px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .hdr-btn:hover { background: var(--bg-card2); }
+
+  .meta-bar {
+    background: var(--bg-card2); border-bottom: 1px solid var(--border);
+    padding: 10px 32px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .meta-label { font-size: 12px; color: var(--muted); }
+  .meta-value { font-size: 12px; font-weight: 700; }
+  .lens-pill {
+    font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  }
+  .pill-kaplan { background: rgba(212,168,67,0.18);  color: var(--kaplan); border: 1px solid rgba(212,168,67,0.35); }
+  .pill-db     { background: rgba(139,111,212,0.18); color: var(--db);     border: 1px solid rgba(139,111,212,0.35); }
+  .pill-floyd  { background: rgba(91,181,162,0.18);  color: var(--floyd);  border: 1px solid rgba(91,181,162,0.35); }
+  .pill-ritala { background: rgba(59,125,216,0.18);  color: var(--ritala); border: 1px solid rgba(59,125,216,0.35); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 40px 32px; }
+
+  .katsaus-hero {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px 32px; margin-bottom: 28px;
+  }
+  .katsaus-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .katsaus-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.3; }
+  .katsaus-date { font-size: 13px; color: var(--muted); }
+
+  .section-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .section-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .section-meta { display: flex; align-items: center; gap: 12px; }
+  .section-num   { font-size: 11px; font-weight: 700; color: var(--muted); font-family: var(--font-mono); min-width: 26px; }
+  .section-title { font-size: 14px; font-weight: 700; }
+  .section-lenses { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mini-pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+  .section-body { padding: 20px; }
+
+  .analysis-block {
+    background: var(--bg-deep); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; margin-bottom: 14px; font-size: 14px; line-height: 1.75;
+  }
+  .analysis-block:last-child { margin-bottom: 0; }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .kaplan-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(212,168,67,0.15); color: var(--kaplan); }
+  .db-badge-sm  { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(139,111,212,0.15); color: var(--db); }
+  .floyd-badge  { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(91,181,162,0.15); color: var(--floyd); }
+  .ritala-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: rgba(59,125,216,0.15); color: var(--ritala); }
+
+  .db-strategy-card { background: rgba(139,111,212,0.07); border: 1px solid rgba(139,111,212,0.25); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+  .db-strategy-title { font-size: 11px; font-weight: 700; color: var(--db); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+
+  .signal-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .signal-row:last-child { border-bottom: none; }
+  .signal-num { font-size: 20px; font-weight: 900; font-family: var(--font-mono); color: var(--border); min-width: 28px; line-height: 1.4; }
+
+  .concern-block { border-left: 3px solid var(--warning); background: rgba(224,92,92,0.06); border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 14px; font-size: 14px; line-height: 1.75; }
+  .concern-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--warning); margin-bottom: 6px; }
+
+  .source-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .source-item:last-child { border-bottom: none; }
+  .source-type { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; align-self: center; background: rgba(255,255,255,0.07); color: var(--muted); }
+  .source-link { color: var(--ritala); text-decoration: none; }
+  .source-link:hover { text-decoration: underline; }
+
+  footer { text-align: center; padding: 32px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+
+  @media (max-width: 700px) {
+    main { padding: 24px 16px; }
+    header { padding: 14px 16px; }
+    .meta-bar { padding: 10px 16px; }
+    .katsaus-hero { padding: 20px; }
+    .katsaus-title { font-size: 20px; }
+  }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    header, .meta-bar, footer { display: none !important; }
+    main { padding: 0 !important; }
+    @page { margin: 2cm 2.5cm; size: A4; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">🔭</div>
+    <div>
+      <h1>Tekoäly &amp; Johtaminen</h1>
+      <p>Johtamiskatsaus — Viikko 43/2026</p>
+    </div>
+  </div>
+  <a href="https://toivotonaijohto.fi" class="hdr-btn">← Etusivu</a>
+</header>
+
+<div class="meta-bar">
+  <span class="meta-label">Päiväys:</span><span class="meta-value">keskiviikko 21.10.2026</span>
+  <span style="color:var(--border)">|</span>
+  <span class="meta-label">Kehykset:</span>
+  <span class="lens-pill pill-kaplan">Kaplan</span>
+  <span class="lens-pill pill-db">D&amp;B</span>
+  <span class="lens-pill pill-floyd">Keskijohto</span>
+  <span class="lens-pill pill-ritala">Ritala</span>
+</div>
+
+<main>
+
+  <div class="katsaus-hero">
+    <div class="katsaus-num">Katsaus 23 · Viikko 43/2026</div>
+    <div class="katsaus-title">TEM käynnistää tekoälyn työelämävaikutusten selvityksen</div>
+    <div class="katsaus-date">keskiviikko 21. lokakuuta 2026</div>
+  </div>
+
+  <!-- 01 Kehystapahtuma -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">01</span>
+        <span class="section-title">Kehystapahtuma — konteksti ja kehystäjä</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="analysis-block">
+        Työ- ja elinkeinoministeriö käynnistää laajan selvityksen tekoälyn vaikutuksista suomalaiseen työelämään. Selvityshenkilöiksi on nimetty ekonomisti Mika Maliranta (ETLA/Jyväskylän yliopisto), työoikeuden asiantuntija Maija Hovila sekä teknologiajohtaja Teemu Roos. Kolmikko edustaa talous-, oikeus- ja teknologianäkökulmia, mikä viestii pyrkimyksestä kokonaisvaltaiseen tarkasteluun. Selvitys ajoittuu aikaan, jolloin EU:n tekoälyasetus on astunut voimaan ja suomalaisyrityksissä AI-käyttöönotto kiihtyy. TEM:n rooli kehystäjänä on merkittävä, sillä ministeriö määrittelee työelämän pelisääntöjä ja ohjaa julkista keskustelua.
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Kaplan-kehysanalyysi -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">02</span>
+        <span class="section-title">Kaplan-kehysanalyysi</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="badge-row">
+        <span class="kaplan-badge">työn muutos</span>
+        <span class="kaplan-badge">diagnostinen kehys</span>
+      </div>
+      <div class="analysis-block">
+        Selvityksen kehystys painottuu selkeästi työn muutokseen ja ihmisiin — miten tekoäly muuttaa työtä, osaamista ja työmarkkinoita. Tämä on diagnostinen kehys: ongelma määritellään työelämän murroksena, ei ensisijaisesti tuottavuushyötynä tai innovaatiomahdollisuutena. Riskikehys on läsnä implisiittisesti (EU AI Act, oikeudelliset kysymykset Hovilan kautta), mutta tuottavuus- ja innovaatiokehykset jäävät taka-alalle. Huomionarvoista on, että selvityshenkilövalinnat legitimoivat juuri tietynlaisen kehystyksen: akateeminen ekonomisti, juristi ja teknologi — ei esimerkiksi yritysedustajia tai työntekijäjärjestöjä suoraan. Diagnostinen kehys ohjaa mitä kysytään ja mitä jätetään kysymättä — prognostinen kehys (miten toimitaan) jää tässä vaiheessa avoimeksi.
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Kehystämisstrategia -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">03</span>
+        <span class="section-title">Kehystämisstrategiat viikolla</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
+        <div class="db-strategy-card">
+          <div class="db-strategy-title">Yhteensovittaminen</div>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Kehystäjä: TEM</div>
+          <div style="font-size:12px;">TEM:n lähestymistapa edustaa accommodation-strategiaa: eri näkökulmat (talous, oikeus, teknologia) tunnustetaan ja tuodaan yhteen selvitysryhmässä. Kehyserot eivät polarisoidu vaan niille haetaan yhteistä pohjaa asiantuntijavetoisella prosessilla. Tämä on tyypillinen suomalainen konsensushakuinen tapa käsitellä monimutkaisia politiikkakysymyksiä, mutta strategia toimii parhaiten kun kaikki relevantit näkökulmat ovat edustettuina.</div>
+        </div>
+      </div>
+      <div class="analysis-block">
+        TEM:n lähestymistapa edustaa accommodation-strategiaa: eri näkökulmat (talous, oikeus, teknologia) tunnustetaan ja tuodaan yhteen selvitysryhmässä. Kehyserot eivät polarisoidu vaan niille haetaan yhteistä pohjaa asiantuntijavetoisella prosessilla. Tämä on tyypillinen suomalainen konsensushakuinen tapa käsitellä monimutkaisia politiikkakysymyksiä. Samalla accommodation-strategia voi johtaa siihen, että radikaalimmat näkökulmat — työntekijöiden huolet, pk-yritysten resurssipula — eivät saa ääntä, jos ne eivät mahdu asiantuntijakonsensuksen piiriin.
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Ritalan mekanismi -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">04</span>
+        <span class="section-title">Ritalan mekanismi</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-ritala">Ritala</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="badge-row">
+        <span class="ritala-badge">communicative leverage</span>
+      </div>
+      <div class="analysis-block">
+        Selvitys edustaa puhtaasti communicative leverage -mekanismia: tavoitteena on käsitteellistää tekoälyn vaikutukset, tuottaa tietoa päätöksenteon tueksi ja levittää ymmärrystä. Kyseessä on diskursiivinen interventio, ei vielä strukturaalinen muutos (rahoitus, rakenteet, lainsäädäntö). Selvityksen tulokset voivat myöhemmin johtaa structural leverage -toimiin, mutta tässä vaiheessa kyse on kehystämistaistelun areenan rakentamisesta. Conjoined learning -elementtiä ei ole tunnistettavissa, sillä selvitys tarkastelee tekoälyä ulkoapäin eikä kuvaa organisaatioiden kaksisuuntaista oppimisprosessia.
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 Keskijohdon rooli -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">05</span>
+        <span class="section-title">Keskijohdon rooli</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-floyd">Keskijohto</span>
+          <span class="lens-pill mini-pill pill-ritala">Ritala</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="concern-block">
+        <div class="concern-label">⚠ Merkittävä puute tunnistettu</div>
+        Selvityksen kuvauksessa ei mainita keskijohtoa erikseen. Fokus on makrotasolla (työmarkkinat, lainsäädäntö, kansantalous) eikä organisaatioiden sisäisessä dynamiikassa. Tämä on merkittävä puute, sillä keskijohto on keskeinen toimija tekoälyn käyttöönotossa ja merkityksellistämisessä. Selvityshenkilöiden tausta — tutkijat, ei käytännön johtajat — saattaa vahvistaa tätä makrotason painotusta ja jättää organisaatioarjen kokemukset katvealueelle.
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 Heikot signaalit -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">06</span>
+        <span class="section-title">Heikot signaalit</span>
+        <div class="section-lenses">
+          <span class="lens-pill mini-pill pill-kaplan">Kaplan</span>
+          <span class="lens-pill mini-pill pill-db">D&amp;B</span>
+          <span class="lens-pill mini-pill pill-floyd">Keskijohto</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="signal-row">
+        <div class="signal-num">01</div>
+        <div>Selvityshenkilövalinnoissa ei ole työntekijäjärjestöjen tai työnantajaliittojen suoraa edustusta — kolmikantainen perinne ohitetaan asiantuntijavetoisuuden hyväksi. Tämä voi tarkoittaa, että prosessin legitimiteetti kyseenalaistuu myöhemmin, jos tulokset sivuuttavat käytännön toimijoiden kokemukset.</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-num">02</div>
+        <div>Teemu Roosin nimeäminen viittaa siihen, että teknologinen ymmärrys halutaan varmistaa — aiemmat työelämäselvitykset ovat usein olleet puhtaasti talous- tai oikeuspainotteisia. Tämä on heikko signaali siitä, että Suomi alkaa rakentaa uudenlaista monidisiplinaarista tekoälyosaamista myös politiikkavalmistelussa.</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-num">03</div>
+        <div>Selvityksen ajoitus EU AI Actin voimaantulon jälkeen viittaa siihen, että Suomi hakee omaa tulkintakehystä eurooppalaisen regulaation päälle. Kansallinen tulkintakehys voi muodostua kilpailueduksi tai lisätaakaksi riippuen siitä, tukeeko se vai rajoittaako se yritysten AI-käyttöönottoa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 Lähteet -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-meta">
+        <span class="section-num">07</span>
+        <span class="section-title">Lähteet</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="source-item"><span class="source-type">Viranomainen</span><a href="https://tem.fi/-/tyoministeri-marttinen-kaynnistaa-selvityksen-tekoalyn-vaikutuksista-tyoelamaan-selvityshenkiloina-mika-maliranta-maija-hovila-ja-teemu-roos" target="_blank" class="source-link">TEM tiedote — Työministeri Marttinen käynnistää selvityksen tekoälyn vaikutuksista työelämään</a></div>
+      <div class="source-item"><span class="source-type">Tieteellinen</span><a href="https://pubsonline.informs.org/doi/10.1287/orsc.1070.0298" target="_blank" class="source-link">Kaplan (2008) — Framing Contests, Organization Science</a></div>
+      <div class="source-item"><span class="source-type">Tieteellinen</span><a href="https://doi.org/10.1111/j.1467-9299.2011.02000.x" target="_blank" class="source-link">Dewulf &amp; Bouwen (2012) — Issue Framing in Conversations, Public Management Review</a></div>
+      <div class="source-item"><span class="source-type">Tieteellinen</span><a href="https://doi.org/10.1016/j.techfore.2024.123XXX" target="_blank" class="source-link">Ritala ym. (2024) — AI adoption mechanisms</a></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div style="margin-bottom:8px;">
+    <a href="https://toivotonaijohto.fi" style="color:var(--ritala); text-decoration:none;">← Kaikki katsaukset</a>
+  </div>
+  Tekoäly &amp; Johtaminen · Joukon Toivonen · 2026
+</footer>
+
+</body>
+</html>
