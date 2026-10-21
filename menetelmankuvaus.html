@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menetelmänkuvaus — Tekoäly &amp; Johtaminen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0F172A; --bg:#F8FAFC; --card:#fff; --border:#E2E8F0; --accent:#4F46E5; --accent2:#7C3AED; --muted:#64748B; --highlight:#EEF2FF; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); font-size:16px; line-height:1.75; }
+
+  header {
+    background: linear-gradient(135deg, #0F172A 0%, #1e1b4b 100%);
+    color:#fff; padding:48px 40px 40px;
+  }
+  .header-inner { max-width:780px; margin:0 auto; }
+  .back-link { font-size:13px; color:rgba(255,255,255,0.5); text-decoration:none; display:inline-flex; align-items:center; gap:6px; margin-bottom:28px; }
+  .back-link:hover { color:rgba(255,255,255,0.8); }
+  .page-label { font-size:11px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:14px; }
+  header h1 { font-size:clamp(26px,4vw,40px); font-weight:900; letter-spacing:-0.8px; line-height:1.15; margin-bottom:16px; }
+  .header-desc { font-size:15px; color:rgba(255,255,255,0.55); max-width:580px; line-height:1.7; }
+
+  main { max-width:780px; margin:0 auto; padding:56px 40px 80px; }
+
+  h2 { font-size:22px; font-weight:800; letter-spacing:-0.4px; margin-top:56px; margin-bottom:16px; color:var(--ink); border-bottom:2px solid var(--border); padding-bottom:10px; }
+  h3 { font-size:16px; font-weight:700; margin-top:32px; margin-bottom:10px; color:var(--ink); }
+  p { margin-bottom:18px; color:#334155; }
+  p:last-child { margin-bottom:0; }
+
+  .lens-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:20px; margin:28px 0; }
+  .lens-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  }
+  .lens-icon { font-size:28px; margin-bottom:12px; }
+  .lens-name { font-size:15px; font-weight:700; margin-bottom:6px; }
+  .lens-author { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--muted); margin-bottom:10px; }
+  .lens-desc { font-size:14px; color:#475569; line-height:1.7; }
+
+  .process-steps { margin:28px 0; }
+  .step { display:flex; gap:20px; align-items:flex-start; margin-bottom:20px; }
+  .step-num { min-width:36px; height:36px; background:var(--accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0; }
+  .step-body { padding-top:6px; }
+  .step-title { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .step-desc { font-size:14px; color:#475569; line-height:1.65; }
+
+  .highlight-box { background:var(--highlight); border-left:4px solid var(--accent); border-radius:0 10px 10px 0; padding:18px 22px; margin:24px 0; font-size:14px; color:#312e81; line-height:1.7; }
+
+  .ref-list { margin-top:12px; }
+  .ref-item { font-size:13px; color:#475569; padding:10px 0; border-bottom:1px solid var(--border); line-height:1.6; }
+  .ref-item:last-child { border-bottom:none; }
+  .ref-item a { color:var(--accent); text-decoration:none; }
+  .ref-item a:hover { text-decoration:underline; }
+
+  footer { text-align:center; color:var(--muted); font-size:12px; padding:32px 20px 48px; border-top:1px solid var(--border); }
+
+  @media (max-width:640px) {
+    header { padding:32px 20px 28px; }
+    main { padding:36px 20px 60px; }
+    .lens-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="https://toivotonaijohto.fi" class="back-link">← Etusivu</a>
+    <div class="page-label">Menetelmänkuvaus</div>
+    <h1>Miten katsaukset syntyvät</h1>
+    <p class="header-desc">Kuvaus analyysimenetelmästä, teoreettisista linsseistä ja siitä, miten tekoälyavusteinen kehystämisanalyysi käytännössä toteutetaan.</p>
+  </div>
+</header>
+
+<main>
+
+  <h2>Mistä on kyse</h2>
+
+  <p>Tämä sivusto julkaisee säännöllisiä ajankohtaiskatsauksia siitä, miten tekoälyä kehystetään suomalaisessa johtamiskeskustelussa. Analyysin kohteena ovat tapahtumat, puheenvuorot, päätökset ja julkaisut, jotka asemoivat tekoälyä suhteessa johtamiseen — joko uhkana, mahdollisuutena, välineenä tai muutoksen ajurina.</p>
+
+  <p>Keskeinen lähtökohta on, että tekoäly ei ole neutraali teknologia, jonka merkitys olisi itsestään selvä. Sen sijaan tekoälyn merkitys rakentuu sosiaalisessa vuorovaikutuksessa, kun eri toimijat — organisaatiot, ministeriöt, tutkijat, media — kehystävät ilmiötä omista lähtökohdistaan. Kehystäminen ei ole pelkkää retoriikkaa: se ohjaa resursseja, päätöksiä ja toimintaa (Kaplan, 2008).</p>
+
+  <p>Analyysi ei pyri olemaan kattava uutisseuranta vaan valikoiva: kustakin viikosta tai ajankohdasta nostetaan yksi tai muutama tapahtuma, joka avaa kiinnostavan ikkunan kehystämisdynamiikkaan.</p>
+
+  <h2>Teoreettiset linssit</h2>
+
+  <p>Jokainen katsaus hyödyntää neljää toisiaan täydentävää teoreettista linssiä. Ne eivät ole toisistaan irrallisia työkaluja vaan muodostavat yhdessä monitasoisen analyysiviitekehyksen.</p>
+
+  <div class="lens-grid">
+
+    <div class="lens-card">
+      <div class="lens-icon">⚖️</div>
+      <div class="lens-name">Kilpailevat kehykset</div>
+      <div class="lens-author">Kaplan, 2008</div>
+      <div class="lens-desc">Kehystämiskilpailu tarkoittaa prosessia, jossa eri toimijat pyrkivät määrittelemään ongelman, sen syyt ja ratkaisuvaihtoehdot omista lähtökohdistaan. Kaplanin malli erottaa kolme ulottuvuutta: kognitiiviset kehykset (mitä uskotaan), poliittiset intressit (kuka hyötyy) ja vuorovaikutukselliset prosessit (miten kehykset muuttuvat kohtaamisessa). Katsauksissa tämä näkyy kysymyksenä: mikä kehys dominoi, kuka sen asetti, ja mitä se sulkee ulkopuolelle?</div>
+    </div>
+
+    <div class="lens-card">
+      <div class="lens-icon">🗣️</div>
+      <div class="lens-name">Kehyserot vuorovaikutuksessa</div>
+      <div class="lens-author">Dewulf &amp; Bouwen, 2012</div>
+      <div class="lens-desc">Dewulf ja Bouwen erittelevät strategioita, joilla toimijat käsittelevät kehyseroja kohdatessaan: polarisaatio (kehykset asetetaan vastakkain), accommodation (etsitään yhteistä pohjaa) tai disconnection (kehyserot ohitetaan). Tämä linssi auttaa analysoimaan, miten ristiriitaisia tulkintoja käsitellään käytännössä — onko tavoitteena konsensus, voitto vai yhteyksien katkeaminen.</div>
+    </div>
+
+    <div class="lens-card">
+      <div class="lens-icon">🏢</div>
+      <div class="lens-name">Keskijohdon rooli</div>
+      <div class="lens-author">Floyd &amp; Lane, 2000</div>
+      <div class="lens-desc">Floyd ja Lane kuvaavat keskijohdon strategista välittäjyyttä: johto ei vain toteuta ylhäältä tulevia strategioita vaan toimii synteesin kokoajana, tulkkina ja kehystäjänä organisaation eri tasojen välillä. Tekoälyn käyttöönottokontekstissa tämä tarkoittaa, että keskijohdon tapa kehystää tekoäly omalle tiimilleen ratkaisee usein enemmän kuin virallinen strategia.</div>
+    </div>
+
+    <div class="lens-card">
+      <div class="lens-icon">🧠</div>
+      <div class="lens-name">Organisatorinen oppiminen</div>
+      <div class="lens-author">Ritala ym., 2024</div>
+      <div class="lens-desc">Ritala kumppaneineen erittelee mekanismeja, joilla organisaatiot omaksuvat ja institutionalisoivat tekoälyä: communicative leverage (merkitysten rakentaminen), structural leverage (rakenteet ja resursointi) sekä conjoined learning (kaksisuuntainen oppiminen ihmisten ja järjestelmien välillä). Tämä linssi kysyy, missä vaiheessa muutosprosessia ollaan ja millainen interventio olisi seuraava askel.</div>
+    </div>
+
+  </div>
+
+  <div class="highlight-box">
+    Linssit eivät tuota automaattisesti oikeita vastauksia — ne auttavat kysymään oikeita kysymyksiä. Sama tapahtuma voi näyttää hyvin erilaiselta riippuen siitä, tarkastellaanko sitä kehystämiskilpailuna, vuorovaikutusstrategiana, keskijohdon toimintana vai oppimismekanismina.
+  </div>
+
+  <h2>Analyysiprosessi käytännössä</h2>
+
+  <p>Jokainen katsaus kulkee saman prosessin kautta, vaikka yksityiskohdat vaihtelevat.</p>
+
+  <div class="process-steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Kehystapahtuman valinta</div>
+        <div class="step-desc">Viikon tai ajanjakson ajankohtaisista tapahtumista valitaan yksi kehystapahtuma — uutinen, päätös, julkaisu tai puheenvuoro, joka avaa kiinnostavan ikkunan tekoälyn kehystämisdynamiikkaan. Valinta on tulkinnallinen: tapahtuman täytyy olla analyyttisesti hedelmällinen, ei vain uutisarvoltaan suuri.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Tekoälyavusteinen analyysi</div>
+        <div class="step-desc">Kehystapahtuma syötetään analyysityökaluun (katsaus_v8.html), joka on rakennettu Anthropicin tekoälymallin päälle. Työkalu on ohjeistettu järjestelmäpromptilla, joka ohjaa sen soveltamaan neljää linssiä systemaattisesti. Analyysi ei ole automaattinen: käyttäjä ohjaa prosessia, ja tulos riippuu siitä, miten tapahtuma kuvataan ja mitä painotuksia pyydetään.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Tuloksen tarkistus ja muokkaus</div>
+        <div class="step-desc">Tekoälyn tuottama analyysi tarkistetaan ja tarvittaessa muokataan. Erityistä huomiota kiinnitetään siihen, onko lähdeviittaukset käytetty oikein, ovatko johtopäätökset perusteltuja suhteessa tapahtumaan, ja onko heikkojen signaalien osio riittävän spekulatiivinen — eli tarttuuko se asioihin joita ei vielä nähdä selvästi.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Julkaisu</div>
+        <div class="step-desc">Hyväksytty analyysi muunnetaan HTML-katsaussivuksi ja julkaistaan sivustolla. Jokainen katsaus saa oman URL:n ja arkistoidaan. Katsaukset muodostavat kumulatiivisen aineiston, jota voidaan myöhemmin analysoida pitkittäisesti.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>Tekoälyn rooli analyysissä</h2>
+
+  <p>Tekoäly toimii tässä prosessissa analyyttisenä apuvälineenä, ei autonomisena tutkijana. Se soveltaa teoreettisia viitekehyksiä nopeasti ja systemaattisesti, mutta se ei valitse kehystapahtumaa, ei arvioi lähteiden luotettavuutta eikä päätä, mitkä havainnot ovat merkittäviä.</p>
+
+  <p>Tekoälyavusteisen analyysin keskeinen rajoite on, että malli tuottaa argumentit nopeasti ja sujuvasti — tämä voi luoda vaikutelman syvemmästä oivalluksesta kuin mitä on tapahtunut. Siksi tarkistusvaihe on olennainen: onko analyysi todella perusteltu vai vain hyvin muotoiltu?</p>
+
+  <p>Toinen rajoite koskee lähdeaineistoa. Tekoälymalli on koulutettu tiettyyn ajankohtaan asti, eikä sillä ole pääsyä reaaliaikaiseen tietoon. Kehystapahtuman konteksti ja lähteet tuodaan analyysiin käyttäjän toimesta.</p>
+
+  <div class="highlight-box">
+    Tämä sivusto on myös itsessään tutkimuskohde: se dokumentoi, miten tekoälyavusteinen laadullinen analyysi toimii käytännössä — mitä se tuottaa hyvin, missä se epäonnistuu, ja miten ihmisen ja tekoälyn yhteistyö kehystämisanalyysissa kehittyy ajan myötä.
+  </div>
+
+  <h2>Heikot signaalit erityisenä fokuksena</h2>
+
+  <p>Jokainen katsaus päättyy heikkojen signaalien osioon. Heikot signaalit ovat varhaisia merkkejä kehityssuunnista, jotka eivät vielä ole selvästi näkyvissä mutta saattavat muodostua merkittäviksi. Ne ovat luonteeltaan spekulatiivisia: ne voivat osoittautua oikeiksi tai vääriksi.</p>
+
+  <p>Heikkojen signaalien analysointi on perusteltua erityisesti kehystämistutkimuksen näkökulmasta, koska kehystämiskilpailut alkavat usein marginaalisista puheenvuoroista ja reunailmiöistä ennen kuin ne nousevat valtavirtaan. Kyky tunnistaa nämä varhaisessa vaiheessa on organisaatioille strategisesti arvokasta.</p>
+
+  <h2>Pitkittäisanalyysi</h2>
+
+  <p>Yksittäiset katsaukset ovat kiinnostavia sellaisenaan, mutta niiden kumulatiivinen arvo kasvaa ajan myötä. Kun samoja ilmiöitä — esimerkiksi riskikehyksen ja innovaatiokehyksen suhdetta tai keskijohdon roolia — seurataan useiden kuukausien ajan, alkaa näkyä, miten kehykset muuttuvat, vahvistuvat tai häviävät.</p>
+
+  <p>Sivuston pitkittäisanalyysisivu kokoaa näitä havaintoja ja pyrkii tunnistamaan kehystämisdynamiikan trendejä pidemmällä aikavälillä.</p>
+
+  <h2 id="viitteet">Viitteet</h2>
+
+  <div class="ref-list">
+    <div class="ref-item">Dewulf, A. &amp; Bouwen, R. (2012). Issue Framing in Conversations for Change: Discursive Interaction Strategies for "Doing Differences". <em>The Journal of Applied Behavioral Science, 48</em>(2), 168–193.</div>
+    <div class="ref-item">Floyd, S. W. &amp; Lane, P. J. (2000). Strategizing Throughout the Organization: Managing Role Conflict in Strategic Renewal. <em>Academy of Management Review, 25</em>(1), 154–177.</div>
+    <div class="ref-item">Kaplan, S. (2008). Framing Contests: Strategy Making Under Uncertainty During the Internet Revolution. <em>Organization Science, 19</em>(5), 729–745.</div>
+    <div class="ref-item">Ritala, P. ym. (2024). Developing industrial AI capabilities: An organisational learning perspective. <em>Technological Forecasting and Social Change</em>.</div>
+  </div>
+
+</main>
+
+<footer>Tekoäly &amp; Johtaminen · Joukon Toivonen · 2026</footer>
+
+</body>
+</html>
