@@ -347,7 +347,7 @@
   <span class="lens-pill pill-kaplan" id="bar-kaplan">✓ Kaplan — kehykset</span>
   <span class="lens-pill pill-db"     id="bar-db">✓ Dewulf &amp; Bouwen</span>
   <span class="lens-pill pill-floyd"  id="bar-floyd">✓ Keskijohto</span>
-  <span class="lens-pill pill-ritala" id="bar-ritala">✓ Ritala — mekanismi</span>
+  <span class="lens-pill pill-ritala" id="bar-ritala">✓ Organisatorinen oppiminen</span>
 </div>
 
 <div class="layout">
@@ -421,7 +421,7 @@
   </div>
 
   <div class="aside-section">
-    <div class="aside-title">Ritalan mekanismi</div>
+    <div class="aside-title">Organisatorinen oppiminen</div>
     <div class="ritala-row"><span class="ritala-badge">Communicative</span> Käsitteellistäminen, viestintä, tiedon levitys</div>
     <div class="ritala-row"><span class="ritala-badge">Structural</span> Rahoitus, rakenteet, R&amp;D-integraatio</div>
     <div class="ritala-row"><span class="ritala-badge">Conjoined</span> Ihminen oppii AI:sta, AI muovautuu ihmisestä</div>
@@ -443,8 +443,8 @@
         <div class="situation-card-desc">Artikkeli, uutinen, raportti tai LinkedIn-postaus tekoälyn johtamisesta</div>
         <div class="situation-card-lenses">
           <span class="situation-lens-tag pill-kaplan">Kaplan</span>
-          <span class="situation-lens-tag pill-db">D&amp;B</span>
           <span class="situation-lens-tag pill-floyd">Keskijohto</span>
+          <span class="situation-lens-tag pill-ritala">Org. oppiminen</span>
         </div>
       </button>
 
@@ -538,7 +538,7 @@ document.getElementById('ghSaveBtn').addEventListener('click', () => {
 
 // ── Situation cards ──
 const situationConfigs = {
-  weekly:  { lenses: ['kaplan','floyd'], label: 'Kaplan · Keskijohto', mode: 'weekly',
+  weekly:  { lenses: ['kaplan','floyd','ritala'], label: 'Kaplan · Keskijohto · Org. oppiminen', mode: 'weekly',
     placeholder: 'Liitä tähän artikkeli, uutinen, puhe, organisaation viesti tai muu materiaali — tai kuvaile tilanne omin sanoin.' },
   event:   { lenses: ['kaplan','ritala'], label: 'Kaplan · Ritala', mode: 'event',
     placeholder: 'Liitä tähän yksittäinen puheenvuoro, haastattelu, blogi tai LinkedIn-postaus. Työkalu tunnistaa Kaplan-kehyksen ja Ritalan organisatorisen mekanismin.' },
@@ -570,7 +570,7 @@ function syncLensBar(active) {
     if (!pill) return;
     const on = active.includes(l);
     pill.classList.toggle('inactive', !on);
-    const labels = { kaplan:'Kaplan — kehykset', db:'Dewulf & Bouwen', floyd:'Keskijohto', ritala:'Ritala — mekanismi' };
+    const labels = { kaplan:'Kaplan — kehykset', db:'Dewulf & Bouwen', floyd:'Keskijohto', ritala:'Organisatorinen oppiminen' };
     pill.textContent = (on ? '✓ ' : '✗ ') + labels[l];
   });
 }
@@ -657,11 +657,11 @@ Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituisek
   "mode": "weekly",
   "week_label": "Viikko XX/YYYY — otsikko",
   "sections": [
-    {"id":"spotlight","title":"Suomalainen Spotlight","lenses":["kaplan","db"],"kaplan_frame":"tuottavuus|innovaatio|riski|työn muutos","db_strategy":"incorporation|disconnection|polarisaatio|accommodation|reconnection","concepts":["käsite1","käsite2"],"content":"...","source":{"label":"Nimi","url":"https://..."}},
-    {"id":"middlemgt","title":"Keskijohdon kehystämistoimet","lenses":["floyd"],"floyd_role":"puolestapuhuminen|synteesin kokoaminen|fasilitointi|toimeenpano","ritala_mechanism":"communicative|structural|conjoined","content":"...","success":true,"success_reason":"Miksi onnistui tai epäonnistui"},
-    {"id":"db_analysis","title":"Kehystämisstrategiat viikolla","lenses":["db","kaplan"],"strategies_found":[{"strategy":"...","kehystaja":"...","vastapuoli":"...","tulos":"..."}],"content":"Kokonaisanalyysi D&B-strategioista viikon lähteissä."},
+    {"id":"spotlight","title":"Suomalainen Spotlight","lenses":["kaplan"],"kaplan_frame":"tuottavuus|innovaatio|riski|työn muutos","concepts":["käsite1","käsite2"],"content":"...","source":{"label":"Nimi","url":"https://..."}},
+    {"id":"middlemgt","title":"Keskijohdon kehystämistoimet","lenses":["floyd"],"floyd_role":"puolestapuhuminen|synteesin kokoaminen|fasilitointi|toimeenpano","content":"...","success":true,"success_reason":"Miksi onnistui tai epäonnistui"},
+    {"id":"org_learning","title":"Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"communicative|structural|conjoined","content":"Miten organisaatio oppii tekoälyn käyttöönoton myötä? Communicative vai structural leverage — vai molemmat (conjoined)? Mitä kyvykkyyksiä kehitetään?"},
     {"id":"concern","title":"Epävarmuuden vastuullinen ääni","lenses":["kaplan","floyd"],"misread_as_resistance":false,"content":"...","correction":"Korjattu tulkinta tarvittaessa"},
-    {"id":"signals","title":"Heikot signaalit","lenses":["kaplan","db","floyd"],"signals":[{"text":"..."},{"text":"..."},{"text":"..."}]},
+    {"id":"signals","title":"Heikot signaalit","lenses":["kaplan","floyd","ritala"],"signals":[{"text":"..."},{"text":"..."},{"text":"..."}]},
     {"id":"sources","title":"Lähteet","sources":[{"type":"Tieteellinen","label":"Nimi","url":"https://..."},{"type":"Ammatillinen","label":"Nimi","url":"https://..."}]}
   ]
 }`;
@@ -963,7 +963,7 @@ function generateFactsheet() {
     if (sec.db_strategy)  md += `**D&B-strategia:** ${sec.db_strategy}\n\n`;
     if (sec.dominant_frame) md += `**Dominoiva kehys:** ${sec.dominant_frame}\n\n`;
     if (sec.strategy)     md += `**D&B-strategia:** ${sec.strategy}\n\n`;
-    if (sec.mechanism)    md += `**Ritalan mekanismi:** ${sec.mechanism} leverage\n\n`;
+    if (sec.mechanism)    md += `**Organisatorinen oppiminen:** ${sec.mechanism} leverage\n\n`;
     if (sec.floyd_role)   md += `**Rooli:** ${sec.floyd_role}\n\n`;
     if (sec.content)      md += `${sec.content}\n\n`;
     if (sec.signals)      sec.signals.forEach((s,i) => { md += `${i+1}. ${s.text}\n`; });
