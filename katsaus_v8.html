@@ -390,8 +390,8 @@
         <div class="lens-dot" style="background:var(--ritala)"></div>
         <div class="lens-card-title" style="color:var(--ritala)">Organisatorinen mekanismi</div>
       </div>
-      <div class="lens-card-sub">Missä organisatorisessa mekanismissa kehystäminen tapahtuu (Ritala ym., 2024)</div>
-      <div class="lens-concepts">communicative leverage · structural leverage · conjoined learning · AI-enabled exploitation · AI-enabled exploration</div>
+      <div class="lens-card-sub">Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)</div>
+      <div class="lens-concepts">yhteisen ymmärryksen rakentaminen · käyttöönoton ohjaaminen rakenteilla · vastavuoroinen oppiminen · accommodation · resistance</div>
     </div>
   </div>
 
@@ -612,10 +612,10 @@ LINSSI 3 — Floyd & Lane: Keskijohdon strateginen rooli
 Tunnista aina erikseen jos keskijohto mainitaan (nosteta esille — ei väkisin):
 Roolit: puolestapuhuminen · synteesin kokoaminen · sopeutumiskyvyn fasilitointi · toimeenpano · merkityksellistäminen
 
-LINSSI 4 — Ritala ym. (2024): Missä mekanismissa kehystäminen tapahtuu
-Communicative leverage: käsitteellistäminen, viestintä, tiedon levitys
-Structural leverage: rahoitus, rakenteet, R&D-integraatio, organisaation uudelleensuunnittelu
-Conjoined learning: kaksisuuntainen oppiminen — ihminen oppii tekoälystä (sen logiikasta, rajoitteista, mahdollisuuksista) ja samalla tekoäly muovautuu ihmisestä (käytön, palautteen ja koulutuksen kautta). Tunnista analyysissä ERIKSEEN kohdat joissa organisaatio oppii tekoälystä, ja kohdat joissa tekoälyjärjestelmä on muovautunut ihmisten käytön tai palautteen perusteella. Nämä ovat saman ilmiön kaksi puolta — älä sekoita yksipuoliseen käyttöönottoon.
+LINSSI 4 — Ritala ym. (2024): Organisatorinen oppiminen ja kyvykkyydet
+Yhteisen ymmärryksen rakentaminen (communicative leverage): tekoälyn mahdollisuuksien konkretisointi, avoin viestintä käyttöönotosta, osaamisen jakaminen yli tiimirajojen
+Tekoälyn käyttöönoton ohjaaminen rakenteilla ja resursseilla (structural leverage): rahoitus ja resurssien kohdentaminen, erilliset AI-yksiköt, poikkiorganisatorinen kyvykkyyksien kehittäminen, tilannekohtainen tuki
+Ihmisen ja tekoälyn vastavuoroinen oppiminen (conjoined learning): ihminen oppii tekoälystä (logiikka, rajat, mahdollisuudet) ja tekoäly muovautuu ihmisen käytön ja palautteen kautta — oppiminen tapahtuu vastustuksen ja sopeutumisen kierroksissa. Sama ominaisuus voidaan hyväksyä, hylätä ja hyväksyä uudelleen. Tunnista analyysissä ERIKSEEN: a) kohdat joissa organisaatio oppii tekoälystä, b) kohdat joissa tekoäly on muovautunut käytön tai palautteen perusteella, c) tuning_signal: onko tällä hetkellä enemmän accommodation (hyväksymistä, sopeutumista) vai resistance (hylkäämistä, vastustusta) vai ambiguous.
 
 KRIITTINEN PERIAATE: Epävarmuus ≠ vastarinta. Huolet ja kriittiset kysymykset ovat vastuullisen huolenpidon merkkejä — merkitse aina jos lähde sekoittaa nämä.
 
@@ -639,7 +639,7 @@ Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituisek
   "sections": [
     {"id":"event_context","title":"Kehystapahtuma — konteksti ja kehystäjä","lenses":["kaplan"],"kehystaja":"kuka/mikä organisaatio","konteksti":"missä, milloin","content":"..."},
     {"id":"kaplan_frame","title":"Kehystämiskilpailu (Kaplan)","lenses":["kaplan"],"dominant_frame":"tuottavuus|innovaatio|riski|työn muutos","excluded_frames":["..."],"content":"Mikä kehys dominoi, mitkä suljetaan ulos ja miten se perustellaan."},
-    {"id":"ritala_mechanism","title":"Organisatorinen mekanismi (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"communicative|structural|conjoined","content":"Missä organisatorisessa mekanismissa kehystäminen tapahtuu? Communicative vai structural leverage — vai molemmat (conjoined)?"},
+    {"id":"ritala_mechanism","title":"Organisatorinen oppiminen (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"yhteisen ymmärryksen rakentaminen|käyttöönoton ohjaaminen rakenteilla|vastavuoroinen oppiminen","tuning_signal":"accommodation|resistance|ambiguous","tuning_note":"Lyhyt perustelu: mitä hyväksytään, mitä vastustetaan","content":"Missä organisatorisessa mekanismissa kehystäminen tapahtuu? Yhteisen ymmärryksen rakentaminen, käyttöönoton ohjaaminen rakenteilla — vai vastavuoroinen oppiminen (molemmat)?"},
     {"id":"signals","title":"Heikot signaalit","lenses":["kaplan"],"signals":[{"text":"..."},{"text":"..."}]},
     {"id":"sources","title":"Lähteet","sources":[{"type":"Ammatillinen","label":"Nimi","url":"https://..."}]}
   ]
@@ -659,7 +659,7 @@ Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituisek
   "sections": [
     {"id":"spotlight","title":"Suomalainen Spotlight","lenses":["kaplan"],"kaplan_frame":"tuottavuus|innovaatio|riski|työn muutos","concepts":["käsite1","käsite2"],"content":"...","source":{"label":"Nimi","url":"https://..."}},
     {"id":"middlemgt","title":"Keskijohdon kehystämistoimet","lenses":["floyd"],"floyd_role":"puolestapuhuminen|synteesin kokoaminen|fasilitointi|toimeenpano","content":"...","success":true,"success_reason":"Miksi onnistui tai epäonnistui"},
-    {"id":"org_learning","title":"Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"communicative|structural|conjoined","content":"Miten organisaatio oppii tekoälyn käyttöönoton myötä? Communicative vai structural leverage — vai molemmat (conjoined)? Mitä kyvykkyyksiä kehitetään?"},
+    {"id":"org_learning","title":"Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"yhteisen ymmärryksen rakentaminen|käyttöönoton ohjaaminen rakenteilla|vastavuoroinen oppiminen","tuning_signal":"accommodation|resistance|ambiguous","tuning_note":"Lyhyt perustelu: mitä hyväksytään, mitä vastustetaan tällä hetkellä","content":"Miten organisaatio oppii tekoälyn käyttöönoton myötä? Kumpaa mekanismia havaitaan enemmän — yhteisen ymmärryksen rakentamista, käyttöönoton ohjaamista rakenteilla, vai vastavuoroista oppimista? Mitä kyvykkyyksiä kehitetään?"},
     {"id":"concern","title":"Epävarmuuden vastuullinen ääni","lenses":["kaplan","floyd"],"misread_as_resistance":false,"content":"...","correction":"Korjattu tulkinta tarvittaessa"},
     {"id":"signals","title":"Heikot signaalit","lenses":["kaplan","floyd","ritala"],"signals":[{"text":"..."},{"text":"..."},{"text":"..."}]},
     {"id":"sources","title":"Lähteet","sources":[{"type":"Tieteellinen","label":"Nimi","url":"https://..."},{"type":"Ammatillinen","label":"Nimi","url":"https://..."}]}
@@ -783,8 +783,14 @@ function renderResponse(data) {
       <div class="analysis-block">${sec.content || ''}</div>`;
     }
 
-    else if (sec.id === 'ritala_mechanism') {
-      body = `${sec.mechanism ? `<div class="ritala-mech" style="margin-bottom:12px;"><span class="ritala-mech-badge">${sec.mechanism} leverage</span></div>` : ''}
+    else if (sec.id === 'ritala_mechanism' || sec.id === 'org_learning') {
+      const tuningColor = sec.tuning_signal === 'accommodation' ? 'var(--success)' : sec.tuning_signal === 'resistance' ? 'var(--warning)' : 'var(--muted)';
+      const tuningLabel = sec.tuning_signal === 'accommodation' ? '↑ Hyväksyminen' : sec.tuning_signal === 'resistance' ? '↓ Vastustus' : sec.tuning_signal === 'ambiguous' ? '~ Epäselvä' : '';
+      body = `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center;">
+        ${sec.mechanism ? `<span class="ritala-mech-badge">${sec.mechanism}</span>` : ''}
+        ${tuningLabel ? `<span style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:${tuningColor};">${tuningLabel}</span>` : ''}
+      </div>
+      ${sec.tuning_note ? `<div style="font-size:12px; color:var(--muted); margin-bottom:10px; font-style:italic;">${sec.tuning_note}</div>` : ''}
       <div class="analysis-block">${sec.content || ''}</div>`;
     }
 
@@ -963,7 +969,9 @@ function generateFactsheet() {
     if (sec.db_strategy)  md += `**D&B-strategia:** ${sec.db_strategy}\n\n`;
     if (sec.dominant_frame) md += `**Dominoiva kehys:** ${sec.dominant_frame}\n\n`;
     if (sec.strategy)     md += `**D&B-strategia:** ${sec.strategy}\n\n`;
-    if (sec.mechanism)    md += `**Organisatorinen oppiminen:** ${sec.mechanism} leverage\n\n`;
+    if (sec.mechanism)    md += `**Mekanismi:** ${sec.mechanism}\n\n`;
+    if (sec.tuning_signal) md += `**Tuning-signaali:** ${sec.tuning_signal === 'accommodation' ? '↑ Hyväksyminen' : sec.tuning_signal === 'resistance' ? '↓ Vastustus' : '~ Epäselvä'}\n\n`;
+    if (sec.tuning_note)  md += `*${sec.tuning_note}*\n\n`;
     if (sec.floyd_role)   md += `**Rooli:** ${sec.floyd_role}\n\n`;
     if (sec.content)      md += `${sec.content}\n\n`;
     if (sec.signals)      sec.signals.forEach((s,i) => { md += `${i+1}. ${s.text}\n`; });
