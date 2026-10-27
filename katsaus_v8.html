@@ -878,9 +878,24 @@ function renderResponse(data) {
 
 function extractJSON(raw, stopReason) {
   if (stopReason === 'max_tokens') throw new Error('Vastaus katkesi token-rajan takia. Yritä lyhyemmällä syötteellä.');
-  try { return JSON.parse(raw.replace(/```json\s*|```/g, '').trim()); } catch(_) {}
-  const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
-  if (s !== -1 && e > s) { try { return JSON.parse(raw.slice(s, e+1)); } catch(_) {} }
+  // 1) Kokeile suoraan
+  try { return JSON.parse(raw.trim()); } catch(_) {}
+  // 2) Poista ```json ... ``` koodilohko
+  try { return JSON.parse(raw.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim()); } catch(_) {}
+  // 3) Etsi ensimmäinen { ja viimeinen } — toimii vaikka mallilla on tekstiä ennen JSONia
+  const s = raw.indexOf('{');
+  if (s !== -1) {
+    // Käy läpi merkkejä taaksepäin löytääksesi tasapainoisen sulun
+    let depth = 0, end = -1;
+    for (let i = s; i < raw.length; i++) {
+      if (raw[i] === '{') depth++;
+      else if (raw[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
+    }
+    if (end > s) { try { return JSON.parse(raw.slice(s, end+1)); } catch(_) {} }
+    // Fallback: lastIndexOf
+    const e = raw.lastIndexOf('}');
+    if (e > s) { try { return JSON.parse(raw.slice(s, e+1)); } catch(_) {} }
+  }
   throw new Error('JSON-parsinta epäonnistui. Alku: ' + raw.slice(0, 200));
 }
 
