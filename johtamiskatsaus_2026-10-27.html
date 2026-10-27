@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viikko 44/2026 — Futuricen AI-johtamisopas: Ihmisen ja tekoälyn yhteisoppimisen haaste</title>
+<style>
+:root{
+  --bg:#141820;--card:#1E2433;--card2:#252B3B;--border:#2E3650;
+  --text:#E8ECF4;--muted:#8A93A8;--muted2:#5A6478;
+  --kaplan:#D4A843;--db:#8B6FD4;--floyd:#5BB5A2;--ritala:#3B7DD8;
+  --success:#5BB57A;--warning:#E05C5C;--accent:#3B7DD8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7;padding:0;max-width:100%;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* Nav */
+.site-nav{background:var(--card);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;gap:24px;align-items:center;font-size:13px;position:sticky;top:0;z-index:10;}
+.site-nav a{color:var(--muted);}
+.site-nav a:hover{color:var(--text);text-decoration:none;}
+.site-nav .brand{font-weight:700;color:var(--text);}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#1a2236 0%,#1e2a42 100%);border-bottom:1px solid var(--border);padding:48px 32px 40px;max-width:860px;margin:0 auto;}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:26px;font-weight:800;line-height:1.3;margin-bottom:16px;letter-spacing:-0.5px;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;color:var(--muted);}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.hero-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+
+/* Content */
+.content{max-width:860px;margin:0 auto;padding:0 32px 60px;}
+
+/* Section */
+.sec{display:grid;grid-template-columns:48px 1fr;gap:0 24px;padding:36px 0;border-bottom:1px solid var(--border);}
+.sec-compact{padding:24px 0;}
+.sec-num{font-size:28px;font-weight:900;color:var(--border);font-variant-numeric:tabular-nums;padding-top:4px;letter-spacing:-1px;}
+.sec-body h2{font-size:18px;font-weight:800;margin-bottom:12px;letter-spacing:-0.3px;}
+.sec-body h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--muted);}
+.sec-body p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:12px;}
+.sec-body p:last-child{margin-bottom:0;}
+
+/* Lenses */
+.lens-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.lens-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:0.3px;}
+.lens-kaplan{background:rgba(212,168,67,0.15);color:var(--kaplan);border:1px solid rgba(212,168,67,0.25);}
+.lens-db{background:rgba(139,111,212,0.15);color:var(--db);border:1px solid rgba(139,111,212,0.25);}
+.lens-floyd{background:rgba(91,181,162,0.15);color:var(--floyd);border:1px solid rgba(91,181,162,0.25);}
+.lens-ritala{background:rgba(59,125,216,0.15);color:var(--ritala);border:1px solid rgba(59,125,216,0.25);}
+
+/* Tuning */
+.tuning-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.tuning-accommodation{background:rgba(91,181,122,0.15);color:var(--success);border:1px solid rgba(91,181,122,0.25);}
+.tuning-resistance{background:rgba(224,92,92,0.15);color:var(--warning);border:1px solid rgba(224,92,92,0.25);}
+.tuning-ambiguous{background:rgba(138,147,168,0.1);color:var(--muted);border:1px solid var(--border);}
+.tuning-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px!important;}
+
+/* Mech badge */
+.mech-badge{display:inline-block;margin-bottom:12px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(59,125,216,0.12);color:var(--ritala);border:1px solid rgba(59,125,216,0.2);}
+
+/* Role badge */
+.role-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:5px;background:rgba(91,181,162,0.1);color:var(--floyd);border:1px solid rgba(91,181,162,0.2);}
+
+/* Success/fail note */
+.success-note{font-size:13px!important;margin-top:10px!important;padding:10px 14px;border-radius:8px;border-left:3px solid;}
+.success-note.success{background:rgba(91,181,122,0.08);border-color:var(--success);color:var(--success);}
+.success-note.fail{background:rgba(224,92,92,0.08);border-color:var(--warning);color:var(--warning);}
+
+/* Correction box */
+.correction-box{margin-top:12px;padding:12px 16px;background:rgba(59,125,216,0.07);border:1px solid rgba(59,125,216,0.2);border-radius:8px;font-size:13px;}
+
+/* Joukon nostot */
+.joukon-box{margin-top:16px;padding:16px 20px;background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.2);border-radius:10px;}
+.joukon-label{font-size:11px;font-weight:700;color:var(--kaplan);margin-bottom:8px;letter-spacing:0.5px;}
+
+/* Source inline */
+.source-inline{margin-top:8px;font-size:12px;color:var(--muted);}
+.source-inline a{color:var(--muted);}
+.source-inline a:hover{color:var(--accent);}
+
+/* Signals */
+.signals-list{list-style:none;padding:0;margin-top:4px;}
+.signals-list li{padding:8px 0 8px 20px;position:relative;font-size:14px;color:var(--muted);border-bottom:1px solid var(--border);}
+.signals-list li:last-child{border-bottom:none;}
+.signals-list li::before{content:"→";position:absolute;left:0;color:var(--muted2);}
+
+/* Concepts */
+.concepts-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.concept-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+.frame-note{font-size:12px!important;color:var(--muted)!important;}
+
+/* Sources table */
+.sources-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}
+.sources-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:0.8px;}
+.sources-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.sources-table tr:last-child td{border-bottom:none;}
+.sources-table a{color:var(--accent);}
+.source-type-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.source-tieteellinen{background:rgba(91,181,162,0.15);color:var(--floyd);}
+.source-ammatillinen{background:rgba(212,168,67,0.12);color:var(--kaplan);}
+.source-media{background:rgba(139,111,212,0.12);color:var(--db);}
+
+/* Sub-sections */
+.sub-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px dashed var(--border);}
+.sub-section:last-child{border-bottom:none;margin-bottom:0;}
+.sources-list-inline{list-style:disc;padding-left:18px;font-size:13px;}
+.sources-list-inline li{margin-bottom:4px;}
+
+/* Footer */
+footer{background:var(--card);border-top:1px solid var(--border);padding:24px 32px;font-size:12px;color:var(--muted);max-width:100%;}
+footer .footer-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="brand">Tekoäly &amp; Johtaminen</span>
+  <a href="index.html">← Etusivu</a>
+  <a href="#tilannekuva">▲ Tilannekuva</a>
+  <a href="#lahteet">Konkretisoinnit</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-kicker">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Viikko 44/2026 — Futuricen AI-johtamisopas: Ihmisen ja tekoälyn yhteisoppimisen haaste</h1>
+  <div class="hero-meta">
+    <span>27.10.2026</span>
+    <span>·</span>
+    <span>Viikko 44/2026</span>
+    <span>·</span>
+    <span>Kaplan (2008) · Ritala ym. (2024) · Floyd &amp; Lane (2000)</span>
+  </div>
+  <div class="hero-tags"><span class="hero-tag">työn muutos</span><span class="hero-tag">diagnostinen kehys</span><span class="hero-tag">prognostinen kehys</span><span class="hero-tag">kehyksen resonanssi</span></div>
+</div>
+
+<div class="content">
+
+<section class="sec" id="tilannekuva">
+  <div class="sec-num">01</div>
+  <div class="sec-body">
+    <h2>Tilannekuva</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <p>Futuricen 'Leading in the AI era 2026' -raportti asettuu vahvasti työn muutoksen ja johtamisen kehykseen, painottaen johtajien roolia tekoälyn käyttöönotossa. Raportti on pääosin PROGNOSTINEN: se tarjoaa ohjeita ja suosituksia tulevaisuuden johtamiseen, mutta diagnostinen perusta (nykytilan analyysi) jää ohueksi. Keskeisenä viestinä on, että tekoälyn hyödyt eivät realisoidu ilman tietoista johtamista — pelkkä teknologiainvestointi ei riitä. Raportti korostaa ihmiskeskeistä lähestymistapaa ja vastuullista tekoälyn käyttöä, mutta konkreettiset esimerkit suomalaisista organisaatioista puuttuvat suurelta osin. Innovaatio- ja tuottavuuskehykset ovat läsnä taustaolettamuksina, mutta riski/regulaatio-kehys (EU AI Act, compliance) saa vain rajallista huomiota.</p>
+    <div class="source-inline"><a href="https://hello.futurice.com/hubfs/Futurice_whitepaper_Leading_in_the_AI_era_2026.pdf" target="_blank">Futurice: Leading in the AI era 2026</a></div>
+    
+  </div>
+</section>
+
+<section class="sec" id="strateginen-asemoituminen">
+  <div class="sec-num">02</div>
+  <div class="sec-body">
+    <h2>Strateginen asemoituminen</h2>
+    <div class="lens-row"><span class="lens-tag lens-floyd">Floyd &amp; Lane</span>
+    <span class="role-badge">fasilitointi</span>
+    </div>
+    <p>Raportti tunnistaa keskijohdon kriittisenä toimijana tekoälyn käyttöönotossa, erityisesti sopeutumiskyvyn fasilitoinnin roolissa. Keskijohdon tehtäväksi nähdään tiimien tukeminen uusien työtapojen omaksumisessa ja psykologisen turvallisuuden luominen kokeiluille. Raportti korostaa, että keskijohto toimii 'tulkkeina' ylimmän johdon vision ja operatiivisen todellisuuden välillä. Puolestapuhumisen rooli jää vähemmälle huomiolle — keskijohdon odotetaan pikemminkin toimeenpanevan kuin haastavan strategisia linjauksia. Synteesin kokoaminen (bottom-up-signaalien välittäminen ylöspäin) mainitaan, mutta konkreettiset mekanismit jäävät kuvaamatta.</p>
+    <p class="success-note success">Onnistuu tunnistamaan keskijohdon roolin muutoksen fasilitoijana, mutta ei tarjoa riittävästi konkreettisia työkaluja roolin toteuttamiseen</p>
+  </div>
+</section>
+
+<section class="sec" id="kehystamiskilpailu">
+  <div class="sec-num">03</div>
+  <div class="sec-body">
+    <h2>Kehystämiskilpailu ja organisatorinen oppiminen</h2>
+    <div class="lens-row"><span class="lens-tag lens-ritala">Ritala ym. (2024)</span>
+    <span class="tuning-badge tuning-ambiguous">~ Epäselvä</span>
+    </div>
+    <div class="mech-badge">Mekanismi: yhteisen ymmärryksen rakentaminen</div>
+    <p>Futuricen raportti painottaa YHTEISEN YMMÄRRYKSEN RAKENTAMISTA (communicative leverage): johtajien tulee viestiä selkeästi tekoälyn mahdollisuuksista ja luoda yhteinen näkemys käyttöönoton tavoitteista. CONJOINED LEARNING (vastavuoroinen oppiminen) jää kuitenkin merkittävästi aliedustetuksi. Raportti käsittelee lähes yksinomaan sitä, miten IHMISET oppivat tekoälystä, mutta ei sitä, miten TEKOÄLY muovautuu käytön ja palautteen kautta. Puuttuu iteratiivinen näkemys: oppimista ei kuvata kierroksina, joissa sama ominaisuus voidaan hylätä, muokata ja hyväksyä uudelleen. Rakenteellinen ohjaaminen (structural leverage) mainitaan resursoinnin ja AI-osaamiskeskusten kautta, mutta käytännön esimerkit ovat yleisluontoisia. Kyvykkyyksien kehittäminen keskittyy yksilötason AI-lukutaitoon, ei organisaation kollektiiviseen oppimiseen.</p>
+    <p class="tuning-note">Raportti olettaa accommodation-vaiheen (johtajat hyväksyvät tekoälyn tarpeellisuuden) mutta ei käsittele resistance-vaiheita eikä sitä, miten vastustus voi olla rakentavaa palautetta järjestelmien kehittämiselle</p>
+  </div>
+</section>
+
+<section class="sec" id="huolenaiheet">
+  <div class="sec-num">04</div>
+  <div class="sec-body">
+    <h2>Epävarmuuden vastuullinen ääni</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span><span class="lens-tag lens-floyd">Floyd &amp; Lane</span></div>
+    <p>Raportti tunnistaa, että työntekijöillä voi olla huolia tekoälyn vaikutuksista omaan työhönsä, mutta käsittelee näitä pääosin viestinnällisinä haasteina: 'oikea viestintä poistaa pelot'. Tämä riski tulkita epävarmuus vastarinnaksi on läsnä. Huolet työn merkityksellisyydestä, osaamisen riittävyydestä ja päätöksenteon läpinäkyvyydestä ovat vastuullisen huolenpidon ilmauksia, eivät muutosvastarintaa. Eettisiä kysymyksiä (bias, yksityisyys, vastuukysymykset) sivutaan, mutta ne jäävät irrallisiksi mainnoiksi ilman syvällistä käsittelyä.</p>
+    <div class="correction-box"><strong>Korjattu tulkinta:</strong> Korjattu tulkinta: Työntekijöiden ja keskijohdon kriittiset kysymykset ovat arvokasta palautetta, joka voi parantaa tekoälyjärjestelmien suunnittelua ja käyttöönottoa — ei este, joka tulee 'voittaa' viestinnällä</div>
+  </div>
+</section>
+
+<section class="sec" id="heikot-signaalit">
+  <div class="sec-num">05</div>
+  <div class="sec-body">
+    <h2>Heikot signaalit</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span><span class="lens-tag lens-floyd">Floyd &amp; Lane</span><span class="lens-tag lens-ritala">Ritala ym. (2024)</span></div>
+    <ul class="signals-list"><li>Prognoosi-painotteisuus konsulttiraporteissa: Futuricen opas edustaa laajempaa trendiä, jossa AI-johtamisoppaat tarjoavat tulevaisuuskuvia ilman riittävää diagnostista perustaa — tämä voi johtaa 'best practice' -mallien kritiikittömään kopiointiin ilman kontekstin huomiointia</li><li>Conjoined learning -aukon tunnistaminen: Suomalaisessa AI-keskustelussa alkaa näkyä tarve ymmärtää, miten tekoälyjärjestelmät itse muuttuvat käytön myötä — pelkkä 'ihminen oppii käyttämään AI:ta' -kehys ei riitä, vaan tarvitaan näkemys vastavuoroisesta sopeutumisesta</li><li>Keskijohdon strateginen merkitys kasvussa: Useat lähteet tunnistavat keskijohdon kriittiseksi AI-käyttöönoton onnistumiselle, mutta konkreettiset roolimallit ja tukimekanismit puuttuvat — tässä on kehitysmahdollisuus suomalaiselle johtamiskeskustelulle</li></ul>
+  </div>
+</section>
+
+<section class="sec sec-compact" id="avaintermit">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h3>Avaintermit</h3>
+    <div class="concepts-row"><span class="concept-tag">diagnostinen kehys</span><span class="concept-tag">prognostinen kehys</span><span class="concept-tag">kehyksen resonanssi</span></div>
+    <p class="frame-note">Kehys: <strong>työn muutos</strong></p>
+  </div>
+</section>
+
+<section class="sec" id="lahteet">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h2>Lähteet &amp; konkretisoinnit</h2>
+    <table class="sources-table">
+      <thead><tr><th>Lähde</th><th>Tyyppi</th></tr></thead>
+      <tbody><tr><td><a href="https://hello.futurice.com/hubfs/Futurice_whitepaper_Leading_in_the_AI_era_2026.pdf" target="_blank">Futurice: Leading in the AI era 2026</a></td><td><span class="source-type-tag source-ammatillinen">Ammatillinen</span></td></tr><tr><td><a href="https://doi.org/10.1177/01708406241284366" target="_blank">Ritala ym. (2024): Organizing for Artificial Intelligence</a></td><td><span class="source-type-tag source-tieteellinen">Tieteellinen</span></td></tr><tr><td><a href="https://www.ttl.fi/tutkimus/hankkeet/tekoalyjohtaminen-ja-organisaatio-teijo" target="_blank">TTL TEIJO-hanke: Tekoälyjohtaminen ja organisaatio</a></td><td><span class="source-type-tag source-ammatillinen">Ammatillinen</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span>Johtamiskatsaus · toivotonaijohto.fi</span>
+    <span>Analysoitu kehystämiskatsaus v8 · 27.10.2026</span>
+  </div>
+</footer>
+
+</body>
+</html>
