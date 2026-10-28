@@ -621,7 +621,9 @@ KRIITTINEN PERIAATE: Epävarmuus ≠ vastarinta. Huolet ja kriittiset kysymykset
 
 SUOMALAINEN KONTEKSTI: TTL (TEIJO/ALMA-AI), Sitra, HENRY ry, EK, LUT, Aalto, Business Finland. Alle 20% tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia.
 
-Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituiseksi — riittävän kattava mutta tiivis. Sido jokainen havainto konkreettiseen lähteeseen. Käytä web-hakutyökalua ajantasaisen tiedon hakemiseen ennen analyysin kirjoittamista.`;
+Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituiseksi — riittävän kattava mutta tiivis. Sido jokainen havainto konkreettiseen lähteeseen. Käytä web-hakutyökalua ajantasaisen tiedon hakemiseen ennen analyysin kirjoittamista.
+
+LÄHTEET & KONKRETISOINNIT -osio: Tee yksi konkretisointilohko jokaiselle pääosiolle (Tilannekuva, Strateginen asemoituminen, Kehystämiskilpailu, Heikot signaalit). Jokainen lohko sisältää: osion nimi, keskeinen väite tiivistettynä, lähde (type: Tieteellinen/Ammatillinen/Media, label, url), ja suora lainaus alkuperäislähteestä (englanniksi tai suomeksi) joka konkretisoi väitteen.`;
 
   const jsonSchema = mode === 'compare' ? `{
   "mode": "compare",
@@ -662,7 +664,11 @@ Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituisek
     {"id":"org_learning","title":"Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"yhteisen ymmärryksen rakentaminen|käyttöönoton ohjaaminen rakenteilla|vastavuoroinen oppiminen","tuning_signal":"accommodation|resistance|ambiguous","tuning_note":"Lyhyt perustelu: mitä hyväksytään, mitä vastustetaan tällä hetkellä","content":"Miten organisaatio oppii tekoälyn käyttöönoton myötä? Kumpaa mekanismia havaitaan enemmän — yhteisen ymmärryksen rakentamista, käyttöönoton ohjaamista rakenteilla, vai vastavuoroista oppimista? Mitä kyvykkyyksiä kehitetään?"},
     {"id":"concern","title":"Epävarmuuden vastuullinen ääni","lenses":["kaplan","floyd"],"misread_as_resistance":false,"content":"...","correction":"Korjattu tulkinta tarvittaessa"},
     {"id":"signals","title":"Heikot signaalit","lenses":["kaplan","floyd","ritala"],"signals":[{"text":"..."},{"text":"..."},{"text":"..."}]},
-    {"id":"sources","title":"Lähteet","sources":[{"type":"Tieteellinen","label":"Nimi","url":"https://..."},{"type":"Ammatillinen","label":"Nimi","url":"https://..."}]}
+    {"id":"sources","title":"Lähteet & konkretisoinnit","konkretisointilohkot":[
+      {"osio":"Tilannekuva","väite":"Keskeinen väite tai löydös tästä osiosta","lähde":{"type":"Tieteellinen","label":"Tekijä (vuosi)","url":"https://..."},"lainaus":"Suora lainaus englanniksi tai suomeksi joka tukee väitettä"},
+      {"osio":"Strateginen asemoituminen","väite":"Keskeinen väite","lähde":{"type":"Ammatillinen","label":"Organisaatio/raportti","url":"https://..."},"lainaus":"Suora lainaus"},
+      {"osio":"Heikot signaalit","väite":"Heikko signaali konkretisoituna","lähde":{"type":"Media","label":"Julkaisu","url":"https://..."},"lainaus":"Suora lainaus"}
+    ]}
   ]
 }`;
 
@@ -1152,18 +1158,43 @@ async function pushToGitHub() {
   </div>
 </section>` : '';
 
-  // Lähteet & konkretisoinnit
-  const sourcesHtml = sourcesSection ? `
+  // Lähteet & konkretisoinnit — väite + 📌 lähde + lainaus per osio
+  const sourcesHtml = sourcesSection ? (() => {
+    const lohkot = sourcesSection.konkretisointilohkot || sourcesSection.sources || [];
+    // Tue sekä uutta (konkretisointilohkot) että vanhaa (sources) rakennetta
+    const lohkotHtml = lohkot.map(l => {
+      // Uusi rakenne: {osio, väite, lähde:{type,label,url}, lainaus}
+      if (l.väite || l.vaite) {
+        const lahde = l.lähde || l.lahde || {};
+        const typeClass = `source-${(lahde.type||'').toLowerCase().replace(/[^a-z]/g,'')}`;
+        return `<div class="konkr-block">
+          <div class="konkr-osio">${escHtml(l.osio||'')}</div>
+          <p class="konkr-vaite">${escHtml(l.väite||l.vaite||'')}</p>
+          <div class="konkr-lahde">
+            <span class="source-type-tag ${typeClass}">${escHtml(lahde.type||'')}</span>
+            📌 <a href="${lahde.url||'#'}" target="_blank">${escHtml(lahde.label||'')}</a>
+          </div>
+          ${l.lainaus ? `<blockquote class="konkr-quote">"${escHtml(l.lainaus)}"</blockquote>` : ''}
+        </div>`;
+      }
+      // Vanha rakenne: {type, label, url}
+      const typeClass = `source-${(l.type||'').toLowerCase().replace(/[^a-z]/g,'')}`;
+      return `<div class="konkr-block">
+        <div class="konkr-lahde">
+          <span class="source-type-tag ${typeClass}">${escHtml(l.type||'')}</span>
+          📌 <a href="${l.url||'#'}" target="_blank">${escHtml(l.label||'')}</a>
+        </div>
+      </div>`;
+    }).join('');
+    return `
 <section class="sec" id="lahteet">
   <div class="sec-num">—</div>
   <div class="sec-body">
-    <h2>Lähteet &amp; konkretisoinnit</h2>
-    <table class="sources-table">
-      <thead><tr><th>Lähde</th><th>Tyyppi</th></tr></thead>
-      <tbody>${(sourcesSection.sources||[]).map(s=>`<tr><td><a href="${s.url||'#'}" target="_blank">${escHtml(s.label)}</a></td><td><span class="source-type-tag source-${(s.type||'').toLowerCase().replace(/[^a-z]/g,'')}">${escHtml(s.type)}</span></td></tr>`).join('')}</tbody>
-    </table>
+    <h2>📎 Lähteet &amp; konkretisoinnit</h2>
+    ${lohkotHtml}
   </div>
-</section>` : '';
+</section>`;
+  })() : '';
 
   // Täysi analyysi -osio (kaikki muut osiot)
   const otherSections = sections.filter(s => !['spotlight','middlemgt','org_learning','concern','signals','sources'].includes(s.id));
@@ -1276,16 +1307,25 @@ a:hover{text-decoration:underline;}
 .concept-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
 .frame-note{font-size:12px!important;color:var(--muted)!important;}
 
-/* Sources table */
+/* Sources table (legacy) */
 .sources-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}
 .sources-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:0.8px;}
 .sources-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
 .sources-table tr:last-child td{border-bottom:none;}
 .sources-table a{color:var(--accent);}
+
+/* Konkretisoinnit */
 .source-type-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
 .source-tieteellinen{background:rgba(91,181,162,0.15);color:var(--floyd);}
 .source-ammatillinen{background:rgba(212,168,67,0.12);color:var(--kaplan);}
 .source-media{background:rgba(139,111,212,0.12);color:var(--db);}
+.konkr-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.konkr-block:last-child{border-bottom:none;margin-bottom:0;}
+.konkr-osio{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;}
+.konkr-vaite{font-size:14px;line-height:1.7;margin-bottom:8px!important;}
+.konkr-lahde{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.konkr-lahde a{color:var(--accent);}
+.konkr-quote{margin:8px 0 0;padding:10px 14px;border-left:3px solid var(--border);font-style:italic;font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);border-radius:0 6px 6px 0;}
 
 /* Sub-sections */
 .sub-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px dashed var(--border);}
@@ -1346,19 +1386,31 @@ ${fullAnalysisHtml}
   const htmlContent = btoa(unescape(encodeURIComponent(html)));
 
   const mdContent = btoa(unescape(encodeURIComponent(md)));
+
+  // Apufunktio: hae SHA jos tiedosto on jo olemassa
+  async function getFileSha(filePath) {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (r.ok) { const j = await r.json(); return j.sha || null; }
+    return null;
+  }
+
+  // Apufunktio: luo tai päivitä tiedosto
+  async function putFile(filePath, content, message) {
+    const sha = await getFileSha(filePath);
+    const body = { message, content };
+    if (sha) body.sha = sha;
+    return fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  }
+
   try {
-    // Lähetä .md
-    const respMd = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Kehystämiskatsaus ${date}`, content: mdContent })
-    });
-    // Lähetä .html
-    const respHtml = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${htmlPath}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Kehystämiskatsaus HTML ${date}`, content: htmlContent })
-    });
+    const respMd   = await putFile(path,     mdContent,   `Kehystämiskatsaus ${date}`);
+    const respHtml = await putFile(htmlPath, htmlContent, `Kehystämiskatsaus HTML ${date}`);
     if (respMd.ok && respHtml.ok) alert(`✓ Tallennettu:\n${path}\n${htmlPath}`);
     else {
       const e = respMd.ok ? await respHtml.json() : await respMd.json();
