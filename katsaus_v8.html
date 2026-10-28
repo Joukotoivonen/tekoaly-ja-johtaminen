@@ -621,9 +621,9 @@ KRIITTINEN PERIAATE: Epävarmuus ≠ vastarinta. Huolet ja kriittiset kysymykset
 
 SUOMALAINEN KONTEKSTI: TTL (TEIJO/ALMA-AI), Sitra, HENRY ry, EK, LUT, Aalto, Business Finland. Alle 20% tekoälyä käyttävistä yrityksistä on kirjallinen AI-strategia.
 
-Kirjoita SUOMEKSI. Kirjoita jokainen tekstilaatikko noin viiden lauseen pituiseksi — riittävän kattava mutta tiivis. Sido jokainen havainto konkreettiseen lähteeseen. Käytä web-hakutyökalua ajantasaisen tiedon hakemiseen ennen analyysin kirjoittamista.
+Kirjoita SUOMEKSI. Kirjoita jokainen "content"-kenttä vähintään 5–7 lauseen pituisena, kattavana analyysinä — ei lyhyttä tiivistelmää vaan syvällinen tulkinta. Jokainen havainto sidotaan konkreettiseen lähteeseen, lukuun, tai tapahtumaan. Käytä web-hakutyökalua ajantasaisen tiedon hakemiseen ennen analyysin kirjoittamista. Älä aloita vastaustasi tekstillä — palauta SUORAAN JSON ilman selityksiä.
 
-LÄHTEET & KONKRETISOINNIT -osio: Tee yksi konkretisointilohko jokaiselle pääosiolle (Tilannekuva, Strateginen asemoituminen, Kehystämiskilpailu, Heikot signaalit). Jokainen lohko sisältää: osion nimi, keskeinen väite tiivistettynä, lähde (type: Tieteellinen/Ammatillinen/Media, label, url), ja suora lainaus alkuperäislähteestä (englanniksi tai suomeksi) joka konkretisoi väitteen.`;
+LÄHTEET & KONKRETISOINNIT -osio: Tee yksi konkretisointilohko jokaiselle pääosiolle. Jokainen lohko: osion nimi, keskeinen väite tiivistettynä, lähde (type: Tieteellinen/Ammatillinen/Media, label, url), ja suora lainaus alkuperäislähteestä (englanniksi tai suomeksi) joka konkretisoi väitteen. Käytä vähintään 3–4 eri lähdettä yhteensä.`;
 
   const jsonSchema = mode === 'compare' ? `{
   "mode": "compare",
@@ -1054,101 +1054,93 @@ async function pushToGitHub() {
   const lensClass = l => `lens-${l}`;
   const escHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-  // Kerää erikoissisällöt
-  const spotlight = sections.find(s => s.id === 'spotlight');
-  const middlemgt = sections.find(s => s.id === 'middlemgt');
-  const orgLearning = sections.find(s => s.id === 'org_learning');
-  const concern = sections.find(s => s.id === 'concern');
-  const signals = sections.find(s => s.id === 'signals');
+  // Kerää metatieto
   const sourcesSection = sections.find(s => s.id === 'sources');
   const joukonNostot = joukonNostotGh;
+  const mode = lastAnalysis.mode || 'weekly';
 
   // Laske viikkonumero
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
 
-  // Kerää kaikki kehykset spotlightista
-  const dominantFrame = spotlight ? spotlight.kaplan_frame || '' : '';
-  const concepts = spotlight ? (spotlight.concepts || []) : [];
+  // Kerää avaintermit ja dominantti kehys mistä tahansa osiosta
+  const anySpotlight = sections.find(s => s.id === 'spotlight' || s.id === 'event_context' || s.id === 'interaction_context');
+  const dominantFrame = sections.reduce((f, s) => f || s.kaplan_frame || s.dominant_frame || '', '');
+  const concepts = anySpotlight ? (anySpotlight.concepts || []) : [];
 
-  // Tuning-badge
-  const tuningBadge = orgLearning && orgLearning.tuning_signal ? (() => {
-    const ts = orgLearning.tuning_signal;
-    const label = ts === 'accommodation' ? '↑ Hyväksyminen' : ts === 'resistance' ? '↓ Vastustus' : '~ Epäselvä';
-    return `<span class="tuning-badge tuning-${ts}">${label}</span>`;
-  })() : '';
+  // ── Renderöi yksi osio ──
+  function renderSec(sec, num) {
+    if (!sec || sec.id === 'sources') return '';
+    const lensRow = `<div class="lens-row">${(sec.lenses||[]).map(l=>`<span class="lens-tag lens-${l}">${lensName(l)}</span>`).join('')}</div>`;
 
-  // Koosta tilannekuva: spotlight + joukonNostot
-  const tilannekuvaHtml = `
-<section class="sec" id="tilannekuva">
-  <div class="sec-num">01</div>
+    // Tuning-badge
+    let tuningBadge = '';
+    if (sec.tuning_signal) {
+      const ts = sec.tuning_signal;
+      const tl = ts === 'accommodation' ? '↑ Hyväksyminen' : ts === 'resistance' ? '↓ Vastustus' : '~ Epäselvä';
+      tuningBadge = `<span class="tuning-badge tuning-${ts}">${tl}</span>`;
+    }
+
+    // Sisältöosat
+    let body = '';
+    if (sec.content) body += `<p>${escHtml(sec.content)}</p>`;
+    if (sec.kaplan_frame || sec.dominant_frame) {
+      const f = sec.kaplan_frame || sec.dominant_frame;
+      body += `<div class="mech-badge">Kehys: ${escHtml(f)}</div>`;
+    }
+    if (sec.mechanism) body += `<div class="mech-badge">Mekanismi: ${escHtml(sec.mechanism)}</div>`;
+    if (sec.tuning_note) body += `<p class="tuning-note">${escHtml(sec.tuning_note)}</p>`;
+    if (sec.floyd_role) body += `<div class="mech-badge">${escHtml(sec.floyd_role)}</div>`;
+    if (sec.success_reason) body += `<p class="success-note ${sec.success ? 'success' : 'fail'}">${escHtml(sec.success_reason)}</p>`;
+    if (sec.correction) body += `<div class="correction-box"><strong>Korjattu tulkinta:</strong> ${escHtml(sec.correction)}</div>`;
+    if (sec.strategy) body += `<div class="mech-badge">Strategia: ${escHtml(sec.strategy)}</div>`;
+    if (sec.db_strategy) body += `<div class="mech-badge">D&amp;B: ${escHtml(sec.db_strategy)}</div>`;
+    if (sec.excluded_frames && sec.excluded_frames.length) body += `<p class="tuning-note">Suljetut kehykset: ${sec.excluded_frames.map(escHtml).join(', ')}</p>`;
+    if (sec.toimijat && sec.toimijat.length) body += `<p class="tuning-note">Toimijat: ${sec.toimijat.map(escHtml).join(' · ')}</p>`;
+    if (sec.kehystaja) body += `<p class="tuning-note">Kehystäjä: ${escHtml(sec.kehystaja)}${sec.konteksti ? ` — ${escHtml(sec.konteksti)}` : ''}</p>`;
+    if (sec.signals && sec.signals.length) body += `<ul class="signals-list">${sec.signals.map(s=>`<li>${escHtml(s.text||s)}</li>`).join('')}</ul>`;
+    if (sec.source) {
+      const s = sec.source;
+      body += `<div class="source-inline">📌 <a href="${s.url||'#'}" target="_blank">${escHtml(s.label)}</a></div>`;
+    }
+    if (sec.competing_frames && sec.competing_frames.length) {
+      body += sec.competing_frames.map(cf => `<div class="sub-section"><h3>${escHtml(cf.label||'')} <small>${escHtml(cf.owner||'')}</small></h3><p>${escHtml(cf.content||'')}</p></div>`).join('');
+    }
+
+    const numStr = typeof num === 'number' ? String(num).padStart(2,'0') : num;
+    return `
+<section class="sec" id="sec-${sec.id}">
+  <div class="sec-num">${numStr}</div>
   <div class="sec-body">
-    <h2>Tilannekuva</h2>
-    ${spotlight ? `<div class="lens-row">${(spotlight.lenses||['kaplan']).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}</div>
-    <p>${escHtml(spotlight.content)}</p>
-    ${(spotlight.source||spotlight.sources) ? (() => {
-      const srcs = spotlight.sources || (spotlight.source ? [spotlight.source] : []);
-      return `<div class="source-inline">${srcs.map(s=>`<a href="${s.url||'#'}" target="_blank">${escHtml(s.label)}</a>`).join(' · ')}</div>`;
-    })() : ''}` : ''}
-    ${joukonNostot ? `<div class="joukon-box"><div class="joukon-label">✏️ Joukon nostot</div><p style="white-space:pre-wrap">${escHtml(joukonNostot)}</p></div>` : ''}
+    <h2>${escHtml(sec.title)}</h2>
+    <div class="lens-row">${(sec.lenses||[]).map(l=>`<span class="lens-tag lens-${l}">${lensName(l)}</span>`).join('')}${tuningBadge}</div>
+    ${body}
   </div>
 </section>`;
+  }
 
-  // 02 Strateginen asemoituminen = middlemgt (Floyd & Lane)
-  const stratHtml = middlemgt ? `
-<section class="sec" id="strateginen-asemoituminen">
-  <div class="sec-num">02</div>
-  <div class="sec-body">
-    <h2>Strateginen asemoituminen</h2>
-    <div class="lens-row">${(middlemgt.lenses||['floyd']).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}
-    ${middlemgt.floyd_role ? `<span class="role-badge">${escHtml(middlemgt.floyd_role)}</span>` : ''}
-    </div>
-    <p>${escHtml(middlemgt.content)}</p>
-    ${middlemgt.success_reason ? `<p class="success-note ${middlemgt.success ? 'success' : 'fail'}">${escHtml(middlemgt.success_reason)}</p>` : ''}
-  </div>
-</section>` : '';
+  // Renderöi kaikki osiot paitsi sources numeroituina
+  const mainSections = sections.filter(s => s.id !== 'sources');
+  let secNum = 1;
+  const allSectionsHtml = mainSections.map(sec => {
+    const html = renderSec(sec, secNum);
+    secNum++;
+    return html;
+  }).join('');
 
-  // 03 Kehystämiskilpailu = org_learning + Ritala
-  const kehysHtml = orgLearning ? `
-<section class="sec" id="kehystamiskilpailu">
-  <div class="sec-num">03</div>
+  // Joukon nostot ensimmäisen osion perään (tai yksin jos ei osioita)
+  const joukonNostotHtml = joukonNostot ? `
+<section class="sec sec-compact" id="joukon-nostot">
+  <div class="sec-num">✏️</div>
   <div class="sec-body">
-    <h2>Kehystämiskilpailu ja organisatorinen oppiminen</h2>
-    <div class="lens-row">${(orgLearning.lenses||['ritala']).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}
-    ${tuningBadge}
-    </div>
-    ${orgLearning.mechanism ? `<div class="mech-badge">Mekanismi: ${escHtml(orgLearning.mechanism)}</div>` : ''}
-    <p>${escHtml(orgLearning.content)}</p>
-    ${orgLearning.tuning_note ? `<p class="tuning-note">${escHtml(orgLearning.tuning_note)}</p>` : ''}
-  </div>
-</section>` : '';
-
-  // 04 Epävarmuuden vastuullinen ääni = concern
-  const concernHtml = concern ? `
-<section class="sec" id="huolenaiheet">
-  <div class="sec-num">04</div>
-  <div class="sec-body">
-    <h2>Epävarmuuden vastuullinen ääni</h2>
-    <div class="lens-row">${(concern.lenses||['kaplan']).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}</div>
-    <p>${escHtml(concern.content)}</p>
-    ${concern.correction ? `<div class="correction-box"><strong>Korjattu tulkinta:</strong> ${escHtml(concern.correction)}</div>` : ''}
-  </div>
-</section>` : '';
-
-  // 05 Heikot signaalit
-  const signalsHtml = signals ? `
-<section class="sec" id="heikot-signaalit">
-  <div class="sec-num">05</div>
-  <div class="sec-body">
-    <h2>Heikot signaalit</h2>
-    <div class="lens-row">${(signals.lenses||[]).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}</div>
-    <ul class="signals-list">${(signals.signals||[]).map(s=>`<li>${escHtml(s.text)}</li>`).join('')}</ul>
+    <h2>Joukon nostot</h2>
+    <p style="white-space:pre-wrap">${escHtml(joukonNostot)}</p>
   </div>
 </section>` : '';
 
   // Avaintermit
-  const conceptsHtml = concepts.length ? `
+  const conceptsHtml = (concepts.length || dominantFrame) ? `
 <section class="sec sec-compact" id="avaintermit">
   <div class="sec-num">—</div>
   <div class="sec-body">
@@ -1158,61 +1150,35 @@ async function pushToGitHub() {
   </div>
 </section>` : '';
 
-  // Lähteet & konkretisoinnit — väite + 📌 lähde + lainaus per osio
+  // Lähteet & konkretisoinnit
   const sourcesHtml = sourcesSection ? (() => {
     const lohkot = sourcesSection.konkretisointilohkot || sourcesSection.sources || [];
-    // Tue sekä uutta (konkretisointilohkot) että vanhaa (sources) rakennetta
     const lohkotHtml = lohkot.map(l => {
-      // Uusi rakenne: {osio, väite, lähde:{type,label,url}, lainaus}
       if (l.väite || l.vaite) {
         const lahde = l.lähde || l.lahde || {};
         const typeClass = `source-${(lahde.type||'').toLowerCase().replace(/[^a-z]/g,'')}`;
         return `<div class="konkr-block">
           <div class="konkr-osio">${escHtml(l.osio||'')}</div>
           <p class="konkr-vaite">${escHtml(l.väite||l.vaite||'')}</p>
-          <div class="konkr-lahde">
-            <span class="source-type-tag ${typeClass}">${escHtml(lahde.type||'')}</span>
-            📌 <a href="${lahde.url||'#'}" target="_blank">${escHtml(lahde.label||'')}</a>
-          </div>
+          <div class="konkr-lahde"><span class="source-type-tag ${typeClass}">${escHtml(lahde.type||'')}</span> 📌 <a href="${lahde.url||'#'}" target="_blank">${escHtml(lahde.label||'')}</a></div>
           ${l.lainaus ? `<blockquote class="konkr-quote">"${escHtml(l.lainaus)}"</blockquote>` : ''}
         </div>`;
       }
-      // Vanha rakenne: {type, label, url}
       const typeClass = `source-${(l.type||'').toLowerCase().replace(/[^a-z]/g,'')}`;
-      return `<div class="konkr-block">
-        <div class="konkr-lahde">
-          <span class="source-type-tag ${typeClass}">${escHtml(l.type||'')}</span>
-          📌 <a href="${l.url||'#'}" target="_blank">${escHtml(l.label||'')}</a>
-        </div>
-      </div>`;
+      return `<div class="konkr-block"><div class="konkr-lahde"><span class="source-type-tag ${typeClass}">${escHtml(l.type||'')}</span> 📌 <a href="${l.url||'#'}" target="_blank">${escHtml(l.label||'')}</a></div></div>`;
     }).join('');
     return `
 <section class="sec" id="lahteet">
   <div class="sec-num">—</div>
   <div class="sec-body">
     <h2>📎 Lähteet &amp; konkretisoinnit</h2>
-    ${lohkotHtml}
+    ${lohkotHtml || '<p style="color:var(--muted)">Ei lähteitä.</p>'}
   </div>
 </section>`;
   })() : '';
 
-  // Täysi analyysi -osio (kaikki muut osiot)
-  const otherSections = sections.filter(s => !['spotlight','middlemgt','org_learning','concern','signals','sources'].includes(s.id));
-  const fullAnalysisHtml = otherSections.length ? `
-<section class="sec" id="koko-analyysi">
-  <div class="sec-num">+</div>
-  <div class="sec-body">
-    <h2>Täydentävä analyysi</h2>
-    ${otherSections.map(sec => `
-    <div class="sub-section">
-      <h3>${escHtml(sec.title)}</h3>
-      <div class="lens-row">${(sec.lenses||[]).map(l=>`<span class="lens-tag ${lensClass(l)}">${lensName(l)}</span>`).join('')}</div>
-      ${sec.content ? `<p>${escHtml(sec.content)}</p>` : ''}
-      ${(sec.signals||[]).length ? `<ul class="signals-list">${sec.signals.map(s=>`<li>${escHtml(s.text)}</li>`).join('')}</ul>` : ''}
-      ${(sec.sources||[]).length ? `<ul class="sources-list-inline">${sec.sources.map(s=>`<li><a href="${s.url||'#'}" target="_blank">${escHtml(s.label)}</a></li>`).join('')}</ul>` : ''}
-    </div>`).join('')}
-  </div>
-</section>` : '';
+  // fullAnalysisHtml poistettu — kaikki osiot renderöidään ylhäällä suoraan
+  const fullAnalysisHtml = '';
 
   const html = `<!DOCTYPE html>
 <html lang="fi">
@@ -1361,11 +1327,8 @@ footer .footer-inner{max-width:860px;margin:0 auto;display:flex;justify-content:
 </div>
 
 <div class="content">
-${tilannekuvaHtml}
-${stratHtml}
-${kehysHtml}
-${concernHtml}
-${signalsHtml}
+${allSectionsHtml}
+${joukonNostotHtml}
 ${conceptsHtml}
 ${sourcesHtml}
 ${fullAnalysisHtml}
