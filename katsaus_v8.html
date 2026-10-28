@@ -623,6 +623,8 @@ SUOMALAINEN KONTEKSTI: TTL (TEIJO/ALMA-AI), Sitra, HENRY ry, EK, LUT, Aalto, Bus
 
 Kirjoita SUOMEKSI. Kirjoita jokainen "content"-kenttä vähintään 5–7 lauseen pituisena, kattavana analyysinä — ei lyhyttä tiivistelmää vaan syvällinen tulkinta. Jokainen havainto sidotaan konkreettiseen lähteeseen, lukuun, tai tapahtumaan. Käytä web-hakutyökalua ajantasaisen tiedon hakemiseen ennen analyysin kirjoittamista. Älä aloita vastaustasi tekstillä — palauta SUORAAN JSON ilman selityksiä.
 
+KILPAILEVIEN KEHYSTEN RADAR (strategic_position): Täytä kaikki neljä competing_frames-korttia konkreettisella analyysilla — kenellä kehys on käytössä, miten se ilmenee tässä aineistossa, mikä on sen vahvuus tai heikkous juuri nyt. Kirjoita jokainen content-kenttä 3–5 lauseella.
+
 LÄHTEET & KONKRETISOINNIT -osio: Tee yksi konkretisointilohko jokaiselle pääosiolle. Jokainen lohko: osion nimi, keskeinen väite tiivistettynä, lähde (type: Tieteellinen/Ammatillinen/Media, label, url), ja suora lainaus alkuperäislähteestä (englanniksi tai suomeksi) joka konkretisoi väitteen. Käytä vähintään 3–4 eri lähdettä yhteensä.`;
 
   const jsonSchema = mode === 'compare' ? `{
@@ -660,6 +662,7 @@ LÄHTEET & KONKRETISOINNIT -osio: Tee yksi konkretisointilohko jokaiselle pääo
   "week_label": "Viikko XX/YYYY — otsikko",
   "sections": [
     {"id":"spotlight","title":"Suomalainen Spotlight","lenses":["kaplan"],"kaplan_frame":"tuottavuus|innovaatio|riski|työn muutos","concepts":["käsite1","käsite2"],"content":"...","source":{"label":"Nimi","url":"https://..."}},
+    {"id":"strategic_position","title":"Kilpailevien kehysten radar","lenses":["kaplan"],"content":"Lyhyt yhteenveto kehystilanteesta — mitkä kehykset ovat vahvoja, mitkä heikkoja tällä hetkellä.","competing_frames":[{"label":"Tehokkuus- ja tuottavuuskehys","owner":"Organisaatiot, julkinen sektori, STM","content":"Miten tämä kehys ilmenee aineistossa? Kuka sitä ajaa, mikä on sen vahvuus?"},{"label":"Osaamis- ja koulutuskehys","owner":"Oppilaitokset, HR-ammattilaiset, TTL","content":"Miten tämä kehys ilmenee? Mikä on sen resonanssi?"},{"label":"Rakenne- ja resurssikehys","owner":"Organisaatiorakenteet, johto, talous","content":"Miten infrastruktuuri, budjetti ja rakenteet kehystetään?"},{"label":"Eettinen huolikehys","owner":"Ammattiliitot, kansalaisjärjestöt, osa johdosta","content":"Mitä huolia nostetaan esille? Onko kyse vastuullisesta huolesta vai vastustuksesta?"}]},
     {"id":"middlemgt","title":"Keskijohdon kehystämistoimet","lenses":["floyd"],"floyd_role":"puolestapuhuminen|synteesin kokoaminen|fasilitointi|toimeenpano","content":"...","success":true,"success_reason":"Miksi onnistui tai epäonnistui"},
     {"id":"org_learning","title":"Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)","lenses":["ritala"],"mechanism":"yhteisen ymmärryksen rakentaminen|käyttöönoton ohjaaminen rakenteilla|vastavuoroinen oppiminen","tuning_signal":"accommodation|resistance|ambiguous","tuning_note":"Lyhyt perustelu: mitä hyväksytään, mitä vastustetaan tällä hetkellä","content":"Miten organisaatio oppii tekoälyn käyttöönoton myötä? Kumpaa mekanismia havaitaan enemmän — yhteisen ymmärryksen rakentamista, käyttöönoton ohjaamista rakenteilla, vai vastavuoroista oppimista? Mitä kyvykkyyksiä kehitetään?"},
     {"id":"concern","title":"Epävarmuuden vastuullinen ääni","lenses":["kaplan","floyd"],"misread_as_resistance":false,"content":"...","correction":"Korjattu tulkinta tarvittaessa"},
@@ -1105,7 +1108,17 @@ async function pushToGitHub() {
       body += `<div class="source-inline">📌 <a href="${s.url||'#'}" target="_blank">${escHtml(s.label)}</a></div>`;
     }
     if (sec.competing_frames && sec.competing_frames.length) {
-      body += sec.competing_frames.map(cf => `<div class="sub-section"><h3>${escHtml(cf.label||'')} <small>${escHtml(cf.owner||'')}</small></h3><p>${escHtml(cf.content||'')}</p></div>`).join('');
+      body += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:14px;">`;
+      sec.competing_frames.forEach(cf => {
+        body += `<div class="frame-card">
+          <div class="frame-card-label">${escHtml(cf.label||'')}</div>
+          ${cf.owner ? `<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${escHtml(cf.owner)}</div>` : ''}
+          ${cf.kaplan ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(212,168,67,0.12);color:var(--kaplan);">${escHtml(cf.kaplan)}</span> ` : ''}
+          ${cf.db_strategy ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(139,111,212,0.12);color:var(--db);">${escHtml(cf.db_strategy)}</span>` : ''}
+          <div style="font-size:13px;margin-top:8px;line-height:1.6;">${escHtml(cf.content||'')}</div>
+        </div>`;
+      });
+      body += `</div>`;
     }
 
     const numStr = typeof num === 'number' ? String(num).padStart(2,'0') : num;
