@@ -1384,14 +1384,147 @@ ${fullAnalysisHtml}
     });
   }
 
+  // Päivitä index.html — hae nykyinen, korvaa relevantit kohdat
+  async function updateIndexHtml(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    let content = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const sha = j.sha;
+
+    // Päivitä hero-nappi
+    content = content.replace(
+      /href="johtamiskatsaus_[\d-]+\.html" class="btn-primary"/,
+      `href="${katsausFilename}" class="btn-primary"`
+    );
+    // Päivitä laskuri
+    content = content.replace(
+      /(<div class="stat-num">)(\d+)(<\/div><div class="stat-label">Katsausta julkaistu)/,
+      `$1${katsausNum}$3`
+    );
+    // Päivitä uusin katsaus -kortti
+    content = content.replace(
+      /<h2>Katsaus [\d.]+.*?<\/h2>/s,
+      `<h2>Katsaus ${katsausPvm} — ${katsausOtsikko}</h2>`
+    );
+    content = content.replace(
+      /<div class="meta">[\d.]+[^<]*<\/div>/,
+      `<div class="meta">${katsausPvm} · Viikko ${weekNum}</div>`
+    );
+    content = content.replace(
+      /href="johtamiskatsaus_[\d-]+\.html" class="btn-read"/,
+      `href="${katsausFilename}" class="btn-read"`
+    );
+    // Lisää uusi rivi arkistotaulukon alkuun
+    const newRow = `<tr>
+          <td class="anum">${katsausNum}</td>
+          <td class="alink">
+            <a href="${katsausFilename}">${katsausOtsikko}</a>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${katsausPvm}</div>
+          </td>
+          <td class="aicons">
+            <a href="${katsausFilename}">Avaa →</a>
+          </td>
+        </tr>`;
+    content = content.replace(
+      /(<table class="archive">\s*)/,
+      `$1${newRow}<tr>`
+    ).replace(`${newRow}<tr><tr>`, `${newRow}<tr>`);
+    // Päivitä footer
+    content = content.replace(
+      /Päivitetty [\d.]+/,
+      `Päivitetty ${katsausPvm}`
+    );
+
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+    return fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Päivitä index.html: katsaus ${katsausNum}`, content: encoded, sha })
+    });
+  }
+
+  // Päivitä arkisto.html — hae nykyinen, lisää uusi rivi ja päivitä laskuri
+  async function updateArkistoHtml(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/arkisto.html`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    let content = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const sha = j.sha;
+
+    // Päivitä laskuri
+    content = content.replace(
+      /(<span class="badge">)(\d+)( kpl<\/span>)/,
+      `$1${katsausNum}$3`
+    );
+    // Lisää uusi rivi taulukon alkuun
+    const newRow = `
+      <tr>
+        <td class="num">${katsausNum}</td>
+        <td>
+          <a href="${katsausFilename}" class="katsaus-link">${katsausOtsikko}</a>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${katsausPvm}</div>
+        </td>
+        <td class="links">
+          <a href="${katsausFilename}" title="Avaa katsaus">Avaa →</a>
+        </td>
+      </tr>`;
+    content = content.replace('<table>', `<table>${newRow}`);
+    // Päivitä footer
+    content = content.replace(
+      /Päivitetty [\d.]+ ?(?:klo [\d.]+)? ?·/,
+      `Päivitetty ${katsausPvm} ·`
+    );
+
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+    return fetch(`https://api.github.com/repos/${owner}/${repo}/contents/arkisto.html`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Päivitä arkisto.html: katsaus ${katsausNum}`, content: encoded, sha })
+    });
+  }
+
+  // Laske katsausnumero hakemalla arkistosta nykyinen laskuri
+  async function getNextKatsausNum() {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/arkisto.html`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const content = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const m = content.match(/<span class="badge">(\d+) kpl<\/span>/);
+    return m ? parseInt(m[1]) + 1 : null;
+  }
+
   try {
     const respMd   = await putFile(path,     mdContent,   `Kehystämiskatsaus ${date}`);
     const respHtml = await putFile(htmlPath, htmlContent, `Kehystämiskatsaus HTML ${date}`);
-    if (respMd.ok && respHtml.ok) alert(`✓ Tallennettu:\n${path}\n${htmlPath}`);
-    else {
+
+    if (!respMd.ok || !respHtml.ok) {
       const e = respMd.ok ? await respHtml.json() : await respMd.json();
-      alert(`Virhe: ${e.message}`);
+      alert(`Virhe katsauksen tallennuksessa: ${e.message}`);
+      return;
     }
+
+    // Hae seuraava numero ja päivitä index + arkisto
+    const katsausNum = await getNextKatsausNum();
+    const otsikko = (lastAnalysis.week_label || 'Johtamiskatsaus').replace(/^Viikko \d+\/\d+ — /, '');
+    const pvm = shortDate;
+    const filename = htmlPath.includes('/') ? htmlPath.split('/').pop() : htmlPath;
+
+    const [respIndex, respArkisto] = await Promise.all([
+      updateIndexHtml(katsausNum, otsikko, filename, pvm),
+      updateArkistoHtml(katsausNum, otsikko, filename, pvm)
+    ]);
+
+    const indexOk = respIndex && respIndex.ok;
+    const arkistoOk = respArkisto && respArkisto.ok;
+
+    alert(`✓ Tallennettu: ${filename}\n${indexOk ? '✓ index.html päivitetty' : '⚠ index.html epäonnistui'}\n${arkistoOk ? '✓ arkisto.html päivitetty' : '⚠ arkisto.html epäonnistui'}`);
   } catch(e) { alert(`Virhe: ${e.message}`); }
 }
 
@@ -1400,4 +1533,3 @@ syncLensBar(['kaplan','db','floyd']);
 </script>
 </body>
 </html>
-
