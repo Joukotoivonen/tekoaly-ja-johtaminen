@@ -1526,7 +1526,11 @@ ${fullAnalysisHtml}
     const indexOk = respIndex && respIndex.ok;
     const arkistoOk = respArkisto && respArkisto.ok;
 
-    alert(`✓ Tallennettu: ${filename}\n${indexOk ? '✓ index.html päivitetty' : '⚠ index.html epäonnistui'}\n${arkistoOk ? '✓ arkisto.html päivitetty' : '⚠ arkisto.html epäonnistui'}`);
+    let indexErr = '', arkistoErr = '';
+    if (!indexOk && respIndex) { try { const ej = await respIndex.json(); indexErr = ej.message || respIndex.status; } catch(_) { indexErr = respIndex.status; } }
+    if (!arkistoOk && respArkisto) { try { const ej = await respArkisto.json(); arkistoErr = ej.message || respArkisto.status; } catch(_) { arkistoErr = respArkisto.status; } }
+
+    alert(`✓ Tallennettu: ${filename}\n${indexOk ? '✓ index.html päivitetty' : '⚠ index.html epäonnistui: ' + indexErr}\n${arkistoOk ? '✓ arkisto.html päivitetty' : '⚠ arkisto.html epäonnistui: ' + arkistoErr}`);
   } catch(e) { alert(`Virhe: ${e.message}`); }
 }
 
