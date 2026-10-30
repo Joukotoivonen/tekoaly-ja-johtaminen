@@ -1394,30 +1394,32 @@ ${fullAnalysisHtml}
     let content = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
     const sha = j.sha;
 
-    // Päivitä hero-nappi
+    // Hero-nappi
     content = content.replace(
       /href="johtamiskatsaus_[\d-]+\.html" class="btn-primary"/,
       `href="${katsausFilename}" class="btn-primary"`
     );
-    // Päivitä laskuri
+    // Laskuri
     content = content.replace(
-      /(<div class="stat-num">)(\d+)(<\/div><div class="stat-label">Katsausta julkaistu)/,
-      `$1${katsausNum}$3`
+      /(<div class="stat-num">)\d+(<\/div><div class="stat-label">Katsausta julkaistu)/,
+      `$1${katsausNum}$2`
     );
-    // Päivitä uusin katsaus -kortti
+    // Uusin katsaus h2 (mikä tahansa otsikko latest-card-top:ssa)
     content = content.replace(
-      /<h2>Katsaus [\d.]+.*?<\/h2>/s,
-      `<h2>Katsaus ${katsausPvm} — ${katsausOtsikko}</h2>`
+      /(<div class="latest-card-top">[\s\S]*?<h2>)[\s\S]*?(<\/h2>)/,
+      `$1${katsausOtsikko}$2`
     );
+    // Meta-rivi päiväys
     content = content.replace(
-      /<div class="meta">[\d.]+[^<]*<\/div>/,
-      `<div class="meta">${katsausPvm} · Viikko ${weekNum}</div>`
+      /(<div class="latest-card-top">[\s\S]*?<div class="meta">)[\d.· Viikko\d/]+(<\/div>)/,
+      `$1${katsausPvm} · Viikko ${weekNum}$2`
     );
+    // btn-read linkki
     content = content.replace(
       /href="johtamiskatsaus_[\d-]+\.html" class="btn-read"/,
       `href="${katsausFilename}" class="btn-read"`
     );
-    // Lisää uusi rivi arkistotaulukon alkuun
+    // Lisää uusi arkistorivi heti <table class="archive"> jälkeen
     const newRow = `<tr>
           <td class="anum">${katsausNum}</td>
           <td class="alink">
@@ -1429,10 +1431,10 @@ ${fullAnalysisHtml}
           </td>
         </tr>`;
     content = content.replace(
-      /(<table class="archive">\s*)/,
-      `$1${newRow}<tr>`
-    ).replace(`${newRow}<tr><tr>`, `${newRow}<tr>`);
-    // Päivitä footer
+      /(<table class="archive">)/,
+      `$1\n      ${newRow}`
+    );
+    // Footer
     content = content.replace(
       /Päivitetty [\d.]+/,
       `Päivitetty ${katsausPvm}`
