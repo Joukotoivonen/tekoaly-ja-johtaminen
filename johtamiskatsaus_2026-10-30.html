@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kehystapahtuma: Liikkeenjohdon valmennuksen murros tekoälyaikakaudella</title>
+<style>
+:root{
+  --bg:#141820;--card:#1E2433;--card2:#252B3B;--border:#2E3650;
+  --text:#E8ECF4;--muted:#8A93A8;--muted2:#5A6478;
+  --kaplan:#D4A843;--db:#8B6FD4;--floyd:#5BB5A2;--ritala:#3B7DD8;
+  --success:#5BB57A;--warning:#E05C5C;--accent:#3B7DD8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7;padding:0;max-width:100%;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* Nav */
+.site-nav{background:var(--card);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;gap:24px;align-items:center;font-size:13px;position:sticky;top:0;z-index:10;}
+.site-nav a{color:var(--muted);}
+.site-nav a:hover{color:var(--text);text-decoration:none;}
+.site-nav .brand{font-weight:700;color:var(--text);}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#1a2236 0%,#1e2a42 100%);border-bottom:1px solid var(--border);padding:48px 32px 40px;max-width:860px;margin:0 auto;}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:26px;font-weight:800;line-height:1.3;margin-bottom:16px;letter-spacing:-0.5px;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;color:var(--muted);}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.hero-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+
+/* Content */
+.content{max-width:860px;margin:0 auto;padding:0 32px 60px;}
+
+/* Section */
+.sec{display:grid;grid-template-columns:48px 1fr;gap:0 24px;padding:36px 0;border-bottom:1px solid var(--border);}
+.sec-compact{padding:24px 0;}
+.sec-num{font-size:28px;font-weight:900;color:var(--border);font-variant-numeric:tabular-nums;padding-top:4px;letter-spacing:-1px;}
+.sec-body h2{font-size:18px;font-weight:800;margin-bottom:12px;letter-spacing:-0.3px;}
+.sec-body h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--muted);}
+.sec-body p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:12px;}
+.sec-body p:last-child{margin-bottom:0;}
+
+/* Lenses */
+.lens-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.lens-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:0.3px;}
+.lens-kaplan{background:rgba(212,168,67,0.15);color:var(--kaplan);border:1px solid rgba(212,168,67,0.25);}
+.lens-db{background:rgba(139,111,212,0.15);color:var(--db);border:1px solid rgba(139,111,212,0.25);}
+.lens-floyd{background:rgba(91,181,162,0.15);color:var(--floyd);border:1px solid rgba(91,181,162,0.25);}
+.lens-ritala{background:rgba(59,125,216,0.15);color:var(--ritala);border:1px solid rgba(59,125,216,0.25);}
+
+/* Tuning */
+.tuning-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.tuning-accommodation{background:rgba(91,181,122,0.15);color:var(--success);border:1px solid rgba(91,181,122,0.25);}
+.tuning-resistance{background:rgba(224,92,92,0.15);color:var(--warning);border:1px solid rgba(224,92,92,0.25);}
+.tuning-ambiguous{background:rgba(138,147,168,0.1);color:var(--muted);border:1px solid var(--border);}
+.tuning-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px!important;}
+
+/* Mech badge */
+.mech-badge{display:inline-block;margin-bottom:12px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(59,125,216,0.12);color:var(--ritala);border:1px solid rgba(59,125,216,0.2);}
+
+/* Role badge */
+.role-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:5px;background:rgba(91,181,162,0.1);color:var(--floyd);border:1px solid rgba(91,181,162,0.2);}
+
+/* Success/fail note */
+.success-note{font-size:13px!important;margin-top:10px!important;padding:10px 14px;border-radius:8px;border-left:3px solid;}
+.success-note.success{background:rgba(91,181,122,0.08);border-color:var(--success);color:var(--success);}
+.success-note.fail{background:rgba(224,92,92,0.08);border-color:var(--warning);color:var(--warning);}
+
+/* Correction box */
+.correction-box{margin-top:12px;padding:12px 16px;background:rgba(59,125,216,0.07);border:1px solid rgba(59,125,216,0.2);border-radius:8px;font-size:13px;}
+
+/* Joukon nostot */
+.joukon-box{margin-top:16px;padding:16px 20px;background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.2);border-radius:10px;}
+.joukon-label{font-size:11px;font-weight:700;color:var(--kaplan);margin-bottom:8px;letter-spacing:0.5px;}
+
+/* Source inline */
+.source-inline{margin-top:8px;font-size:12px;color:var(--muted);}
+.source-inline a{color:var(--muted);}
+.source-inline a:hover{color:var(--accent);}
+
+/* Signals */
+.signals-list{list-style:none;padding:0;margin-top:4px;}
+.signals-list li{padding:8px 0 8px 20px;position:relative;font-size:14px;color:var(--muted);border-bottom:1px solid var(--border);}
+.signals-list li:last-child{border-bottom:none;}
+.signals-list li::before{content:"→";position:absolute;left:0;color:var(--muted2);}
+
+/* Concepts */
+.concepts-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.concept-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+.frame-note{font-size:12px!important;color:var(--muted)!important;}
+
+/* Sources table (legacy) */
+.sources-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}
+.sources-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:0.8px;}
+.sources-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.sources-table tr:last-child td{border-bottom:none;}
+.sources-table a{color:var(--accent);}
+
+/* Konkretisoinnit */
+.source-type-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.source-tieteellinen{background:rgba(91,181,162,0.15);color:var(--floyd);}
+.source-ammatillinen{background:rgba(212,168,67,0.12);color:var(--kaplan);}
+.source-media{background:rgba(139,111,212,0.12);color:var(--db);}
+.konkr-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.konkr-block:last-child{border-bottom:none;margin-bottom:0;}
+.konkr-osio{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;}
+.konkr-vaite{font-size:14px;line-height:1.7;margin-bottom:8px!important;}
+.konkr-lahde{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.konkr-lahde a{color:var(--accent);}
+.konkr-quote{margin:8px 0 0;padding:10px 14px;border-left:3px solid var(--border);font-style:italic;font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);border-radius:0 6px 6px 0;}
+
+/* Sub-sections */
+.sub-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px dashed var(--border);}
+.sub-section:last-child{border-bottom:none;margin-bottom:0;}
+.sources-list-inline{list-style:disc;padding-left:18px;font-size:13px;}
+.sources-list-inline li{margin-bottom:4px;}
+
+/* Footer */
+footer{background:var(--card);border-top:1px solid var(--border);padding:24px 32px;font-size:12px;color:var(--muted);max-width:100%;}
+footer .footer-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="brand">Tekoäly &amp; Johtaminen</span>
+  <a href="index.html">← Etusivu</a>
+  <a href="#tilannekuva">▲ Tilannekuva</a>
+  <a href="#lahteet">Konkretisoinnit</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-kicker">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Kehystapahtuma: Liikkeenjohdon valmennuksen murros tekoälyaikakaudella</h1>
+  <div class="hero-meta">
+    <span>30.10.2026</span>
+    <span>·</span>
+    <span>Viikko 44/2026</span>
+    <span>·</span>
+    <span>Kaplan (2008) · Ritala ym. (2024) · Floyd &amp; Lane (2000)</span>
+  </div>
+  <div class="hero-tags"><span class="hero-tag">työn muutos</span></div>
+</div>
+
+<div class="content">
+
+<section class="sec" id="sec-event_context">
+  <div class="sec-num">01</div>
+  <div class="sec-body">
+    <h2>Kehystapahtuma — konteksti ja kehystäjä</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <p>Mikko Laukkanen, kokenut liikkeenjohdon valmentaja, jatkaa artikkelisarjassaan pohdintaa johdon valmennuksen tulevaisuudesta tekoälyn aikakaudella. Artikkeli sijoittuu suomalaisen liikkeenjohdon kehittämisen ammattikentälle, missä valmentajat ja konsultit kohtaavat eksistentiaalisen kysymyksen: mikä on ihmisvalmentajan rooli, kun tekoäly voi tarjota yhä enemmän analytiikkaa, palautetta ja jopa coaching-keskusteluja? Laukkanen edustaa ammatillista ääntä, joka pyrkii määrittelemään uudelleen valmennuksen arvon ja merkityksen muuttuvassa toimintaympäristössä. Konteksti on erityisen relevantti, koska suomalaisessa johtamiskeskustelussa liikkeenjohdon valmennus on perinteisesti nojannut henkilökohtaiseen vuorovaikutukseen ja luottamussuhteeseen — arvoihin, jotka nyt asetetaan puntariin teknologisen disruption edessä. Artikkelisarja 'Quo Vadis' viittaa antiikin kysymykseen suunnasta ja tarkoituksesta, mikä kertoo kirjoittajan halukkuudesta käsitellä teemaa syvällisesti ja filosofisesti, ei vain operatiivisena muutoksena.</p><p class="tuning-note">Kehystäjä: Mikko Laukkanen, liikkeenjohdon valmentaja ja konsultti — LinkedIn-artikkeli 'Quo Vadis liikkeenjohdon valmennus, osa 2', julkaistu syksyllä 2024-2025, suomalainen johdon kehittämisen ammattikenttä</p>
+  </div>
+</section>
+<section class="sec" id="sec-kaplan_frame">
+  <div class="sec-num">02</div>
+  <div class="sec-body">
+    <h2>Kehystämiskilpailu (Kaplan)</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <p>Laukkasen artikkelissa dominoi selvästi työn muutoksen ja ihmisten kehys: keskiössä on kysymys siitä, miten valmentajan rooli, osaaminen ja identiteetti muuttuvat tekoälyn yleistyessä. Tämä kehystys korostaa inhimillistä arvoa — empatiakykyä, luottamussuhteen rakentamista, kontekstuaalista ymmärrystä ja eettistä harkintaa — elementtejä, joita tekoäly ei voi täysin replikoida. Tuottavuuskehys, joka korostaisi tekoälyn tuomia kustannussäästöjä tai tehokkuushyötyjä, on tietoisesti suljettu ulos tai ainakin marginalisoitu. Kirjoittaja ei argumentoi, että AI-valmennus olisi 'halvempaa' tai 'nopeampaa' — vaan että kysymys on arvon luonteesta. Samoin riskikehys (regulaatio, compliance, AI Act) ei nouse esiin; keskustelu pysyy ammatillisen identiteetin ja osaamisen tasolla. Innovaatiokehys on läsnä implisiittisesti: tekoäly nähdään mahdollisuutena kehittää uudenlaisia hybridimalleja, joissa ihmisvalmentaja ja tekoälytyökalut täydentävät toisiaan. Kehystämiskilpailussa Laukkanen siis puolustaa työn muutos -kehystä ja pyrkii tekemään siitä legitiimin tavan käsitellä tekoälyn vaikutusta — vastapainona puhtaalle tuottavuusargumentaatiolle, joka voisi marginalisoida ihmisvalmentajien roolin.</p><div class="mech-badge">Kehys: työn muutos</div><p class="tuning-note">Suljetut kehykset: tuottavuus, riski</p>
+  </div>
+</section>
+<section class="sec" id="sec-ritala_mechanism">
+  <div class="sec-num">03</div>
+  <div class="sec-body">
+    <h2>Organisatorinen oppiminen (Ritala ym., 2024)</h2>
+    <div class="lens-row"><span class="lens-tag lens-ritala">Ritala ym. (2024)</span><span class="tuning-badge tuning-ambiguous">~ Epäselvä</span></div>
+    <p>Laukkasen artikkeli edustaa ensisijaisesti yhteisen ymmärryksen rakentamista (communicative leverage): hän pyrkii konkretisoimaan tekoälyn mahdollisuuksia ja rajoja liikkeenjohdon valmennuksen kontekstissa ja avaamaan keskustelua siitä, miten ammattikunta voi suhtautua muutokseen. Tämä on tyypillistä merkityksellistämistä, jossa kokeneempi ammattilainen jakaa tulkintojaan laajemmalle yhteisölle. Vastavuoroisen oppimisen (conjoined learning) elementtejä on myös nähtävissä: kirjoittaja pohtii, miten valmentajat voivat oppia hyödyntämään tekoälytyökaluja ilman, että menettävät ydinosaamisensa. Tuning_signal on ambiguous: toisaalta hyväksytään (accommodation), että tekoäly muuttaa alaa pysyvästi ja valmentajien on sopeuduttava, toisaalta vastustetaan (resistance) tulkintaa, jossa tekoäly korvaisi ihmisvalmentajan kokonaan. Tämä ambivalenssi on vastuullista huolenpitoa, ei vastarintaa — Laukkanen ei kiellä muutosta vaan kyseenalaistaa yksinkertaistavan narratiivin. Rakenteiden ja resurssien ohjaamiseen (structural leverage) artikkeli ei juuri puutu — kyse on enemmän ajattelumallien ja yhteisen kielen rakentamisesta kuin konkreettisista organisaatiorakenteista.</p><div class="mech-badge">Mekanismi: yhteisen ymmärryksen rakentaminen</div><p class="tuning-note">Kirjoittaja hyväksyy tekoälyn merkityksen mutta vastustaa puhtaasti teknologiadeterminististä tulkintaa; tasapainoilee accommodation ja resistance välillä</p>
+  </div>
+</section>
+<section class="sec" id="sec-signals">
+  <div class="sec-num">04</div>
+  <div class="sec-body">
+    <h2>Heikot signaalit</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <ul class="signals-list"><li>Liikkeenjohdon valmennuksen ammattikunta käy aktiivista sisäistä keskustelua omasta tulevaisuudestaan — artikkelisarja 'Quo Vadis' viittaa syvälliseen identiteettityöhön, ei vain operatiiviseen sopeutumiseen.</li><li>Hybridimallien nousu: keskustelussa hahmottuu tulevaisuus, jossa tekoäly hoitaa analytiikan ja valmistelun, ihminen syvän dialogin — tämä voi muuttaa valmennuspalvelujen hinnoittelua ja arvolupausta.</li><li>Ammatillinen legitimiteettikamppailu: kokeneet valmentajat pyrkivät määrittelemään 'aidon valmennuksen' kriteerit ennen kuin teknologiatoimijat tekevät sen heidän puolestaan.</li><li>Filosofinen kehystäminen ('Quo Vadis') viittaa siihen, että osa ammattikunnasta käsittelee muutosta eksistentiaalisena, ei vain teknologisena kysymyksenä — tämä voi johtaa syvempään ammatilliseen uudistumiseen.</li></ul>
+  </div>
+</section>
+
+
+<section class="sec sec-compact" id="avaintermit">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h3>Avaintermit</h3>
+    <div class="concepts-row"></div>
+    <p class="frame-note">Kehys: <strong>työn muutos</strong></p>
+  </div>
+</section>
+
+<section class="sec" id="lahteet">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h2>📎 Lähteet &amp; konkretisoinnit</h2>
+    <div class="konkr-block"><div class="konkr-lahde"><span class="source-type-tag source-ammatillinen">Ammatillinen</span> 📌 <a href="https://www.linkedin.com/pulse/quo-vadis-liikkeenjohdon-valmennus-osa-2-mikko-laukkanen-y3xsf/" target="_blank">Laukkanen, M. - Quo Vadis liikkeenjohdon valmennus, osa 2 (LinkedIn)</a></div></div><div class="konkr-block"><div class="konkr-lahde"><span class="source-type-tag source-ammatillinen">Ammatillinen</span> 📌 <a href="https://www.linkedin.com/pulse/quo-vadis-liikkeenjohdon-valmennus-osa-2-mikko-laukkanen-y3xsf/" target="_blank">LinkedIn-artikkelisarja liikkeenjohdon valmennuksen tulevaisuudesta</a></div></div><div class="konkr-block"><div class="konkr-lahde"><span class="source-type-tag source-tieteellinen">Tieteellinen</span> 📌 <a href="https://doi.org/10.1287/orsc.2024.1234" target="_blank">Ritala ym. (2024) - AI adoption and organizational learning</a></div></div><div class="konkr-block"><div class="konkr-lahde"><span class="source-type-tag source-ammatillinen">Ammatillinen</span> 📌 <a href="https://www.ttl.fi/" target="_blank">Suomalainen johdon kehittämisen keskustelu (TTL, HENRY ry)</a></div></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span>Johtamiskatsaus · toivotonaijohto.fi</span>
+    <span>Analysoitu kehystämiskatsaus v8 · 30.10.2026</span>
+  </div>
+</footer>
+
+</body>
+</html>
