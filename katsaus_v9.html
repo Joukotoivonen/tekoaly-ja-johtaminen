@@ -1042,8 +1042,8 @@ async function pushToGitHub() {
   const timeStr  = pushNow.toISOString().slice(11, 16).replace(/:/g, '-');      // 12-39
   const date     = `${dateOnly}_${timeStr}`;                                    // 2026-10-31_12-39
 
-  // HTML-tiedosto käyttää vain päivämäärää (ei aikaa) — saman päivän push ylikirjoittaa edellisen
-  const htmlFilename = `johtamiskatsaus_${dateOnly}.html`;
+  // v9.1: HTML-tiedosto saa aikaleiman — useampi katsaus samana päivänä ei ylikirjoita toisiaan
+  const htmlFilename = `johtamiskatsaus_${date}.html`;
   const htmlPath = folder ? `${folder}/${htmlFilename}` : htmlFilename;
 
   // MD-tiedosto saa aikaleiman (ei ylikirjoitu)
@@ -1278,8 +1278,9 @@ ${sourcesHtml}
 
   // ── Apufunktiot ──
   async function getFileSha(filePath) {
-    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
-      headers: { 'Authorization': `token ${token}` }
+    // v9.1: cache-busting timestamp estää selainta palauttamasta vanhaa SHA:ta
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?t=${Date.now()}`, {
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
     });
     if (r.ok) { const j = await r.json(); return j.sha || null; }
     return null;
