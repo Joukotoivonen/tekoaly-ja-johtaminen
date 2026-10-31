@@ -699,7 +699,7 @@ function renderResponse(data) {
   const lensColors  = { kaplan:'var(--kaplan)', db:'var(--db)', floyd:'var(--floyd)', ritala:'var(--ritala)' };
   const lensLabels  = { kaplan:'Kaplan', db:'D&B', floyd:'Keskijohto', ritala:'Ritala' };
   const pillClasses = { kaplan:'pill-kaplan', db:'pill-db', floyd:'pill-floyd', ritala:'pill-ritala' };
-  const sectionNums = { spotlight:'01', middlemgt:'02', db_analysis:'03', event_context:'01', kaplan_frame:'02', db_strategy:'03', ritala_mechanism:'04', floyd_note:'05', compare_a:'01', compare_b:'02', compare_verdict:'03', concern:'04', signals:'05', sources:'06' };
+  const sectionNums = { spotlight:'01', strategic_position:'02', middlemgt:'03', org_learning:'04', db_analysis:'03', event_context:'01', kaplan_frame:'02', db_strategy:'03', ritala_mechanism:'04', floyd_note:'05', compare_a:'01', compare_b:'02', compare_verdict:'03', concern:'05', signals:'06', sources:'07', sources_concretizations:'07' };
 
   let html = `<div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
     <div>
@@ -824,6 +824,29 @@ function renderResponse(data) {
       </div>
       <div class="analysis-block">${sec.content || ''}</div>`;
     }
+    // Kilpailevien kehysten radar — AI voi palauttaa frame/actors tai label/owner
+    else if (sec.id === 'strategic_position') {
+      body = `<div class="analysis-block" style="margin-bottom:14px;">${sec.content || ''}</div>`;
+      const frames = sec.competing_frames || [];
+      if (frames.length) {
+        body += `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; margin-bottom:14px;">`;
+        frames.forEach(f => {
+          const title   = f.label  || f.frame  || '';
+          const owner   = f.owner  || f.actors || '';
+          const kaplan  = f.kaplan || f.frame  || '';
+          const content = f.content || '';
+          const strength = f.strength ? `<div style="font-size:11px; color:var(--muted); margin-top:6px; font-style:italic;">Vahvuus: ${f.strength}</div>` : '';
+          body += `<div class="frame-card">
+            <div class="frame-card-label">${title}</div>
+            ${owner ? `<div style="font-size:11px; color:var(--muted); margin-bottom:6px;">${owner}</div>` : ''}
+            <div style="font-size:13px; line-height:1.6;">${content}</div>
+            ${strength}
+          </div>`;
+        });
+        body += `</div>`;
+      }
+    }
+
     else if (sec.id === 'signals') {
       body = `<div>`;
       (sec.signals || []).forEach((sig, i) => {
@@ -831,19 +854,25 @@ function renderResponse(data) {
       });
       body += `</div>`;
     }
-    else if (sec.id === 'sources') {
-      if (sec.konkretisointilohkot) {
+    else if (sec.id === 'sources' || sec.id === 'sources_concretizations') {
+      // Hyväksy sekä 'konkretisointilohkot' että 'concretizations' kenttänimet
+      const lohkot = sec.konkretisointilohkot || sec.concretizations || null;
+      if (lohkot) {
         body = `<div>`;
-        sec.konkretisointilohkot.forEach(l => {
-          const lahde = l.lähde || l.lahde || {};
+        lohkot.forEach(l => {
+          // Hyväksy sekä suomalaiset (lähde/väite/lainaus) että englanninkieliset (source/claim/quote) kenttänimet
+          const lahde = l.lähde || l.lahde || l.source || {};
+          const vaite = l.väite || l.vaite || l.claim || '';
+          const lainaus = l.lainaus || l.quote || '';
+          const osio = l.osio || l.section || '';
           body += `<div style="margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--border);">
-            <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">${l.osio || ''}</div>
-            <div style="font-size:14px; line-height:1.7; margin-bottom:8px;">${l.väite || l.vaite || ''}</div>
+            <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">${osio}</div>
+            <div style="font-size:14px; line-height:1.7; margin-bottom:8px;">${vaite}</div>
             <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">
               <span class="source-type">${lahde.type || ''}</span>
               📌 <a href="${lahde.url || '#'}" target="_blank" class="source-link">${lahde.label || ''}</a>
             </div>
-            ${l.lainaus ? `<blockquote style="margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--border); font-style:italic; font-size:13px; color:var(--muted);">"${l.lainaus}"</blockquote>` : ''}
+            ${lainaus ? `<blockquote style="margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--border); font-style:italic; font-size:13px; color:var(--muted);">"${lainaus}"</blockquote>` : ''}
           </div>`;
         });
         body += `</div>`;
