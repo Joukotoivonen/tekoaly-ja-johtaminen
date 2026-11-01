@@ -1309,7 +1309,7 @@ ${sourcesHtml}
   async function getFileSha(filePath) {
     // v9.1: cache-busting timestamp estää selainta palauttamasta vanhaa SHA:ta
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+      headers: { 'Authorization': `token ${token}` }
     });
     if (r.ok) { const j = await r.json(); return j.sha || null; }
     return null;
@@ -1465,7 +1465,7 @@ ${sourcesHtml}
 
   async function getNextKatsausNum() {
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+      headers: { 'Authorization': `token ${token}` }
     });
     if (!r.ok) return 1;
     try {
@@ -1481,7 +1481,7 @@ ${sourcesHtml}
     let sha = null;
 
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+      headers: { 'Authorization': `token ${token}` }
     });
     if (r.ok) {
       const j = await r.json();
