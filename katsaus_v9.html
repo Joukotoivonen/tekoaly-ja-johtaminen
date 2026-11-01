@@ -668,7 +668,7 @@ Sinulla on käytössäsi web-hakutyökalu. Käytä sitä AINA ennen analyysin ki
 
 ${lensText}
 
-Tee tarvittavat verkkohaut ensin. Palauta VAIN JSON seuraavassa muodossa:
+Tee tarvittavat verkkohaut ensin. ÄLÄ kirjoita mitään tekstiä ennen JSON:ia — ei selityksiä, ei "Aloitan hakemalla", ei muuta. Ensimmäinen merkki vastauksessasi on "{". Palauta VAIN JSON seuraavassa muodossa:
 ${jsonSchema}
 
 Viimeisen vastauksesi on oltava PELKKÄÄ JSON:ia.`;
@@ -957,8 +957,8 @@ async function runAnalysis() {
         'x-api-key': apiKey
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
-        max_tokens: 8000,
+        model: 'claude-sonnet-4-6',
+        max_tokens: 16000,
         system: buildSystemPrompt(currentMode),
         messages: [{ role: 'user', content: buildUserPrompt(input, currentMode) }]
       })
@@ -1315,19 +1315,26 @@ ${sourcesHtml}
     return null;
   }
 
-  async function putFile(filePath, content, message) {
+  async function putFile(filePath, content, message, _retried = false) {
     const sha = await getFileSha(filePath);
     const body = { message, content };
     if (sha) body.sha = sha;
-    return fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    const resp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
       method: 'PUT',
       headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
+    // v9: SHA-konflikti (409/422) — yritä kerran uudelleen tuoreella SHA:lla
+    if (!resp.ok && (resp.status === 409 || resp.status === 422) && !_retried) {
+      console.warn(`[v9] SHA-konflikti (${resp.status}) tiedostolle ${filePath} — yritetään uudelleen`);
+      await new Promise(r => setTimeout(r, 600)); // pieni viive ennen uusintaa
+      return putFile(filePath, content, message, true);
+    }
+    return resp;
   }
 
-  // v9 KORJAUS 2: updateIndexHtml — korjatut regexpit + muutostarkistus
-  async function updateIndexHtml(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
+  // POISTETTU v9.2: updateIndexHtml — ei enää tarvita, index.html lukee katsaukset.json:sta
+  async function updateIndexHtml_UNUSED(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html`, {
       headers: { 'Authorization': `token ${token}` }
     });
@@ -1400,8 +1407,8 @@ ${sourcesHtml}
     });
   }
 
-  // v9 KORJAUS 3: updateArkistoHtml — muutostarkistus + TextDecoder
-  async function updateArkistoHtml(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
+  // POISTETTU v9.2: updateArkistoHtml — ei enää tarvita, arkisto.html lukee katsaukset.json:sta
+  async function updateArkistoHtml_UNUSED(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/arkisto.html`, {
       headers: { 'Authorization': `token ${token}` }
     });
@@ -1453,66 +1460,85 @@ ${sourcesHtml}
     });
   }
 
+  // v9.2: Lue katsausnumero katsaukset.json:sta (ei enää arkisto.html:stä)
+  const jsonPath = folder ? `${folder}/katsaukset.json` : 'katsaukset.json';
+
   async function getNextKatsausNum() {
-    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/arkisto.html`, {
-      headers: { 'Authorization': `token ${token}` }
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
     });
-    if (!r.ok) return null;
-    const j = await r.json();
-    const content = b64decode(j.content);
-    const m = content.match(/<span class="badge">(\d+) kpl<\/span>/);
-    return m ? parseInt(m[1]) + 1 : null;
+    if (!r.ok) return 1;
+    try {
+      const j = await r.json();
+      const data = JSON.parse(b64decode(j.content));
+      return (data.count || 0) + 1;
+    } catch(_) { return 1; }
   }
 
-  // ── Tallenna katsaus + päivitä index & arkisto ──
-  try {
-    const [respHtml, respMd] = await Promise.all([
-      putFile(htmlPath, htmlContent, `Johtamiskatsaus ${dateOnly}`),
-      putFile(mdPath,   mdContent,   `Kehystämiskatsaus MD ${date}`)
-    ]);
+  // v9.2: Päivitä vain katsaukset.json — ei enää regex-leikkausta index/arkisto-tiedostoihin
+  async function updateKatsauksetJson(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
+    let data = { count: 0, updated: katsausPvm, entries: [] };
+    let sha = null;
 
-    const htmlOk = respHtml.ok;
-    const mdOk   = respMd.ok;
-
-    if (!htmlOk) {
-      let msg = respHtml.status;
-      try { const ej = await respHtml.json(); msg = ej.message || msg; } catch(_) {}
-      showPushStatus([
-        { ok: false, label: `${htmlFilename} (HTML)`, detail: msg },
-        { ok: mdOk,  label: `${mdFilename} (MD)` },
-        { ok: false, label: 'index.html', detail: 'Ohitettu (HTML-tallennus epäonnistui)' },
-        { ok: false, label: 'arkisto.html', detail: 'Ohitettu' }
-      ]);
-      return;
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+    });
+    if (r.ok) {
+      const j = await r.json();
+      sha = j.sha;
+      try { data = JSON.parse(b64decode(j.content)); } catch(_) {}
     }
 
+    // Lisää uusi katsaus listan alkuun, poista duplikaatti jos sama tiedostonimi
+    data.entries = (data.entries || []).filter(e => e.filename !== katsausFilename);
+    data.entries.unshift({
+      num: katsausNum,
+      filename: katsausFilename,
+      title: katsausOtsikko,
+      date: katsausPvm,
+      week: weekNum,
+      year: now.getFullYear()
+    });
+    data.count = katsausNum;
+    data.updated = katsausPvm;
+
+    const body = {
+      message: `Päivitä katsaukset.json: katsaus ${katsausNum}`,
+      content: b64encode(JSON.stringify(data, null, 2))
+    };
+    if (sha) body.sha = sha;
+
+    return fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  }
+
+  // ── v9.2: Tallenna katsaus HTML + MD + päivitä katsaukset.json ──
+  try {
     const katsausNum = await getNextKatsausNum();
     const otsikko = (lastAnalysis.week_label || 'Johtamiskatsaus').replace(/^Viikko \d+\/\d+ — /, '');
     const pvm = shortDate;
 
-    const [respIndex, respArkisto] = await Promise.all([
-      updateIndexHtml(katsausNum, otsikko, htmlFilename, pvm),
-      updateArkistoHtml(katsausNum, otsikko, htmlFilename, pvm)
+    const [respHtml, respMd, respJson] = await Promise.all([
+      putFile(htmlPath, htmlContent, `Johtamiskatsaus ${dateOnly}`),
+      putFile(mdPath,   mdContent,   `Kehystämiskatsaus MD ${date}`),
+      updateKatsauksetJson(katsausNum, otsikko, htmlFilename, pvm)
     ]);
 
-    const indexOk   = respIndex   && respIndex.ok;
-    const arkistoOk = respArkisto && respArkisto.ok;
+    const htmlOk = respHtml.ok;
+    const mdOk   = respMd.ok;
+    const jsonOk = respJson && respJson.ok;
 
-    let indexDetail = '', arkistoDetail = '';
-    if (!indexOk) {
-      indexDetail = respIndex?._reason || '';
-      if (!indexDetail && respIndex) { try { const ej = await respIndex.json(); indexDetail = ej.message || respIndex.status; } catch(_) { indexDetail = respIndex.status; } }
-    }
-    if (!arkistoOk) {
-      arkistoDetail = respArkisto?._reason || '';
-      if (!arkistoDetail && respArkisto) { try { const ej = await respArkisto.json(); arkistoDetail = ej.message || respArkisto.status; } catch(_) { arkistoDetail = respArkisto.status; } }
-    }
+    let htmlDetail = '', jsonDetail = '';
+    if (!htmlOk) { try { const ej = await respHtml.json(); htmlDetail = ej.message || respHtml.status; } catch(_) { htmlDetail = String(respHtml.status); } }
+    if (!jsonOk && respJson) { try { const ej = await respJson.json(); jsonDetail = ej.message || respJson.status; } catch(_) { jsonDetail = String(respJson?.status || ''); } }
 
     showPushStatus([
-      { ok: htmlOk,    label: `${htmlFilename} (HTML)` },
-      { ok: mdOk,      label: `${mdFilename} (MD)` },
-      { ok: indexOk,   label: 'index.html', detail: indexDetail },
-      { ok: arkistoOk, label: 'arkisto.html', detail: arkistoDetail }
+      { ok: htmlOk, label: `${htmlFilename} (HTML)`,    detail: htmlDetail },
+      { ok: mdOk,   label: `${mdFilename} (MD)` },
+      { ok: jsonOk, label: 'katsaukset.json (etusivu + arkisto päivittyy)', detail: jsonDetail }
     ]);
 
   } catch(e) {
