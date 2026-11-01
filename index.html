@@ -11,7 +11,6 @@
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); }
 
-  /* HERO */
   .hero {
     background: linear-gradient(135deg, #0F172A 0%, #1e1b4b 50%, #0F172A 100%);
     color:#fff; min-height:480px; display:flex; flex-direction:column; justify-content:center;
@@ -50,17 +49,14 @@
   }
   .btn-secondary:hover { background:rgba(255,255,255,0.14); }
 
-  /* STATS */
   .stats { background:var(--ink); padding:24px 40px; }
   .stats-inner { max-width:820px; margin:0 auto; display:flex; gap:40px; flex-wrap:wrap; }
   .stat { color:#fff; }
   .stat-num { font-size:28px; font-weight:900; letter-spacing:-1px; }
   .stat-label { font-size:11px; color:rgba(255,255,255,0.4); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
 
-  /* CONTENT */
   .content { max-width:820px; margin:56px auto; padding:0 20px; }
 
-  /* LATEST */
   .section-label { font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
   .latest-card {
     background:var(--card); border:1px solid var(--border); border-radius:16px;
@@ -77,14 +73,12 @@
   .btn-read { background:var(--accent); color:#fff; padding:10px 22px; border-radius:8px; text-decoration:none; font-weight:700; font-size:13px; white-space:nowrap; }
   .btn-read:hover { background:#4338CA; }
 
-  /* LENS SECTION */
   .lenses { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:48px; }
   .lens-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
   .lens-icon { font-size:22px; margin-bottom:10px; }
   .lens-name { font-size:13px; font-weight:700; margin-bottom:4px; }
   .lens-desc { font-size:12px; color:var(--muted); line-height:1.5; }
 
-  /* ARCHIVE PREVIEW */
   .archive-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
   .archive-header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
   .archive-header span { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
@@ -108,14 +102,14 @@
 <body>
 
 <div class="hero">
-  <div class="hero-inner" style="max-width:820px;margin:0 auto;width:100%;position:relative;z-index:1;">
+  <div class="hero-inner">
     <img src="ai_pilotti_2026.png" alt="AI-pilotti 2026 — sama todellisuus, monta tulkintaa"
          style="width:100%;max-height:340px;object-fit:cover;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);display:block;margin-bottom:36px;">
     <div class="hero-label">Tutkimusblogi</div>
     <h1>Tekoäly &amp;<br>Johtaminen</h1>
     <p class="hero-desc">Tutkin, miten tekoälyn ympärillä käydään kehystämiskilpailua — kuka määrittää mitä AI tarkoittaa johtamisessa, ja millä seurauksilla organisaatioille.</p>
     <div class="hero-cta">
-      <a href="johtamiskatsaus_2026-10-28.html" class="btn-primary">📖 Uusin katsaus</a>
+      <a href="#" id="hero-latest-btn" class="btn-primary">📖 Uusin katsaus</a>
       <a href="arkisto.html" class="btn-secondary">📚 Kaikki katsaukset</a>
       <a href="pitkittaisanalyysi.html" class="btn-secondary" style="border-color:rgba(196,82,42,0.5);color:rgba(255,220,200,0.9);">📈 Pitkittäisanalyysi heikoista signaaleista</a>
       <a href="katsaus_v9.html" class="btn-secondary" style="border-color:rgba(139,111,212,0.5);color:rgba(200,185,255,0.9);">🔭 Kehystämistyökalu</a>
@@ -126,7 +120,7 @@
 
 <div class="stats">
   <div class="stats-inner">
-    <div class="stat"><div class="stat-num">27</div><div class="stat-label">Katsausta julkaistu</div></div>
+    <div class="stat"><div class="stat-num" id="stat-count">—</div><div class="stat-label">Katsausta julkaistu</div></div>
     <div class="stat"><div class="stat-num">4</div><div class="stat-label">Linssiä</div></div>
     <div class="stat"><div class="stat-num">AI</div><div class="stat-label">Analyysimenetelmä</div></div>
   </div>
@@ -138,12 +132,12 @@
   <div class="latest-card">
     <div class="latest-card-top">
       <div class="tag">Ajankohtaiskatsaus</div>
-      <h2>Katsaus 28.10.2026 — Kehystapahtuma: Digitaalisen yrityksen hallinta ja tekoälyn autonomia</h2>
-      <div class="meta">28.10.2026 · Viikko 44</div>
+      <h2 id="latest-title">Ladataan...</h2>
+      <div class="meta" id="latest-meta">—</div>
     </div>
     <div class="latest-card-body">
-      <p>Analyysissa tarkastellaan digitaalisen yrityksen hallintaa ja tekoälyn kasvavaa autonomiaa kehystapahtumana. Kaplan-kehysanalyysi, kilpailevat tulkintakehykset ja organisaatioiden strateginen sopeutuminen tekoälyn itsenäistyvässä roolissa.</p>
-      <a href="johtamiskatsaus_2026-10-28.html" class="btn-read">Lue katsaus →</a>
+      <p id="latest-desc">Tekoälyn johtamiskatsaus — kehystämisanalyysi Kaplan (2008), Dewulf &amp; Bouwen (2012), Floyd &amp; Lane ja Ritala ym. (2024) linssien kautta.</p>
+      <a href="#" id="latest-read-btn" class="btn-read">Lue katsaus →</a>
     </div>
   </div>
 
@@ -162,12 +156,7 @@
     <p style="font-size:15px;line-height:1.8;color:#334155;margin-bottom:16px;">
       Keskeinen teoreettinen väline on <strong>Kaplanin (2008) kehystämiskilpailun malli</strong>, joka yhdistää kolme toisiinsa kytkeytyvää ulottuvuutta. Ensinnäkin <em>kognitiiviset kehykset</em>: mitä toimijat uskovat tekoälyn merkitsevän ja millaisena ongelmana he tilanteen näkevät. Toiseksi <em>poliittiset intressit ja legitimiteetti</em>: kuka saa määritellä ongelman, kenen asiantuntemusta arvostetaan ja millaiset tavoitteet saavat tukea. Kolmanneksi <em>vuorovaikutus ja kehysten muutos</em>: miten vastakkainasettelut, argumentointi ja liittoutumat muokkaavat yhteistä tulkintaa ja lopulta päätöksiä.
     </p>
-    <p style="font-size:15px;line-height:1.8;color:#334155;margin-bottom:16px;">
-      Näiden yhdistelmästä syntyy tutkimuksellisesti kiinnostava kysymys: <strong>miten jokin tekoälyä koskeva tulkinta muuttuu yksittäisen toimijan näkemyksestä organisaation hallitsevaksi tulkinnaksi</strong>, joka ohjaa resursointia ja toimintaa? Onnistunut kehystäminen voi saada aikaan yhteisen, päätöksentekoa ohjaavan tulkinnan — mutta jos mikään kehys ei saa riittävästi kannatusta, seurauksena on ristiriitojen jatkuminen ja päätösten lykkääntyminen.
-    </p>
-    <p style="font-size:14px;color:#64748B;font-style:italic;">
-      — Jouko Toivonen, Turku
-    </p>
+    <p style="font-size:14px;color:#64748B;font-style:italic;">— Jouko Toivonen, Turku</p>
   </div>
 
   <div class="section-label">Linssit</div>
@@ -200,94 +189,63 @@
       <span>Viimeisimmät katsaukset</span>
       <a href="arkisto.html" class="archive-link">Kaikki katsaukset →</a>
     </div>
-    <table class="archive">
-      <tr>
-          <td class="anum">25</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-28.html">Kehystapahtuma: Digitaalisen yrityksen hallinta ja tekoälyn autonomia</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">28.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-28.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">24</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-26.html">TTL:n TEIJO-tutkimus paljastaa tekoälyn käyttöönoton ristiriidat</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">26.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-26.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">23</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-21.html">TEM käynnistää tekoälyn työelämävaikutusten selvityksen</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">21.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-21.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">22</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-19_16-22.html">EU AI Act -siirtymäaika ja suomalainen toteutuskuilu</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">19.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-19_16-22.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">21</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-10_12-52.html">Tekoälyn johtamisen kuilu: Suomi käyttöönoton ja strategisen kypsyyden ristipaineessa</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">10.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-10_12-52.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">20</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-07_14-31.html">Tekoälyn käyttöönotto suomalaisessa sote-organisaatiossa: kilpailevat kehykset ja rakenteelliset esteet</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">07.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-07_14-31.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">19</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-06_12-33.html">Tekoälyn sääntely kiihtyy: Kalifornian aloitteet ja suomalainen sopeutumishaaste</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">06.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-06_12-33.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">18</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-10-02_11-03.html">Tekoälyn tuottavuusparadoksi Suomessa 2026</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">02.10.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-10-02_11-03.html">Avaa →</a>
-          </td>
-        </tr><tr>
-          <td class="anum">17</td>
-          <td class="alink">
-            <a href="johtamiskatsaus_2026-09-24_12-11.html">Suomen tekoälykehitys murrospisteessä – fyysinen tekoäly uutena kasvukehyksenä</a>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">24.09.2026</div>
-          </td>
-          <td class="aicons">
-            <a href="johtamiskatsaus_2026-09-24_12-11.html">Avaa →</a>
-          </td>
-        </tr>
+    <table class="archive" id="archive-table">
+      <tr><td colspan="3" style="padding:24px;text-align:center;color:#94a3b8;font-size:13px;">Ladataan katsauksia...</td></tr>
     </table>
   </div>
 
 </div>
 
-<footer>Päivitetty 28.10.2026 · Tekoäly &amp; Johtaminen AI-katsausagentti</footer>
+<footer id="site-footer">Tekoäly &amp; Johtaminen AI-katsausagentti</footer>
+
+<script>
+// Lataa katsaukset.json ja päivitä sivu dynaamisesti
+(async () => {
+  try {
+    const r = await fetch(`katsaukset.json?t=${Date.now()}`);
+    if (!r.ok) { console.warn('katsaukset.json ei löydy:', r.status); return; }
+    const d = await r.json();
+    const latest = d.entries && d.entries[0];
+    if (!latest) return;
+
+    // Laskuri
+    const statCount = document.getElementById('stat-count');
+    if (statCount) statCount.textContent = d.count;
+
+    // Hero-nappi
+    const heroBtn = document.getElementById('hero-latest-btn');
+    if (heroBtn) heroBtn.href = latest.filename;
+
+    // Uusin katsaus -kortti
+    const titleEl = document.getElementById('latest-title');
+    if (titleEl) titleEl.textContent = `Katsaus ${latest.date} — ${latest.title}`;
+    const metaEl = document.getElementById('latest-meta');
+    if (metaEl) metaEl.textContent = `${latest.date} · Viikko ${latest.week}`;
+    const readBtn = document.getElementById('latest-read-btn');
+    if (readBtn) readBtn.href = latest.filename;
+
+    // Arkistotaulukko — viimeiset 9
+    const tbl = document.getElementById('archive-table');
+    if (tbl) {
+      tbl.innerHTML = d.entries.slice(0, 9).map(e => `
+        <tr>
+          <td class="anum">${e.num}</td>
+          <td class="alink">
+            <a href="${e.filename}">${e.title}</a>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${e.date}</div>
+          </td>
+          <td class="aicons"><a href="${e.filename}">Avaa →</a></td>
+        </tr>`).join('');
+    }
+
+    // Footer
+    const footer = document.getElementById('site-footer');
+    if (footer) footer.textContent = `Päivitetty ${d.updated} · Tekoäly & Johtaminen AI-katsausagentti`;
+
+  } catch(e) {
+    console.warn('katsaukset.json lataus epäonnistui:', e.message);
+  }
+})();
+</script>
 </body>
 </html>
