@@ -21,7 +21,7 @@
   .card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
   .card-header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
   .card-header span { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
-  .badge { background:var(--accent); color:#fff; border-radius:20px; padding:3px 12px; font-size:11px; font-weight:700; letter-spacing:0; text-transform:none; }
+  .badge { background:var(--accent); color:#fff; border-radius:20px; padding:3px 12px; font-size:11px; font-weight:700; }
   table { width:100%; border-collapse:collapse; }
   tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
   tr:last-child { border-bottom:none; }
@@ -50,293 +50,60 @@
   <div class="card">
     <div class="card-header">
       <span>Julkaistut katsaukset</span>
-      <span class="badge">27 kpl</span>
+      <span class="badge" id="arkisto-badge">— kpl</span>
     </div>
-    <table>
-      <tr>
-        <td class="num">27</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-30.html" class="katsaus-link">Kehystapahtuma: Liikkeenjohdon valmennus ja tekoäly — Mikko Laukkanen</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">30.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-30.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">26</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-30.html" class="katsaus-link">Kehystapahtuma: Liikkeenjohdon valmennuksen murros tekoälyaikakaudella</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">30.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-30.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      
-      <tr>
-        <td class="num">25</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-28.html" class="katsaus-link">Kehystapahtuma: Digitaalisen yrityksen hallinta ja tekoälyn autonomia</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">28.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-28.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">24</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-26.html" class="katsaus-link">TTL:n TEIJO-tutkimus paljastaa tekoälyn käyttöönoton ristiriidat</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">26.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-26.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">23</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-21.html" class="katsaus-link">TEM käynnistää tekoälyn työelämävaikutusten selvityksen</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">21.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-21.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">22</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-19_16-22.html" class="katsaus-link">EU AI Act -siirtymäaika ja suomalainen toteutuskuilu</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">19.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-19_16-22.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">21b</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-13_11-20.html" class="katsaus-link">Tekoäly suomalaisessa johtamiskeskustelussa – kilpailevat kehykset ja kasvava ambivalenssi</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">13.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-13_11-20.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">21</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-10_12-52.html" class="katsaus-link">Tekoälyn johtamisen kuilu: Suomi käyttöönoton ja strategisen kypsyyden ristipaineessa</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">10.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-10_12-52.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">20</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-07_14-31.html" class="katsaus-link">Tekoälyn käyttöönotto suomalaisessa sote-organisaatiossa: kilpailevat kehykset ja rakenteelliset esteet</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">07.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-07_14-31.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">19</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-06_12-33.html" class="katsaus-link">Tekoälyn sääntely kiihtyy: Kalifornian aloitteet ja suomalainen sopeutumishaaste</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">06.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-06_12-33.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">18</td>
-        <td>
-          <a href="johtamiskatsaus_2026-10-02_11-03.html" class="katsaus-link">Tekoälyn tuottavuusparadoksi Suomessa 2026</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">02.10.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-10-02_11-03.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">17</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-24_12-11.html" class="katsaus-link">Suomen tekoälykehitys murrospisteessä – fyysinen tekoäly uutena kasvukehyksenä</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">24.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-24_12-11.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">16</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-22_09-05.html" class="katsaus-link">AI-väsymys ja kilpailevat kehykset suomalaisessa johtamisessa</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">22.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-22_09-05.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">15</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-20_13-24.html" class="katsaus-link">Googlen 13 miljardin investointi ja kehystämiskilpailu Suomen tekoälypolitiikassa</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">20.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-20_13-24.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">14</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-19_12-46.html" class="katsaus-link">Tekoälyn kehystämiskilpailu: Visma vs. Tietoevry Care</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">19.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-19_12-46.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">13</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-18_13-24.html" class="katsaus-link">Pohjoismainen tekoälyn käyttöönotto 2025–2026: Investointikuilu ja organisatorinen oppiminen</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">18.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-18_13-24.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">12</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-17_14-35.html" class="katsaus-link">Suomen tekoälykenttä 2026: kehyskilpailu, tuottavuusparadoksi ja heikot signaalit</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">17.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-17_14-35.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">11</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-16_12-35.html" class="katsaus-link">Tekoälytransformaatio 2026: Goforen kaksoisasemoituminen ja kilpailevat kehykset</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">16.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-16_12-35.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">10</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-15_11-45.html" class="katsaus-link">Agenttinen tekoäly ja integraatiokehystäminen: Solitan asemoituminen Pohjois-Euroopassa</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">15.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-15_11-45.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">9</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-14_12-49.html" class="katsaus-link">Suomalaisen tekoälyjohtamisen rakenteellinen murros – syyskuu 2026</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">14.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-14_12-49.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">8</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-12_13-30.html" class="katsaus-link">Tekoälyn kehystämiskilpailu suomalaisessa johtamiskeskustelussa – syyskuu 2026</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">12.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-12_13-30.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">7</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-12_12-05.html" class="katsaus-link">Tekoälymurroksen johtaminen Suomessa: kehykset, kuilut ja kansalaisten ääni</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">12.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-12_12-05.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">6</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-11_09-50.html" class="katsaus-link">Suomalainen tekoälyjohtaminen 2026: polarisoituminen, kehystäminen ja strategiavaje</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">11.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-11_09-50.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">5</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-10_08-36.html" class="katsaus-link">Tekoälyn kahtiajako syvenee: edelläkävijät karkaavat, huolet kasvavat</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">10.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-10_08-36.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">4</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-09_13-09.html" class="katsaus-link">Suomen tekoälykentän polarisaatio ja kilpailevat kehykset 2026</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">09.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-09_13-09.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">3</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-07_11-04.html" class="katsaus-link">Suomen tekoälykehitys syksyllä 2026: Pilotoinnista teollistamiseen</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">07.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-07_11-04.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">2</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-06_16-18.html" class="katsaus-link">Tekoäly johtamisessa: kehystämiskilpailu ja strategiavaje Suomessa 2026</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">06.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-06_16-18.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="num">1</td>
-        <td>
-          <a href="johtamiskatsaus_2026-09-06_12-23.html" class="katsaus-link">Suomen tekoälyjohtaminen syksyllä 2026: piloteista tuotantoon siirtymisen kriisi</a>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">06.09.2026</div>
-        </td>
-        <td class="links">
-          <a href="johtamiskatsaus_2026-09-06_12-23.html" title="Avaa katsaus">Avaa →</a>
-        </td>
-      </tr>
+    <table id="arkisto-table">
+      <tr><td colspan="3" class="empty">Ladataan katsauksia...</td></tr>
     </table>
   </div>
 </div>
-<footer>Päivitetty 30.10.2026 · Tekoäly &amp; Johtaminen</footer>
+<footer id="arkisto-footer">Tekoäly &amp; Johtaminen</footer>
+
+<script>
+(async () => {
+  try {
+    const r = await fetch(`katsaukset.json?t=${Date.now()}`);
+    if (!r.ok) {
+      document.getElementById('arkisto-table').innerHTML =
+        '<tr><td colspan="3" class="empty">katsaukset.json ei löydy — tee ensimmäinen push työkalusta.</td></tr>';
+      return;
+    }
+    const d = await r.json();
+
+    // Badge
+    const badge = document.getElementById('arkisto-badge');
+    if (badge) badge.textContent = `${d.count} kpl`;
+
+    // Kaikki katsaukset
+    const tbl = document.getElementById('arkisto-table');
+    if (tbl) {
+      if (!d.entries || d.entries.length === 0) {
+        tbl.innerHTML = '<tr><td colspan="3" class="empty">Ei katsauksia vielä.</td></tr>';
+      } else {
+        tbl.innerHTML = d.entries.map(e => `
+          <tr>
+            <td class="num">${e.num}</td>
+            <td>
+              <a href="${e.filename}" class="katsaus-link">${e.title}</a>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${e.date}</div>
+            </td>
+            <td class="links">
+              <a href="${e.filename}" title="Avaa katsaus">Avaa →</a>
+            </td>
+          </tr>`).join('');
+      }
+    }
+
+    // Footer
+    const footer = document.getElementById('arkisto-footer');
+    if (footer) footer.textContent = `Päivitetty ${d.updated} · Tekoäly & Johtaminen`;
+
+  } catch(e) {
+    console.warn('katsaukset.json:', e.message);
+    document.getElementById('arkisto-table').innerHTML =
+      `<tr><td colspan="3" class="empty">Latausvirhe: ${e.message}</td></tr>`;
+  }
+})();
+</script>
 </body>
 </html>
