@@ -1307,12 +1307,15 @@ ${sourcesHtml}
 
   // ── Apufunktiot ──
   async function getFileSha(filePath) {
-    // v9.1: cache-busting timestamp estää selainta palauttamasta vanhaa SHA:ta
-    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`,  }
+    // v9.3: cache:'no-store' välttää CORS-ongelman, ?t= varmistukseksi
+    const p = filePath.split('/').map(encodeURIComponent).join('/');
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${p}?t=${Date.now()}`, {
+      headers: { 'Authorization': `token ${token}` },
+      cache: 'no-store'
     });
     if (r.ok) { const j = await r.json(); return j.sha || null; }
-    return null;
+    if (r.status === 404) return null; // tiedostoa ei ole vielä
+    throw new Error(`getFileSha ${r.status}: ${filePath}`);
   }
 
   async function putFile(filePath, content, message, _retried = false) {
@@ -1465,7 +1468,8 @@ ${sourcesHtml}
 
   async function getNextKatsausNum() {
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`,  }
+      headers: { 'Authorization': `token ${token}` },
+      cache: 'no-store'
     });
     if (!r.ok) return 1;
     try {
@@ -1475,13 +1479,14 @@ ${sourcesHtml}
     } catch(_) { return 1; }
   }
 
-  // v9.2: Päivitä vain katsaukset.json — ei enää regex-leikkausta index/arkisto-tiedostoihin
+  // v9.3: Päivitä vain katsaukset.json — ei enää regex-leikkausta index/arkisto-tiedostoihin
   async function updateKatsauksetJson(katsausNum, katsausOtsikko, katsausFilename, katsausPvm) {
     let data = { count: 0, updated: katsausPvm, entries: [] };
     let sha = null;
 
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}`,  }
+      headers: { 'Authorization': `token ${token}` },
+      cache: 'no-store'
     });
     if (r.ok) {
       const j = await r.json();
@@ -1578,4 +1583,3 @@ syncLensBar(['kaplan','db','floyd']);
 </script>
 </body>
 </html>
-
