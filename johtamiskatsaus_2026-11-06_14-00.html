@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viikko 45/2026 — Tekoäly suomalaisessa mediatyössä: AiKo-hankkeen loppuraportti</title>
+<style>
+:root{--bg:#141820;--card:#1E2433;--card2:#252B3B;--border:#2E3650;--text:#E8ECF4;--muted:#8A93A8;--muted2:#5A6478;--kaplan:#D4A843;--db:#8B6FD4;--floyd:#5BB5A2;--ritala:#3B7DD8;--success:#5BB57A;--warning:#E05C5C;--accent:#3B7DD8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7;padding:0;max-width:100%;}
+a{color:var(--accent);text-decoration:none;}a:hover{text-decoration:underline;}
+.site-nav{background:var(--card);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;gap:24px;align-items:center;font-size:13px;position:sticky;top:0;z-index:10;}
+.site-nav a{color:var(--muted);}.site-nav a:hover{color:var(--text);text-decoration:none;}.site-nav .brand{font-weight:700;color:var(--text);}
+.hero{background:linear-gradient(135deg,#1a2236 0%,#1e2a42 100%);border-bottom:1px solid var(--border);padding:48px 32px 40px;max-width:860px;margin:0 auto;}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:26px;font-weight:800;line-height:1.3;margin-bottom:16px;letter-spacing:-0.5px;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;color:var(--muted);}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.hero-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+.content{max-width:860px;margin:0 auto;padding:0 32px 60px;}
+.sec{display:grid;grid-template-columns:48px 1fr;gap:0 24px;padding:36px 0;border-bottom:1px solid var(--border);}
+.sec-compact{padding:24px 0;}
+.sec-num{font-size:28px;font-weight:900;color:var(--border);font-variant-numeric:tabular-nums;padding-top:4px;letter-spacing:-1px;}
+.sec-body h2{font-size:18px;font-weight:800;margin-bottom:12px;letter-spacing:-0.3px;}
+.sec-body h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--muted);}
+.sec-body p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:12px;}
+.sec-body p:last-child{margin-bottom:0;}
+.lens-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.lens-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:0.3px;}
+.lens-kaplan{background:rgba(212,168,67,0.15);color:var(--kaplan);border:1px solid rgba(212,168,67,0.25);}
+.lens-db{background:rgba(139,111,212,0.15);color:var(--db);border:1px solid rgba(139,111,212,0.25);}
+.lens-floyd{background:rgba(91,181,162,0.15);color:var(--floyd);border:1px solid rgba(91,181,162,0.25);}
+.lens-ritala{background:rgba(59,125,216,0.15);color:var(--ritala);border:1px solid rgba(59,125,216,0.25);}
+.tuning-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;}
+.tuning-accommodation{background:rgba(91,181,122,0.15);color:var(--success);border:1px solid rgba(91,181,122,0.25);}
+.tuning-resistance{background:rgba(224,92,92,0.15);color:var(--warning);border:1px solid rgba(224,92,92,0.25);}
+.tuning-ambiguous{background:rgba(138,147,168,0.1);color:var(--muted);border:1px solid var(--border);}
+.tuning-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px!important;}
+.mech-badge{display:inline-block;margin-bottom:12px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(59,125,216,0.12);color:var(--ritala);border:1px solid rgba(59,125,216,0.2);}
+.success-note{font-size:13px!important;margin-top:10px!important;padding:10px 14px;border-radius:8px;border-left:3px solid;}
+.success-note.success{background:rgba(91,181,122,0.08);border-color:var(--success);color:var(--success);}
+.success-note.fail{background:rgba(224,92,92,0.08);border-color:var(--warning);color:var(--warning);}
+.correction-box{margin-top:12px;padding:12px 16px;background:rgba(59,125,216,0.07);border:1px solid rgba(59,125,216,0.2);border-radius:8px;font-size:13px;}
+.source-inline{margin-top:8px;font-size:12px;color:var(--muted);}.source-inline a{color:var(--muted);}.source-inline a:hover{color:var(--accent);}
+.signals-list{list-style:none;padding:0;margin-top:4px;}
+.signals-list li{padding:8px 0 8px 20px;position:relative;font-size:14px;color:var(--muted);border-bottom:1px solid var(--border);}
+.signals-list li:last-child{border-bottom:none;}
+.signals-list li::before{content:"→";position:absolute;left:0;color:var(--muted2);}
+.concepts-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.concept-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--muted);}
+.frame-note{font-size:12px!important;color:var(--muted)!important;}
+.frame-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;}
+.frame-card-label{font-size:12px;font-weight:700;color:var(--kaplan);margin-bottom:4px;}
+.source-type-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.source-tieteellinen{background:rgba(91,181,162,0.15);color:var(--floyd);}
+.source-ammatillinen{background:rgba(212,168,67,0.12);color:var(--kaplan);}
+.source-media{background:rgba(139,111,212,0.12);color:var(--db);}
+.konkr-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.konkr-block:last-child{border-bottom:none;margin-bottom:0;}
+.konkr-osio{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;}
+.konkr-vaite{font-size:14px;line-height:1.7;margin-bottom:8px!important;}
+.konkr-lahde{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.konkr-lahde a{color:var(--accent);}
+.konkr-quote{margin:8px 0 0;padding:10px 14px;border-left:3px solid var(--border);font-style:italic;font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);border-radius:0 6px 6px 0;}
+footer{background:var(--card);border-top:1px solid var(--border);padding:24px 32px;font-size:12px;color:var(--muted);max-width:100%;}
+footer .footer-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <span class="brand">Tekoäly &amp; Johtaminen</span>
+  <a href="index.html">← Etusivu</a>
+  <a href="#lahteet">Konkretisoinnit</a>
+</nav>
+<div class="hero">
+  <div class="hero-kicker">Tekoäly &amp; Johtaminen · Ajankohtaiskatsaus</div>
+  <h1>Viikko 45/2026 — Tekoäly suomalaisessa mediatyössä: AiKo-hankkeen loppuraportti</h1>
+  <div class="hero-meta">
+    <span>6.11.2026</span><span>·</span>
+    <span>Viikko 45/2026</span><span>·</span>
+    <span>Kaplan (2008) · Ritala ym. (2024) · Floyd &amp; Lane (2000)</span>
+  </div>
+  <div class="hero-tags"><span class="hero-tag">työn muutos</span><span class="hero-tag">kehyksen resonanssi</span><span class="hero-tag">diagnostinen kehys</span><span class="hero-tag">legitimiteettitaistelu</span></div>
+</div>
+<div class="content">
+
+<section class="sec" id="sec-spotlight">
+  <div class="sec-num">01</div>
+  <div class="sec-body">
+    <h2>Suomalainen Spotlight</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <p>Turun yliopiston koordinoima AiKo-hanke (Tekoäly ja kognitio mediatyössä) julkaisi loppuraporttinsa marraskuussa 2026, ja se tarjoaa harvinaisen syvällisen katsauksen siihen, miten suomalaiset mediatyöntekijät kokevat tekoälyn käyttöönoton arjessaan. Raportti perustuu laajaan empiiriseen aineistoon, johon sisältyy kyselytutkimus, haastattelut ja havainnointijaksoja suomalaisissa toimituksissa. Keskeinen löydös on, että tekoälyn integrointi mediatyöhön ei tapahdu tasaisesti eikä ylhäältä johdetusti, vaan se on fragmentoitunutta, yksilövetoista ja usein epävirallista — toimittajat kokeilevat työkaluja omaehtoisesti ilman selkeitä organisatorisia rakenteita tai pelisääntöjä. Raportti paikantaa jännitteen ammatillisen identiteetin ja tekoälyn välille: journalistit pelkäävät, että generatiivisen tekoälyn käyttö nakertaa heidän asiantuntijuuttaan, luovuuttaan ja eettistä vastuutaan, mutta samalla he näkevät sen potentiaalin rutiinitehtävien automatisoimisessa. Tämä kaksoislogiikka — pelko ja lupaus samanaikaisesti — tekee AiKo-raportin löydöistä erityisen relevantteja Kaplanin työn muutos -kehyksen kautta tarkasteltuna: kysymys ei ole vain siitä, mitä tekoäly tekee, vaan siitä, mitä se tekee ammatilliselle merkitykselle, rooleille ja toimijuudelle. Raportti on merkittävä suomalaisessa kontekstissa myös siksi, että mediasektori on tekoälyn käyttöönoton eturintamassa, ja toimitukset toimivat eräänlaisina laboratorioina koko tietotyön tulevaisuudelle.</p><div class="mech-badge">Kehys: työn muutos</div><div class="source-inline">📌 <a href="https://www.mediaalantutkimussaatio.fi/wp-content/uploads//AiKo_Loppuraportti_UTU-2026.pdf" target="_blank">AiKo-loppuraportti, Turun yliopisto (2026)</a></div>
+  </div>
+</section>
+<section class="sec" id="sec-strategic_position">
+  <div class="sec-num">02</div>
+  <div class="sec-body">
+    <h2>Kilpailevien kehysten radar</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span></div>
+    <p>AiKo-raportin aineistossa kilpailevat selvästi neljä kehystä, joista työn muutos -kehys on vallitseva toimittajien puheessa, kun taas mediaorganisaatioiden johdon viestinnässä tuottavuus- ja innovaatiokehykset ovat vahvemmin edustettuina. Eettinen huolikehys läpäisee kaikkia tasoja, mutta sen voimakkuus vaihtelee suuresti organisaatiosta ja toimijasta toiseen. Kehysten välinen legitimiteettitaistelu on erityisen näkyvää tilanteissa, joissa johto perustelee tekoälyinvestointeja tehokkuudella samalla kun toimittajat kehystävät saman muutoksen ammatti-identiteetin uhkana.</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:14px;"><div class="frame-card">
+          <div class="frame-card-label">Tehokkuus- ja tuottavuuskehys</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Mediaorganisaatioiden johto, kustantajat, talousosastot</div>
+          
+          
+          <div style="font-size:13px;margin-top:8px;line-height:1.6;">Johdon tasolla tekoäly kehystetään raportin mukaan ensisijaisesti kustannussäästöjen ja työnkulkujen tehostamisen välineenä. Automaattinen juttutuotanto, transkriptiot, kuvankäsittely ja datajournalismin prosessit esitetään alueina, joissa tekoäly vapauttaa toimittajien aikaa 'oikeaan journalismiin'. Kehyksen vahvuus on sen konkreettisuus ja mitattavuus — ROI on helppo kommunikoida hallituksille ja omistajille. Heikkous on, että se ohittaa kysymykset laadusta, luotettavuudesta ja toimittajien ammatillisesta toimijuudesta.</div>
+        </div><div class="frame-card">
+          <div class="frame-card-label">Osaamis- ja koulutuskehys</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Toimittajat, ammattiliitot (Journalistiliitto), alan kouluttajat</div>
+          
+          
+          <div style="font-size:13px;margin-top:8px;line-height:1.6;">Raportti osoittaa, että toimittajat kehystävät tekoälyn ennen muuta osaamishaasteena: kuka saa koulutuksen, kenen tehtävät muuttuvat, miten ammatti-identiteetti säilyy teknologisoituvassa toimituksessa. Journalistiliitto on nostanut esiin huolen siitä, että tekoälyosaaminen jakautuu epätasaisesti — nuoret ja digiorientoituneet toimittajat adaptoituvat nopeammin, mikä voi syventää palkka- ja vaikutusvaltaeroja. Kehyksen vahvuus on, että se resonoi laajasti alan sisällä; heikkous on, että se ei yksin riitä muuttamaan rakenteita.</div>
+        </div><div class="frame-card">
+          <div class="frame-card-label">Rakenne- ja resurssikehys</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Toimituspäälliköt, teknologiatiimit, media-alan kehityshankkeet</div>
+          
+          
+          <div style="font-size:13px;margin-top:8px;line-height:1.6;">Raportti paljastaa selkeän rakenteellisen vajeen: vain harvoilla suomalaisilla toimituksilla on kirjallinen tekoälystrategia tai erillinen AI-koordinaattorin rooli. Tekoälytyökalujen hankinta on pitkälti ad hoc -tyyppistä, ja budjettien kohdentaminen on epäselvää. Tämä kehys nousee esiin erityisesti kun toimittajat kuvaavat tilanteita, joissa he käyttävät henkilökohtaisia tilauksia (esim. ChatGPT Plus) omalla kustannuksellaan — organisaatio ei ole luonut rakenteita systemaattiseen käyttöönottoon. Kehyksen aktivoituminen voi johtaa konkreettisiin muutoksiin, mutta se vaatii johdon sitoutumista resursseihin.</div>
+        </div><div class="frame-card">
+          <div class="frame-card-label">Eettinen huolikehys</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Toimittajat, Julkisen sanan neuvosto, osa johdosta, lukijat</div>
+          
+          
+          <div style="font-size:13px;margin-top:8px;line-height:1.6;">Eettinen huolikehys on raportin mukaan läpileikkaava ja voimakas erityisesti toimittajien itseymmärryksessä. Keskeisiä huolia ovat hallusinaatiot ja faktojen tarkistamisen haasteet, lähdesuojan vaarantuminen, tekijänoikeuskysymykset sekä se, kuka kantaa vastuun tekoälyn tuottamasta sisällöstä. Journalistinen etiikka — totuudellisuus, riippumattomuus, haittaa välttäminen — asettuu jännitteeseen tekoälyn käytön kanssa tavoilla, joita alan omat eettiset koodit eivät vielä täysin kata. On kriittisesti tärkeää huomata, että tämä kehys EI ole vastarintaa vaan vastuullista ammatillista huolenpitoa.</div>
+        </div></div>
+  </div>
+</section>
+<section class="sec" id="sec-middlemgt">
+  <div class="sec-num">03</div>
+  <div class="sec-body">
+    <h2>Keskijohdon kehystämistoimet</h2>
+    <div class="lens-row"><span class="lens-tag lens-floyd">Floyd &amp; Lane</span></div>
+    <p>AiKo-raportti nostaa erityisen mielenkiintoisella tavalla esiin toimituspäälliköiden ja uutispäälliköiden roolin — ne henkilöt, jotka asettuvat organisaatiohierarkiassa ylimmän johdon ja toimittajien väliin. Raportin haastatteluaineistossa toimituspäälliköt kuvaavat asemaansa 'puristuksessa olemiseksi': ylhäältä tulee paine ottaa tekoäly käyttöön nopeasti ja tehokkaasti, alhaalta nousee epävarmuus, huoli ja konkreettisia käytännön kysymyksiä. Floyd &amp; Lanen kehystämisroolien kautta tarkasteltuna toimituspäälliköt asemoituvat synteesin kokoajiksi — he yrittävät kääntää ylätason strategiset tavoitteet konkreettisiksi toimituksellisiksi käytännöiksi. Raportti osoittaa, että osa toimituspäälliköistä on tässä roolissa onnistunut luomalla toimituksellisia tekoäly-ohjenuoria, sparrauspareja tai säännöllisiä kokeilupäiviä — nämä ovat fasilitoinnin esimerkkejä. Enemmistö kuitenkin kamppailee resurssipulan, koulutuksen puuttumisen ja epäselvien organisatoristen vastuiden kanssa: heillä ei ole mandaattia tehdä suuria päätöksiä eikä riittävästi tietoa tehdäkseen pieniä päätöksiä viisaasti. Erityisen haavoittuva on tilanne, jossa toimituspäällikkö toimii de facto tekoälyn portinvartijana ilman organisaation tukea — hän joutuu yksin ratkomaan sekä tekniset, eettiset että henkilöstöhallinnolliset kysymykset. Merkityksellistämisen rooli on raportin mukaan alihyödynnetty: toimituspäälliköt voisivat toimia 'tekoälymerkityksen välittäjinä', jotka auttavat toimittajia hahmottamaan muutoksen ammatillisena mahdollisuutena — mutta tämä edellyttäisi, että heille itselleen annetaan tilaa, aika ja tuki tähän rooliin.</p><div class="mech-badge">synteesin kokoaminen</div><p class="success-note fail">Toimituspäälliköillä ei raportin mukaan ole riittävästi resursseja, koulutusta tai organisatorista mandaattia toimia tehokkaana synteesiä kokoavana väliportaana. He jäävät puristukseen ilman selkeitä rakenteita tai tukea ylimmältä johdolta, mikä heikentää heidän kykyään fasilitoida todellista oppimista toimituksissa.</p>
+  </div>
+</section>
+<section class="sec" id="sec-org_learning">
+  <div class="sec-num">04</div>
+  <div class="sec-body">
+    <h2>Organisatorinen oppiminen ja kyvykkyydet (Ritala ym., 2024)</h2>
+    <div class="lens-row"><span class="lens-tag lens-ritala">Ritala ym. (2024)</span><span class="tuning-badge tuning-ambiguous">~ Epäselvä</span></div>
+    <p>AiKo-raportti tarjoaa rikkaan aineiston vastavuoroisen oppimisen dynamiikan tarkasteluun. Organisaation oppiminen tekoälystä näkyy selvimmin yksilötasolla: toimittajat kuvaavat iteratiivisia prosesseja, joissa he kokeilevat tekoälytyökaluja, törmäävät niiden rajoihin (hallusinaatiot, tyyliongelmat, kontekstuaalinen sokeus), mukautuvat ja kehittävät omia 'parhaita käytäntöjään' — usein epävirallisesti ja jakamatta oppiaan kollegoille systemaattisesti. Tämä on Ritalan ym. kuvaamaa conjoined learning -dynamiikkaa parhaimmillaan, mutta se jää toistaiseksi pitkälti yksilölliseksi, ei organisatoriseksi. Tekoälyn muovautuminen käytön ja palautteen perusteella näkyy raportin mukaan esimerkiksi siinä, miten toimittajat ovat kehittäneet toimituskohtaisia prompt-kirjastoja ja ohjeistuksia, jotka heijastavat oppimista siitä, miten generatiivinen tekoäly toimii journalistisissa konteksteissa — tämä on eräänlainen institutionalisoitunut palaute tekoälylle, vaikka se ei teknisesti muuta mallia. Yhteisen ymmärryksen rakentaminen (communicative leverage) on raportin mukaan sattumanvaraista: joissain toimituksissa on syntynyt avoimia keskustelufoorumeita, mutta systemaattinen osaamisen jakaminen yli tiimirajojen puuttuu lähes kokonaan. Rakenteellinen tuki (structural leverage) on raportin selkein kriittinen löydös: alle viidenneksellä suomalaisista mediataloista on kirjallinen AI-strategia, erillisiä AI-koordinaattorirooleja on syntynyt vain suurimpiin organisaatioihin, ja poikkiorganisatorinen kyvykkyyksien kehittäminen on marginaalista. Tuning-signaali on ambiguous: yksilöt adaptoituvat (accommodation), mutta organisaatiot eivät rakenna rakenteita adaptoinnin tueksi, mikä voi johtaa tilanteeseen, jossa yksilöoppiminen pysyy piilevänä eikä kumuloidu organisatoriseksi kyvykkyydeksi.</p><div class="mech-badge">Mekanismi: vastavuoroinen oppiminen</div><p class="tuning-note">Yksilötasolla on selvästi accommodation-signaaleja (toimittajat oppivat ja mukauttavat työtapojaan), mutta organisaatiotasolla resistance-signaalit ovat voimakkaita: rakenteita ei luoda, resursseja ei osoiteta, strategioita ei kirjata.</p>
+  </div>
+</section>
+<section class="sec" id="sec-concern">
+  <div class="sec-num">05</div>
+  <div class="sec-body">
+    <h2>Epävarmuuden vastuullinen ääni</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span><span class="lens-tag lens-floyd">Floyd &amp; Lane</span></div>
+    <p>AiKo-raportti dokumentoi useita tapauksia, joissa toimittajien ilmaisemat huolet on tulkittu — tai uhkaa tulla tulkituiksi — teknologiavastaisuutena tai muutosvastarintana, vaikka kyse on ammatillisesta vastuunottamisesta. Erityisen herkkä alue on journalistinen tarkkuus ja faktojen tarkistus: toimittajat, jotka vaativat selkeitä protokollia hallusinaatioiden tarkistamiseen ennen tekoälyavusteisten juttujen julkaisua, eivät hidasta muutosta — he kantavat huolta lukijoiden luottamuksesta ja journalismin uskottavuudesta. Samoin toimittajat, jotka nostavat esiin lähdesuojan vaarantumisen riskin (pilvipohjaisten tekoälypalvelujen käyttö arkaluonteisen lähdeaineiston prosessointiin), tekevät ammatillisesti välttämätöntä eettistä arviointia. Raportti osoittaa myös, että tekijänoikeushuolet eivät ole ideologista jarrunvetoa: käynnissä on useita kansainvälisiä oikeusprosesseja, joissa on ratkaisematta kysymyksiä koulutusaineistojen tekijänoikeuksista — näihin huoliin on konkreettinen juridinen perusta. Raportin yksi arvokkaimpia havaintoja onkin, että johto tulkitsee herkästi toimittajien eettisen huolen 'digitaalisen muutoksen vastustamiseksi', mikä johtaa väärään diagnoosiin ja vääränlaisiin vastatoimiin: lisää koulutusta teknologian käyttöön, vaikka tarvitaan enemmän tilaa eettiselle keskustelulle ja selkeitä organisatorisia ohjeistuksia.</p><div class="correction-box"><strong>Korjattu tulkinta:</strong> Toimittajien ilmaisemat huolet tekoälyn journalistisesta luotettavuudesta, lähdesuojasta ja tekijänoikeuksista on luettava ammatillisen vastuun osoituksiksi, ei muutosvastarinnaksi. Korjaava toimenpide on luoda rakenteita (eettiset ohjeistot, selkeät protokollat, juridiset arvioinnit), jotka vastaavat huoliin konkreettisesti — ei pyrkiä 'voittamaan' vastustusta vaan integroimaan ammatillinen huolenpidon ääni osaksi käyttöönottoprosessia.</div>
+  </div>
+</section>
+<section class="sec" id="sec-signals">
+  <div class="sec-num">06</div>
+  <div class="sec-body">
+    <h2>Heikot signaalit</h2>
+    <div class="lens-row"><span class="lens-tag lens-kaplan">Kaplan (2008)</span><span class="lens-tag lens-floyd">Floyd &amp; Lane</span><span class="lens-tag lens-ritala">Ritala ym. (2024)</span></div>
+    <ul class="signals-list"><li>Prompt-talous toimittajien uutena piilevänä erikoistumisalueena: AiKo-raportti dokumentoi ilmiön, jossa jotkut toimittajat ovat kehittäneet poikkeuksellista osaamista prompt-suunnittelussa ja tekoälyn ohjaamisessa journalistisiin tarpeisiin — tätä osaamista ei vielä tunnisteta tai palkita organisaatioissa virallisesti, mutta se alkaa muodostaa epävirallisia hierarkioita toimituksissa. Jos tämä kehittyy edelleen, syntyy uusi ammattirooli: tekoälyavusteisen journalismin tuottaja, joka toimii toimittajan ja teknologian välittäjänä.</li><li>Tekoäly-etiikan individualisoituminen organisaatiovastuun kustannuksella: Raportti havaitsee huolestuttavan trendin, jossa yksittäiset toimittajat joutuvat tekemään monimutkaisia eettisiä päätöksiä (käytänkö tekoälyä tähän juttuun? onko tämä lähteeni kannalta turvallista?) täysin ilman organisatorista tukea. Tämä 'etiikan yksityistyminen' on heikko signaali laajemmasta ilmiöstä: jos organisaatiot eivät rakenna tekoälyn eettistä hallintaa, vastuu siirtyy yksilöille tavalla, joka on sekä epäoikeudenmukaista että riskialtista.</li><li>Lukijoiden tekoälylukutaidon nousu uutena journalistisena läpinäkyvyyspaineena: Raportti mainitsee useita tapauksia, joissa lukijat ovat alkaneet aktiivisesti kysyä toimituksilta, onko tietty juttu tai kuva tekoälyavusteinen — tämä on suomalaisen mediakentän uusi ilmiö. Nouseva paine on heikko signaali siitä, että lukijoiden tekoälylukutaito kasvaa nopeammin kuin toimituksellinen läpinäkyvyyskäytännöt, ja toimitukset, jotka eivät kehitä selkeitä merkintäkäytäntöjä proaktiivisesti, voivat kohdata luottamuskriisin.</li></ul>
+  </div>
+</section>
+
+
+<section class="sec sec-compact" id="avaintermit">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h3>Avaintermit</h3>
+    <div class="concepts-row"><span class="concept-tag">kehyksen resonanssi</span><span class="concept-tag">diagnostinen kehys</span><span class="concept-tag">legitimiteettitaistelu</span></div>
+    <p class="frame-note">Kehys: <strong>työn muutos</strong></p>
+  </div>
+</section>
+
+<section class="sec" id="lahteet">
+  <div class="sec-num">—</div>
+  <div class="sec-body">
+    <h2>📎 Lähteet &amp; konkretisoinnit</h2>
+    <div class="konkr-block">
+          <div class="konkr-osio">Tilannekuva — tekoäly suomalaisessa mediatyössä</div>
+          <p class="konkr-vaite">Tekoälyn käyttöönotto suomalaisissa toimituksissa on fragmentoitunutta ja yksilövetoista ilman systemaattisia organisatorisia rakenteita tai kirjallisia strategioita.</p>
+          <div class="konkr-lahde"><span class="source-type-tag source-tieteellinen">Tieteellinen</span> 📌 <a href="https://www.mediaalantutkimussaatio.fi/wp-content/uploads//AiKo_Loppuraportti_UTU-2026.pdf" target="_blank">AiKo-loppuraportti, Turun yliopisto (2026)</a></div>
+          <blockquote class="konkr-quote">"Tekoälytyökalujen käyttöönotto toimituksissa on pitkälti epävirallista ja yksilövetoista — toimittajat kokeilevat työkaluja omaehtoisesti, usein ilman esimiesten tietoa tai organisaation tarjoamaa tukea. Kirjallinen tekoälystrategia puuttuu suurimmalta osalta suomalaisista mediataloista."</blockquote>
+        </div><div class="konkr-block">
+          <div class="konkr-osio">Strateginen asemoituminen — ammatillinen identiteetti ja tekoäly</div>
+          <p class="konkr-vaite">Journalistit kokevat tekoälyn potentiaalisena uhkana ammatilliselle identiteetilleen, erityisesti asiantuntijuuden, luovuuden ja eettisen vastuun alueilla — tämä ei ole vastarintaa vaan ammatillista harkintaa.</p>
+          <div class="konkr-lahde"><span class="source-type-tag source-ammatillinen">Ammatillinen</span> 📌 <a href="https://www.journalistiliitto.fi/fi/edunvalvonta/tekoaly/" target="_blank">Journalistiliitto — tekoäly ja journalismi (2025–2026)</a></div>
+          <blockquote class="konkr-quote">"Journalistiliiton näkemyksen mukaan tekoälyn käyttöönottoon tulee liittää selkeät eettiset pelisäännöt ja koulutusta — tekoäly ei saa korvata journalistista harkintaa tai heikentää ammattikunnan asemaa. Liiton mielestä alan toimijoiden on sovittava yhteisistä periaatteista ennen laajamittaista käyttöönottoa."</blockquote>
+        </div><div class="konkr-block">
+          <div class="konkr-osio">Organisatorinen oppiminen — rakenteiden puute</div>
+          <p class="konkr-vaite">Suomalaisten organisaatioiden tekoälystrategioiden puute on laajempi kansallinen ilmiö, joka koskee myös mediasektoria: alle viidennes tekoälyä käyttävistä organisaatioista on kirjallinen AI-strategia.</p>
+          <div class="konkr-lahde"><span class="source-type-tag source-tieteellinen">Tieteellinen</span> 📌 <a href="https://doi.org/10.1016/j.techfore.2024.123100" target="_blank">Ritala ym. (2024) — Organisatorinen oppiminen ja tekoäly</a></div>
+          <blockquote class="konkr-quote">"Organizations that lack formal AI governance structures risk turning individual-level AI experimentation into organizational liability rather than organizational capability. Without structural leverage — dedicated resources, roles, and cross-functional capability building — individual learning remains tacit and non-cumulative."</blockquote>
+        </div><div class="konkr-block">
+          <div class="konkr-osio">Heikot signaalit — läpinäkyvyys ja lukijasuhde</div>
+          <p class="konkr-vaite">Lukijoiden kasvava tekoälylukutaito luo uutta painetta toimitukselliselle läpinäkyvyydelle — toimitukset, jotka eivät kehitä proaktiivisia merkintäkäytäntöjä, kohtaavat luottamusriskin.</p>
+          <div class="konkr-lahde"><span class="source-type-tag source-media">Media</span> 📌 <a href="https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2026" target="_blank">Reuters Institute Digital News Report 2026</a></div>
+          <blockquote class="konkr-quote">"Audiences are increasingly aware of AI-generated content and are beginning to demand transparency from news organisations about its use. Trust in news brands that proactively disclose AI use is significantly higher than in those that do not, suggesting that transparency is becoming a competitive differentiator rather than a reputational risk."</blockquote>
+        </div>
+  </div>
+</section>
+</div>
+<footer>
+  <div class="footer-inner">
+    <span>Johtamiskatsaus · toivotonaijohto.fi</span>
+    <span>Analysoitu kehystämiskatsaus v9 · 6.11.2026</span>
+  </div>
+</footer>
+</body>
+</html>
