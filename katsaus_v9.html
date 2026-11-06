@@ -1309,7 +1309,7 @@ ${sourcesHtml}
   async function getFileSha(filePath) {
     // v9.1: cache-busting timestamp estää selainta palauttamasta vanhaa SHA:ta
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}` }
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
     });
     if (r.ok) { const j = await r.json(); return j.sha || null; }
     return null;
@@ -1465,7 +1465,7 @@ ${sourcesHtml}
 
   async function getNextKatsausNum() {
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}` }
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
     });
     if (!r.ok) return 1;
     try {
@@ -1481,7 +1481,7 @@ ${sourcesHtml}
     let sha = null;
 
     const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${jsonPath}?t=${Date.now()}`, {
-      headers: { 'Authorization': `token ${token}` }
+      headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
     });
     if (r.ok) {
       const j = await r.json();
@@ -1521,11 +1521,14 @@ ${sourcesHtml}
     const otsikko = (lastAnalysis.week_label || 'Johtamiskatsaus').replace(/^Viikko \d+\/\d+ — /, '');
     const pvm = shortDate;
 
-    const [respHtml, respMd, respJson] = await Promise.all([
+    // v9.3: HTML ja MD rinnakkain, JSON perään — vältetään SHA-konflikti
+    const [respHtml, respMd] = await Promise.all([
       putFile(htmlPath, htmlContent, `Johtamiskatsaus ${dateOnly}`),
-      putFile(mdPath,   mdContent,   `Kehystämiskatsaus MD ${date}`),
-      updateKatsauksetJson(katsausNum, otsikko, htmlFilename, pvm)
+      putFile(mdPath,   mdContent,   `Kehystämiskatsaus MD ${date}`)
     ]);
+    // Odotetaan että HTML+MD ovat GitHubissa ennen JSON-päivitystä
+    await new Promise(r => setTimeout(r, 800));
+    const respJson = await updateKatsauksetJson(katsausNum, otsikko, htmlFilename, pvm);
 
     const htmlOk = respHtml.ok;
     const mdOk   = respMd.ok;
